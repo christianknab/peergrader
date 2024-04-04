@@ -1,7 +1,8 @@
 FROM node:18-alpine
-WORKDIR /peergrader/
-COPY public/ /peergrader/public
-COPY src/ /peergrader/src
-COPY package.json /peergrader/
+
+WORKDIR /app
+COPY package*.json ./
 RUN npm install
-CMD ["npm", "start"]
+COPY . .
+EXPOSE 3000
+CMD ["npm", "run", "dev"]
