@@ -39,7 +39,7 @@ export default async function ProtectedPage() {
 
         <main className="flex-1 flex flex-col gap-6">
           <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          <UploadButton />
+          <UploadButton user={user} />
         </main>
       </div>
 
