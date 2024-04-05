@@ -3,6 +3,7 @@ import AuthButton from "@/components/AuthButton";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
+import UserFilesList from "@/components/listFiles";
 
 const UploadButton = dynamic(
   () => import("@/components/UploadButton"),
@@ -38,8 +39,9 @@ export default async function ProtectedPage() {
       <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
 
         <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          <UploadButton />
+          <h2 className="font-bold text-4xl mb-4">Files</h2>
+          <UploadButton user={user} />
+          <UserFilesList user={user} />
         </main>
       </div>
 

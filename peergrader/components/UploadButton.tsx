@@ -1,8 +1,10 @@
 "use client";
 import { useState } from 'react';
 import { uploadFile } from "@/utils/supabase/uploadFile";
+import { User } from '@supabase/supabase-js';
 
-export default function UploadButton() {
+
+export default function UploadButton({ user }: { user: User }) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -19,16 +21,13 @@ export default function UploadButton() {
             alert('No file selected.');
             return;
         }
-        const bucket = "files"
 
-        setIsLoading(true); // Start loading
+        setIsLoading(true);
 
-        
         // Call the upload function
         try {
-            const { success, error } = await uploadFile(selectedFile);
+            const { success, fileID } = await uploadFile(selectedFile, user);
 
-            // Handle error if upload failed
             if (!success) {
                 alert('Error uploading file.');
                 return;
@@ -39,7 +38,8 @@ export default function UploadButton() {
             console.error("Error uploading file: ", error);
             alert('Error uploading file.');
         } finally {
-            setIsLoading(false); // End loading
+            setIsLoading(false);
+            setSelectedFile(null);
         }
     };
 
