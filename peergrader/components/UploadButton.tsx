@@ -39,6 +39,7 @@ export default function UploadButton({ user }: { user: User }) {
             alert('Error uploading file.');
         } finally {
             setIsLoading(false);
+            setSelectedFile(null);
         }
     };
 

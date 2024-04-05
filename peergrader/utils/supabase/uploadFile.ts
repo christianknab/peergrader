@@ -6,11 +6,12 @@ const supabase = createClient(
 
 export async function uploadFile(file: File, user: User) {
     // TODO: change to add it to the correct folder
-    // TODO: handle duplicate filenames
+    
+    const uniqueFileName = `${file.name}-${Date.now()}`;
 
     const { data, error } = await supabase.storage
         .from('files')
-        .upload(file.name, file);
+        .upload(uniqueFileName, file);
 
     if (error) {
         console.error('Error uploading file:', error);
