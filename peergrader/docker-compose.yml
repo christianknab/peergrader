@@ -1,0 +1,12 @@
+version: '3'
+services:
+  nextjs_dev:
+    build: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    command: npm run dev
+    environment:
+      - WATCHPACK_POLLING=true

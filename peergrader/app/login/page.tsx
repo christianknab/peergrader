@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { SubmitButton } from "./submit-button";
@@ -27,37 +28,41 @@ export default function Login({
     return redirect("/protected");
   };
 
-  const googleAuth = async ()=>{
-    "use server";
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-    });
-    if (error) {
-      return redirect("/login?message=Could not authenticate user");
-    }
-    return redirect("/protected");
-  }
-
   const signUp = async (formData: FormData) => {
     "use server";
 
+    const origin = headers().get("origin");
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const supabase = createClient();
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
-     
+      console.log(error);
       return redirect("/login?message=Could not authenticate user");
     }
+
+    // If sign up is successful, add the user to the accounts table
+    if (data && data.user) {
+      const { data: insertData, error: insertError } = await supabase
+        .from('accounts')
+        .insert([
+          { uid: data.user.id, email: data.user.email },
+        ]);
+
+      if (insertError) {
+        console.log('Error inserting to accounts:', insertError);
+      }
+    }
+
     return redirect("/protected");
   };
+
+
 
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2">
@@ -116,17 +121,11 @@ export default function Login({
         >
           Sign Up
         </SubmitButton>
-        
         {searchParams?.message && (
           <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
             {searchParams.message}
           </p>
         )}
-      </form>
-      <form action={googleAuth}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-          Google
-        </button>
       </form>
     </div>
   );
