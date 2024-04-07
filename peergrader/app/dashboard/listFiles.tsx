@@ -36,7 +36,7 @@ export default function UserFilesList({ user }: { user: User }) {
                     <li key={filePath}>
                         <Link
                             href={{
-                                pathname: '/dashboard/files',
+                                pathname: '/files',
                                 query: { file: encodeURIComponent(filePath) },
                             }}>
                             View File: {filePath}

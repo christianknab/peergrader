@@ -3,7 +3,7 @@ import { supabase } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
 import UserFilesList from "@/app/dashboard/listFiles";
-import UserClassesList from "./listClasses";
+import UserCoursesList from "./listCourses";
 
 const UploadButton = dynamic(
   () => import("@/app/dashboard/UploadButton"),
@@ -40,8 +40,8 @@ export default async function DashboardPage() {
         <main className="flex-1 flex gap-6">
           {/* Left column*/}
           <div className="flex-1">
-            <h2 className="font-bold text-4xl mb-4">Classes</h2>
-            <UserClassesList user={user} />
+            <h2 className="font-bold text-4xl mb-4">Courses</h2>
+            <UserCoursesList user={user} />
           </div>
           {/* Right column*/}
           <div className="flex-1">
