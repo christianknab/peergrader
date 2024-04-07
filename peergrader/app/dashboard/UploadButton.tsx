@@ -33,13 +33,13 @@ export default function UploadButton({ user }: { user: User }) {
                 return;
             }
 
-            alert('File uploaded successfully!');
+            setSelectedFile(null);
+            window.location.reload();
         } catch (error) {
             console.error("Error uploading file: ", error);
             alert('Error uploading file.');
         } finally {
             setIsLoading(false);
-            setSelectedFile(null);
         }
     };
 

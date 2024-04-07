@@ -4,9 +4,7 @@ import { supabase } from './client';
 
 
 export async function uploadFile(file: File, user: User) {
-    // TODO: change to add it to the correct folder
-    
-    const uniqueFileName = `${file.name}-${Date.now()}`;
+    const uniqueFileName = `${file.name}-${user.id}-${Date.now()}`;
 
     const { data, error } = await supabase.storage
         .from('files')
