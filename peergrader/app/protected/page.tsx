@@ -1,12 +1,11 @@
 import AuthButton from "@/components/AuthButton";
-// import UploadButton from "@/components/UploadButton";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
-import UserFilesList from "@/components/listFiles";
+import UserFilesList from "@/app/protected/listFiles";
 
 const UploadButton = dynamic(
-  () => import("@/components/UploadButton"),
+  () => import("@/app/protected/UploadButton"),
   { ssr: false }
 );
 
