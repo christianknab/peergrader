@@ -3,7 +3,6 @@ import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { SubmitButton } from "./submit-button";
-import { Provider } from "@supabase/supabase-js";
 import GoogleSignInButton from "./google-signin";
 
 
@@ -132,7 +131,7 @@ export default function Login({
         )}
       </form>
 
-      <GoogleSignInButton/>
+      <GoogleSignInButton nextUrl="/protected"/>
 
     </div>
   );
