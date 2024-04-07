@@ -131,7 +131,7 @@ export default function Login({
         )}
       </form>
 
-      <GoogleSignInButton nextUrl="/protected"/>
+      <GoogleSignInButton nextUrl="/dashboard"/>
 
     </div>
   );

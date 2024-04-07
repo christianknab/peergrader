@@ -1,5 +1,5 @@
 import AuthButton from "@/components/AuthButton";
-import { supabase } from "@/utils/supabase/server";
+import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
 import UserFilesList from "@/app/dashboard/listFiles";
@@ -11,6 +11,7 @@ const UploadButton = dynamic(
 );
 
 export default async function DashboardPage() {
+  const supabase = createClient();
 
   const {
     data: { user },
