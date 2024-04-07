@@ -15,7 +15,7 @@ export default async function Index() {
 
         <main className="flex-1 flex flex-col gap-6">
           <h2 className="font-bold text-4xl mb-4">Peer Grader</h2>
-          <Link href={{ pathname: '/protected', }}>Protected</Link>
+          <Link href={{ pathname: '/dashboard', }}>dashboard</Link>
 
         </main>
       </div>

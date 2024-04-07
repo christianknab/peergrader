@@ -1,16 +1,16 @@
 import AuthButton from "@/components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
+import { supabase } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import dynamic from 'next/dynamic';
-import UserFilesList from "@/app/protected/listFiles";
+import UserFilesList from "@/app/dashboard/listFiles";
+import UserClassesList from "./listClasses";
 
 const UploadButton = dynamic(
-  () => import("@/app/protected/UploadButton"),
+  () => import("@/app/dashboard/UploadButton"),
   { ssr: false }
 );
 
-export default async function ProtectedPage() {
-  const supabase = createClient();
+export default async function DashboardPage() {
 
   const {
     data: { user },
@@ -37,10 +37,18 @@ export default async function ProtectedPage() {
 
       <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
 
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Files</h2>
-          <UploadButton user={user} />
-          <UserFilesList user={user} />
+        <main className="flex-1 flex gap-6">
+          {/* Left column*/}
+          <div className="flex-1">
+            <h2 className="font-bold text-4xl mb-4">Classes</h2>
+            <UserClassesList user={user} />
+          </div>
+          {/* Right column*/}
+          <div className="flex-1">
+            <h2 className="font-bold text-4xl mb-4">Files</h2>
+            <UploadButton user={user} />
+            <UserFilesList user={user} />
+          </div>
         </main>
       </div>
 

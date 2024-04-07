@@ -1,8 +1,5 @@
-import { User, createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+import { User } from '@supabase/supabase-js'
+import { supabase } from '@/utils/supabase/client';
 
 export async function uploadFile(file: File, user: User) {
     const uniqueFileName = `${file.name}-${user.id}-${Date.now()}`;

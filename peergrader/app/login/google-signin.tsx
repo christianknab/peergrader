@@ -18,7 +18,7 @@ export default function GoogleSignInButton() {
             }
       
             // Redirect the user to the desired page after successful login
-            await redirect('/protected');
+            await redirect('/dashboard');
           } catch (error) {
             console.error('Error signing in with Google:', error);
             setLoading(false);
