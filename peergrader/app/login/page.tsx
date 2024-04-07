@@ -3,6 +3,9 @@ import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { SubmitButton } from "./submit-button";
+import { Provider } from "@supabase/supabase-js";
+import GoogleSignInButton from "./google-signin";
+
 
 export default function Login({
   searchParams,
@@ -28,6 +31,7 @@ export default function Login({
     return redirect("/protected");
   };
 
+  
   const signUp = async (formData: FormData) => {
     "use server";
 
@@ -127,6 +131,9 @@ export default function Login({
           </p>
         )}
       </form>
+
+      <GoogleSignInButton/>
+
     </div>
   );
 }
