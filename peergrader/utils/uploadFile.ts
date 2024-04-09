@@ -1,5 +1,5 @@
 import { User} from '@supabase/supabase-js'
-import { supabase } from './client';
+import { supabase } from './supabase/client';
 
 
 

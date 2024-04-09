@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import { uploadFile } from "@/utils/supabase/uploadFile";
+import { uploadFile } from "@/utils/uploadFile";
 import { User } from '@supabase/supabase-js';
 
 

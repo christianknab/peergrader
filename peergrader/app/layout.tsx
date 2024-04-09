@@ -1,5 +1,8 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
+import { createClient } from "../utils/supabase/server";
+import { readUser } from "@/utils/readUser";
+import { UserProvider } from "@/providers/UserDataProvider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -11,16 +14,23 @@ export const metadata = {
   description: "Grading made easy",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+console.log("pulling data");
+  const supabase = createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+ 
+  const appUser = user != null ? await readUser(user.id): null;
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
-          {children}
+          <UserProvider appUser={appUser}>
+            {children}
+          </UserProvider>
         </main>
       </body>
     </html>
