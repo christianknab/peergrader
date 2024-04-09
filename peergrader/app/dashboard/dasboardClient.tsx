@@ -13,13 +13,11 @@ export default async function DashboardClientPage() {
     if (!userContext) {
         return <div>Loading...</div>;
     }
-    const { currentUser} = userContext;
+    const { currentUser } = userContext;
     // setUser(await readUser(user!.id));
     if (!currentUser) {
         return <div>loading...</div>
     }
-    
-    
 
     if (currentUser.is_teacher) { return (<TeacherDashboardPage />); } else { return (<StudentDashboardPage />); }
 }

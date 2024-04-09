@@ -48,12 +48,7 @@ export default function UserCoursesList({ user }: { user: User }) {
             <ul>
                 {userCourses.map((courseData) => (
                     <li key={courseData.course_id}>
-                        <Link
-                            href={{
-                                pathname: '/courses',
-                                query: { course: courseData.course_id },
-                            }}
-                        >
+                        <Link href={{ pathname: `/courses/${courseData.course_id}` }}>
                             {courseData.name}
                         </Link>
                     </li>
