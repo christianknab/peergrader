@@ -1,5 +1,5 @@
 
-import { AppUser } from "@/providers/UserDataProvider";
+import { AppUser } from "@/utils/providers/UserDataProvider";
 import { createClient } from "./supabase/server";
 
 export async function readUser(uid: string): Promise<AppUser> {

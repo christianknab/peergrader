@@ -1,7 +1,7 @@
 "use client";
 import { createClient } from "@/utils/supabase/client";
 import TeacherDashboardPage from "./teacherDashboard";
-import { useUser } from "@/providers/UserDataProvider";
+import { useUser } from "@/utils/providers/UserDataProvider";
 import StudentDashboardPage from "./studentDasboard";
 import { readUser } from "@/utils/readUser";
 

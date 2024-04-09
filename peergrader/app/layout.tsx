@@ -2,7 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { createClient } from "../utils/supabase/server";
 import { readUser } from "@/utils/readUser";
-import { UserProvider } from "@/providers/UserDataProvider";
+import { UserProvider } from "@/utils/providers/UserDataProvider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -19,7 +19,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-console.log("pulling data");
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
  
