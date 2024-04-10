@@ -10,7 +10,7 @@
     --foreground: 200 50% 3%;
   }
 
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     :root {
       --background: 200 50% 3%;
       --btn-background: 200 10% 9%;
@@ -39,4 +39,21 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.light-blue {
+  background-color: rgb(190, 196, 211);
+}
+
+.light-grey {
+  background-color: rgb(239, 239, 244);
+}
+
+.bold-large-text {
+  font-size: 25px; 
+  font-weight: bold;
+}
+
+.roboto {
+  font-family: 'Roboto', sans-serif;
 }

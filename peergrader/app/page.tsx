@@ -1,6 +1,5 @@
 import Link from "next/link";
 import AuthButton from "../components/AuthButton";
-// import { useSearchParams } from 'next/navigation'; 
 
 // export async function getCode() {
 //   "use client";
@@ -12,31 +11,79 @@ import AuthButton from "../components/AuthButton";
 
 //   }
 // }
-export default async function Index() {
-  // getCode();
 
+export default function Index() {
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <AuthButton />
+    <div className="flex flex-col min-h-screen w-full">
+      <nav className="light-grey flex justify-between items-center h-16 px-4">
+        <div className="flex gap-4">
+          <Link href="/">Home</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
         </div>
+        <AuthButton />
       </nav>
 
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
+      <header className="flex-1 flex flex-col items-center justify-center text-center w-full px-4 py-32">
+        <h1 className="text-6xl font-bold mb-24">PeerGrader</h1>
+        <p className="mb-24 text-2xl">Revolutionize Grading with PeerGrader: A Modern Platform for Streamlined Feedback</p>
+        <div className="flex gap-4 mb12">
+          <button className="light-blue bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded">
+            Sign Up
+          </button>
+          <button className="bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded">
+            <AuthButton />
+          </button>
+        </div>
+      </header>
 
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Peer Grader</h2>
-          <Link href={{ pathname: '/dashboard', }}>dashboard</Link>
+      <main className="flex-grow w-full px-4">
 
-        </main>
-      </div>
+        <section className="light-grey w-full py-20">
+          <div className="flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-4">
+            <h2 className="text-4xl font-bold mb-6">How it Works</h2>
+            <p className="text-lg">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+          </div>
+        </section>
 
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Footer
-        </p>
+        <section className="py-10 px-4 my-24">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-1">
+                <h2 className="text-4xl font-bold mb-6">Solution</h2>
+                <p className="text-lg">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim.
+                </p>
+              </div>
+              <div className="lg:col-span-2 flex flex-col space-y-8">
+                <div>
+                  <h3 className="font-bold text-xl mb-2">Effortless Integration</h3>
+                  <p className="text-lg">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean commodo ligula eget dolor.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="font-bold text-xl mb-2">Widespread Application</h3>
+                  <p className="text-lg">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <footer className="light-blue p-8 text-foreground text-center w-full px-4">
+        <p className="mb-4">&copy;2024 PeerGrader</p>
+        <div className="flex gap-4 justify-center">
+          <Link href="/">Home</Link>
+          <Link href="/about">About</Link>
+          <Link href="/contact">Contact</Link>
+        </div>
       </footer>
     </div>
   );
 }
+
