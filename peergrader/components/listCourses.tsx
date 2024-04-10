@@ -1,45 +1,69 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { User } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { supabase } from '@/utils/supabase/client';
+import { useUser } from '@/utils/providers/UserDataProvider';
 
 interface CourseData {
     course_id: string;
     name: string;
 }
 
-export default function UserCoursesList({ user }: { user: User }) {
+export default function UserCoursesList() {
+    const userContext = useUser();
+    if (!userContext) {
+        return <div>Loading...</div>;
+    }
+    const { currentUser } = userContext;
+    if (!currentUser) {
+        return <div>Loading...</div>;
+    }
+
     const [userCourses, setUserCourses] = useState<CourseData[]>([]);
 
     useEffect(() => {
-        fetchUserCourses(user.id).then(setUserCourses);
-    }, [user.id]);
+        fetchUserCourses(currentUser.uid).then(setUserCourses);
+    }, [currentUser.uid]);
 
     async function fetchUserCourses(userId: string) {
-        const { data, error } = await supabase
-            .from('account_courses')
-            .select('course_id')
-            .eq('uid', userId);
+        if (currentUser?.is_teacher) {
+            const { data, error } = await supabase
+                .from('courses')
+                .select('course_id, name')
+                .eq('owner', currentUser.uid)
 
-        if (error) {
-            console.error('Error fetching user courses:', error);
-            return [];
+            if (error) {
+                console.error('Error fetching course names:', error);
+                return [];
+            }
+
+            return data;
         }
+        else {
+            const { data, error } = await supabase
+                .from('account_courses')
+                .select('course_id')
+                .eq('uid', userId);
 
-        const courseIds = data.map((row) => row.course_id);
+            if (error) {
+                console.error('Error fetching user courses:', error);
+                return [];
+            }
 
-        const { data: coursesData, error: coursesError } = await supabase
-            .from('courses')
-            .select('course_id, name')
-            .in('course_id', courseIds);
+            const courseIds = data.map((row) => row.course_id);
 
-        if (coursesError) {
-            console.error('Error fetching course names:', coursesError);
-            return [];
+            const { data: coursesData, error: coursesError } = await supabase
+                .from('courses')
+                .select('course_id, name')
+                .in('course_id', courseIds);
+
+            if (coursesError) {
+                console.error('Error fetching course names:', coursesError);
+                return [];
+            }
+
+            return coursesData;
         }
-
-        return coursesData;
     }
 
     return (

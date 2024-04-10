@@ -1,18 +1,8 @@
 "use client"
-import AuthButton from "@/components/AuthButton";
 import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
-import dynamic from 'next/dynamic';
-import UserFilesList from "@/components/listFiles";
 import UserCoursesList from "../../components/listCourses";
 import Link from "next/link";
-// import UploadButton from "@/app/dashboard/UploadButton"
-// import useUserData from "@/utils/readUserData";
-
-const UploadButton = dynamic(
-  () => import("@/app/dashboard/UploadButton"),
-  { ssr: false }
-);
 
 export default async function StudentDashboardPage() {
   //   const supabase = createClient();
@@ -24,10 +14,10 @@ export default async function StudentDashboardPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user) {
+    return redirect("/login");
+  }
 
-  //   if (!user) {
-  //     return redirect("/login");
-  //   }
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
       <div className="w-full">
@@ -58,7 +48,7 @@ export default async function StudentDashboardPage() {
                 pathname: '/courses',
               }}
             >{<h2 className="font-bold text-4xl mb-4">Courses</h2>}</Link>
-            <UserCoursesList user={user!} />
+            <UserCoursesList />
           </div>
         </main>
       </div>

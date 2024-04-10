@@ -7,7 +7,7 @@ export type AppUser = {
   is_teacher: boolean;
 };
 
-type UserContextType = {
+export type UserContextType = {
   currentUser: AppUser | null;
   // setUser: Dispatch<SetStateAction<AppUser | null>>;
 };
