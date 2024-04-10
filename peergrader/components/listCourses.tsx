@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { supabase } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 import { useUser } from '@/utils/providers/UserDataProvider';
 
 interface CourseData {
@@ -10,6 +10,7 @@ interface CourseData {
 }
 
 export default function UserCoursesList() {
+    const supabase = createClient();
     const userContext = useUser();
     if (!userContext) {
         return <div>Loading...</div>;
