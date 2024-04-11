@@ -30,7 +30,6 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
 
     return (
         <div>
-            <h3>Asignments for class: {course_id}:</h3>
             <ul>
                 {asgns.map((asgn_id) => (
                     <li key={asgn_id}>
@@ -38,7 +37,7 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
                             href={{
                                 pathname: `/courses/${course_id}/${asgn_id}`,
                             }}>
-                            Asignment page: {asgn_id}
+                            Asignment id: {asgn_id}
                         </Link>
                     </li>
                 ))}

@@ -4,16 +4,16 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Layout from './layout';
 import Link from 'next/link';
+import ListAsgn from '@/components/ListAsgn';
 
 interface CourseData {
-    // id: string;
-    // name: string;
     owner: string;
 }
 
 export default function CoursePage() {
     const supabase = createClient();
-    const { course_id } = useParams();
+    const params = useParams();
+    const course_id = params.course_id as string;
     const [courseData, setCourseData] = useState<CourseData | null>(null);
 
     useEffect(() => {
@@ -45,12 +45,13 @@ export default function CoursePage() {
             {courseData && (
                 <>
                     <p>Owner: {courseData.owner}</p>
-                   <Link href={{ pathname: `courses/${course_id}/create-assignment` }}>Add assignment
-                        </Link>
+                    <Link href={{ pathname: `courses/${course_id}/create-assignment` }}>Add assignment
+                    </Link>
                 </>
-                
+
             )}
             <h3>Asignments</h3>
+            <ListAsgn course_id={course_id} />
         </div>
     );
 }
