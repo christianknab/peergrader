@@ -1,7 +1,7 @@
 "use client"
 import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
-import ListCourses from "../../components/ListCourses";
+import ListCourses from "@/components/ListCourses";
 import Link from "next/link";
 
 
