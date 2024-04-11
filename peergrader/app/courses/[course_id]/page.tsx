@@ -9,7 +9,6 @@ interface CourseData {
     // id: string;
     // name: string;
     owner: string;
-    course_id: string;
 }
 
 export default function CoursePage() {
