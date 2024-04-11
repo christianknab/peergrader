@@ -45,7 +45,7 @@ export default function CoursePage() {
             {courseData && (
                 <>
                     <p>Owner: {courseData.owner}</p>
-                    <Link href={{ pathname: `courses/${course_id}/create-assignment` }}>Add assignment
+                    <Link href={{ pathname: `${course_id}/create-assignment` }}>Add assignment
                     </Link>
                 </>
 

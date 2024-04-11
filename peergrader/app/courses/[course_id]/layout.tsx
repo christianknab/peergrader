@@ -5,9 +5,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 
 interface CourseData {
-//   id: string;
   name: string;
-//   owne r: string;
 }
 
 interface LayoutProps {
