@@ -1,16 +1,6 @@
 import Link from "next/link";
 import AuthButton from "../components/AuthButton";
-
-// export async function getCode() {
-//   "use client";
-//   const searchParams = useSearchParams();
-//   const code = searchParams.get('code');
-//   if (code) {
-//     // Print the code to the console
-//     console.log('Google sign-in code:', code);
-
-//   }
-// }
+import ActionButton from "./ActionButton";
 
 export default function Index() {
   return (
@@ -27,13 +17,9 @@ export default function Index() {
       <header className="flex-1 flex flex-col items-center justify-center text-center w-full px-4 py-32">
         <h1 className="text-6xl font-bold mb-24">PeerGrader</h1>
         <p className="mb-24 text-2xl">Revolutionize Grading with PeerGrader: A Modern Platform for Streamlined Feedback</p>
-        <div className="flex gap-4 mb12">
-          <button className="light-blue bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded">
-            Sign Up
-          </button>
-          <button className="bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded">
-            <AuthButton />
-          </button>
+
+        <div>
+          <ActionButton />
         </div>
       </header>
 

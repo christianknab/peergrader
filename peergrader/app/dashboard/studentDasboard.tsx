@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import ListCourses from "../../components/ListCourses";
 import Link from "next/link";
 
+
 export default async function StudentDashboardPage() {
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
@@ -11,6 +12,7 @@ export default async function StudentDashboardPage() {
         <div className="py-6 font-bold bg-purple-950 text-center">
           Student dashboard
         </div>
+        
         {/* <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
           <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
 

@@ -2,9 +2,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
+import Layout from './layout';
+import Link from 'next/link';
 
 interface CourseData {
-    name: string;
+    // id: string;
+    // name: string;
     owner: string;
     course_id: string;
 }
@@ -19,7 +22,7 @@ export default function CoursePage() {
             try {
                 const { data, error } = await supabase
                     .from('courses')
-                    .select('*')
+                    .select('owner')
                     .eq('course_id', course_id)
                     .single();
 
@@ -40,14 +43,17 @@ export default function CoursePage() {
 
     return (
         <div>
-            <h1>Course Page</h1>
             {courseData && (
                 <>
-                    <p>Course Name: {courseData.name}</p>
                     <p>Owner: {courseData.owner}</p>
+                   <Link href={{ pathname: `courses/${course_id}/create-assignment` }}>Add assignment
+                        </Link>
                 </>
+                
             )}
             <h3>Asignments</h3>
         </div>
     );
 }
+
+
