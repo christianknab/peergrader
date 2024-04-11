@@ -9,7 +9,7 @@ interface CourseData {
     name: string;
 }
 
-export default function UserCoursesList() {
+export default function ListCourses() {
     const supabase = createClient();
     const userContext = useUser();
     if (!userContext) {

@@ -1,7 +1,6 @@
 'use client';
 import { useUser } from '@/utils/providers/UserDataProvider';
 import { createClient } from '@/utils/supabase/client';
-import { redirect } from 'next/navigation';
 import { useState } from 'react';
 
 

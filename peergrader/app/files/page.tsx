@@ -1,8 +1,9 @@
 'use client'
 import { useSearchParams } from 'next/navigation';
-import { supabase } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 
 export default function FilesPage() {
+    const supabase = createClient();
     const searchParams = useSearchParams();
     const file = searchParams.get('file');
 

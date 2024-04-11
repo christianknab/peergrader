@@ -1,5 +1,5 @@
 'use client';
-import UserCoursesList from '@/components/listCourses';
+import ListCourses from '@/components/ListCourses';
 import { useUser } from '@/utils/providers/UserDataProvider';
 import Link from 'next/link';
 
@@ -16,7 +16,7 @@ export default async function CoursesPage() {
         return (
             <div>
                 <h1>Courses Page</h1>
-                <UserCoursesList />
+                <ListCourses />
                 <Link
                     href={{
                         pathname: '/courses/create',
@@ -28,7 +28,7 @@ export default async function CoursesPage() {
     else return (
         <div>
             <h1>Courses Page</h1>
-            <UserCoursesList />
+            <ListCourses />
         </div>
     );
 }

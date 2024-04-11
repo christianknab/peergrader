@@ -1,7 +1,7 @@
 "use client"
 import { createClient } from "@/utils/supabase/client";
 import { redirect } from "next/navigation";
-import UserCoursesList from "../../components/listCourses";
+import ListCourses from "../../components/ListCourses";
 import Link from "next/link";
 
 export default async function StudentDashboardPage() {
@@ -35,7 +35,7 @@ export default async function StudentDashboardPage() {
                 pathname: '/courses',
               }}
             >{<h2 className="font-bold text-4xl mb-4">Courses</h2>}</Link>
-            <UserCoursesList />
+            <ListCourses />
           </div>
         </main>
       </div>

@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { User } from '@supabase/supabase-js';
-import { supabase } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
 
-export default function UserFilesList({ user }: { user: User }) {
+export default function ListFiles({ user }: { user: User }) {
+    const supabase = createClient();
     const [userFiles, setUserFiles] = useState<string[]>([]);
 
     useEffect(() => {

@@ -1,4 +1,4 @@
-import UserCoursesList from "@/components/listCourses";
+import ListCourses from "@/components/ListCourses";
 import { useUser } from "@/utils/providers/UserDataProvider";
 import Link from "next/link";
 
@@ -27,7 +27,7 @@ export default async function TeacherDashboardPage() {
                                 pathname: '/courses',
                             }}
                         >{<h2 className="font-bold text-4xl mb-4">Courses</h2>}</Link>
-                        <UserCoursesList />
+                        <ListCourses />
 
                     </div>
                     {/* Right column*/}

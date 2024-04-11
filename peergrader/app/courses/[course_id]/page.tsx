@@ -1,15 +1,16 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { supabase } from '@/utils/supabase/client';
+import { createClient } from '@/utils/supabase/client';
 
 interface CourseData {
-    id: string;
     name: string;
     owner: string;
+    course_id: string;
 }
 
 export default function CoursePage() {
+    const supabase = createClient();
     const { course_id } = useParams();
     const [courseData, setCourseData] = useState<CourseData | null>(null);
 
@@ -46,6 +47,7 @@ export default function CoursePage() {
                     <p>Owner: {courseData.owner}</p>
                 </>
             )}
+            <h3>Asignments</h3>
         </div>
     );
 }
