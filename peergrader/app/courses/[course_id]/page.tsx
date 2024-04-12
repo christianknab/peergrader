@@ -4,7 +4,8 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import Layout from './layout';
 import Link from 'next/link';
-import ListAsgn from '@/components/ListAsgn';
+import ListAsgn from '@/app/courses/[course_id]/ListAsgn';
+import ListStudents from './ListStudents';
 
 interface CourseData {
     owner: string;
@@ -50,8 +51,10 @@ export default function CoursePage() {
                 </>
 
             )}
-            <h3>Asignments</h3>
+            <h3>Asignments: </h3>
             <ListAsgn course_id={course_id} />
+            <h3>Students: </h3>
+            <ListStudents course_id={course_id} />
         </div>
     );
 }

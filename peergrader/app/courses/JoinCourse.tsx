@@ -1,0 +1,73 @@
+"use client";
+import { AppUser, useUser } from "@/utils/providers/UserDataProvider";
+import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
+
+export default function JoinCourse() {
+    const supabase = createClient();
+    const userContext = useUser();
+    if (!userContext) {
+        return <div>Loading...</div>;
+    }
+    const { currentUser } = userContext;
+    if (!currentUser) {
+        return <div>Loading...</div>;
+    }
+
+    const [joinCode, setJoinCode] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    async function joinCourse() {
+        try {
+            setIsLoading(true);
+
+            // Check if the course exists
+            const { data, error } = await supabase
+                .from('courses')
+                .select('course_id, name')
+                .eq('join_code', joinCode)
+                .single();
+
+            if (error) {
+                console.error('Error checking course:', error);
+                return;
+            }
+
+            if (!data.name) {
+                console.error('No course found with the given course code:', joinCode);
+                return;
+            }
+
+            // Add the user to the course
+            const { error: insertError } = await supabase.from('account_courses').insert({
+                course_id: data.course_id,
+                uid: (currentUser as AppUser).uid,
+            });
+
+            if (insertError) {
+                console.error('Error adding user to course:', insertError);
+                return;
+            }
+
+            window.location.reload();
+        } catch (error) {
+            console.error('Error joining course:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    return (
+        <div>
+            <input
+                type="text"
+                placeholder="Enter class code"
+                value={joinCode}
+                onChange={(e) => setJoinCode(e.target.value)}
+            />
+            <button onClick={joinCourse} disabled={isLoading}>
+                {isLoading ? 'Loading...' : 'Join Class'}
+            </button>
+        </div>
+    );
+}

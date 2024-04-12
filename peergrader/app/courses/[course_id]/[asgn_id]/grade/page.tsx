@@ -5,14 +5,16 @@ import { createClient } from '@/utils/supabase/client';
 export default function FilesPage() {
     const supabase = createClient();
     const searchParams = useSearchParams();
-    const file = searchParams.get('file');
+    const owner = searchParams.get('owner');
+    const file_id = searchParams.get('file_id');
+    const filename = searchParams.get('filename');
 
-    const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(file || '');
+    const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${file_id}` || '');
 
     return (
         <div>
-            <h1>File View</h1>
-            {file ? (
+            <h1>{filename}</h1>
+            {filename ? (
                 <div style={{ height: '90vh', width: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <iframe
                         src={publicUrl}

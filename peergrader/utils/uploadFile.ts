@@ -1,32 +1,32 @@
-import { User} from '@supabase/supabase-js'
 import { supabase } from './supabase/client';
 
 
-
-export async function uploadFile(file: File, user: User) {
-    const uniqueFileName = `${file.name}-${user.id}-${Date.now()}`;
+export async function uploadFile(file: File, uid: string, asgn_id?: string) {
+    // store file with timestamp as name, in users folder
+    const timestamp = Date.now();
+    const file_path = `${uid}/${timestamp}`;
 
     const { data, error } = await supabase.storage
         .from('files')
-        .upload(uniqueFileName, file);
+        .upload(file_path, file);
 
     if (error) {
         console.error('Error uploading file:', error);
-        return { success: false, error: error.message };
+        return { success: false };
     }
 
-    // Write to the account_files table
-    const { data: insertData, error: insertError } = await supabase
-        .from('account_files')
+    // Write to the files table
+    const { data: tableData, error: tabletError } = await supabase
+        .from('files')
         .insert([
-            { file_path: data.path, uid: user.id },
+            { file_id: timestamp, owner: uid, filename: file.name, asgn_id: asgn_id || null },
         ]);
 
-    if (insertError) {
-        console.error("Error writing to account_files: ", insertError);
-        return { success: false, error: insertError.message };
+    if (tabletError) {
+        console.error("Error writing to files: ", tabletError);
+        return { success: false };
     }
 
-    // Return the Key as the fileID
-    return { success: true, fileID: data.path };
+    return { success: true };
 }
+

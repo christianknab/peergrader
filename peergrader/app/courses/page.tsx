@@ -2,6 +2,7 @@
 import ListCourses from '@/components/ListCourses';
 import { useUser } from '@/utils/providers/UserDataProvider';
 import Link from 'next/link';
+import JoinCourse from './JoinCourse';
 
 export default async function CoursesPage() {
     const userContext = useUser();
@@ -29,6 +30,7 @@ export default async function CoursesPage() {
         <div>
             <h1>Courses Page</h1>
             <ListCourses />
+            <JoinCourse />
         </div>
     );
 }

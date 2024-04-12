@@ -1,6 +1,3 @@
-"use client"
-import { createClient } from "@/utils/supabase/client";
-import { redirect } from "next/navigation";
 import ListCourses from "@/components/ListCourses";
 import Link from "next/link";
 
@@ -8,7 +5,7 @@ import Link from "next/link";
 export default async function StudentDashboardPage() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-white">
-      
+
       <header className="w-full py-8">
         <h1 className="text-5xl font-bold text-left pl-10 write-blue">Student Dashboard</h1>
       </header>

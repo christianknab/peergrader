@@ -69,7 +69,6 @@ export default function ListCourses() {
 
     return (
         <div>
-            <h3>Your Courses:</h3>
             <ul>
                 {userCourses.map((courseData) => (
                     <li key={courseData.course_id}>

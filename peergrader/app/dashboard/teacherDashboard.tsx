@@ -1,5 +1,4 @@
 import ListCourses from "@/components/ListCourses";
-import { useUser } from "@/utils/providers/UserDataProvider";
 import Link from "next/link";
 
 export default async function TeacherDashboardPage() {
