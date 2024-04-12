@@ -10,7 +10,7 @@ export default async function LogoutButton() {
         return redirect("/login");
       };
     return (<form action={signOut}>
-        <button className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
+        <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
           Logout
         </button>
       </form>);

@@ -14,7 +14,17 @@ export default async function DashboardPage() {
   if (!user) {
     return redirect("/login");
   }
-  return (<div><LogoutButton /><DashboardClientPage /></div>);
+  return (
+    <div className="w-full h-screen flex flex-col">
+      <div className="w-full flex justify-between items-center p-4">
+        <span className="font-bold text-lg">PeerGrader</span>
+        <LogoutButton />
+      </div>
+      <div className="flex-1 w-full">
+        <DashboardClientPage />
+      </div>
+    </div>
+  );
   // if (!userContext) {
   //   return <div>Loading...</div>;
   // }
