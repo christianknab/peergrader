@@ -1,12 +1,16 @@
 'use client';
 import { useUser } from '@/utils/providers/UserDataProvider';
 import { createClient } from '@/utils/supabase/client';
+import { redirect } from 'next/dist/server/api-utils';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useContext, useState } from 'react';
 
 
 export default function CreateAssignmentPage() {
     const supabase = createClient();
     const userContext = useUser();
+    const { course_id } = useParams();
 
     if (!userContext) {
         return <div>Loading...</div>;
@@ -18,12 +22,14 @@ export default function CreateAssignmentPage() {
     // const { id: courseId } = courseData;
     const [assignmentName, setCourseName] = useState('');
 
-    
+    // const createAssignmentClicked = () => {
+    //     createAssignment();
+    // }
 
     const createAssignment = async () => {
         try {
             const { data, error } = await supabase.from('assignments').insert([
-                { name: assignmentName, owner: currentUser.uid},
+                { name: assignmentName, owner: currentUser.uid, course_id: course_id },
             ]);
 
             if (error) {
@@ -47,7 +53,7 @@ export default function CreateAssignmentPage() {
                     value={assignmentName}
                     onChange={(e) => setCourseName(e.target.value)}
                 />
-                <button onClick={createAssignment}>Create Assignment</button>
+                <Link href={{ pathname: `/courses/${course_id}` }}><button onClick={createAssignment}>Create Assignment</button></Link>
             </div>
         </div>
     );
