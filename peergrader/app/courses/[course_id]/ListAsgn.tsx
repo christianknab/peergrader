@@ -4,10 +4,15 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 
+interface AsgnData {
+    asgn_id: string;
+    name: string;
+}
+
 
 export default function ListAsgn({ course_id }: { course_id: string }) {
     const supabase = createClient();
-    const [asgns, setAsgns] = useState<string[]>([]);
+    const [asgns, setAsgns] = useState<AsgnData[]>([]);
 
     useEffect(() => {
         fetchAsgns(course_id).then(setAsgns);
@@ -16,7 +21,7 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
     async function fetchAsgns(course_id: string) {
         const { data, error } = await supabase
             .from('assignments')
-            .select('asgn_id')
+            .select('asgn_id, name')
             .eq('course_id', course_id);
 
         if (error) {
@@ -24,20 +29,20 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
             return [];
         }
 
-        return data.map((row) => row.asgn_id);
+        return data;
     }
 
 
     return (
         <div>
             <ul>
-                {asgns.map((asgn_id) => (
-                    <li key={asgn_id}>
+                {asgns.map((asgnData) => (
+                    <li key={asgnData.asgn_id}>
                         <Link
                             href={{
-                                pathname: `/courses/${course_id}/${asgn_id}`,
+                                pathname: `/courses/${course_id}/${asgnData.asgn_id}`,
                             }}>
-                            Asignment id: {asgn_id}
+                            {asgnData.name}
                         </Link>
                     </li>
                 ))}
