@@ -3,45 +3,38 @@ import Link from "next/link";
 
 export default async function TeacherDashboardPage() {
     return (
-        <div className="flex-1 w-full flex flex-col gap-20 items-center">
-            <div className="w-full">
-                <div className="py-6 font-bold bg-purple-950 text-center">
-                    Teacher dashboard
-                </div>
-                {/* <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-              <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-    
-                <AuthButton />
-              </div>
-            </nav> */}
-            </div>
+        <div className="flex flex-col min-h-screen w-full bg-white">
+            <header className="w-full py-8">
+                <h1 className="text-5xl font-bold text-left pl-10 write-blue">Teacher Dashboard</h1>
+            </header>
 
-            <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
-
-                <main className="flex-1 flex gap-6">
-                    {/* Left column*/}
-                    <div className="flex-1">
+            <main className="flex-1 w-full">
+                <div className="p-8 flex gap-24">
+                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
+                        <div className="light-blue p-4">
                         <Link
                             href={{
-                                pathname: '/courses',
+                            pathname: '/courses',
                             }}
-                        >{<h2 className="font-bold text-4xl mb-4">Courses</h2>}</Link>
-                        <ListCourses />
-
+                        >{<h2 className="text-black text-xl text-center font-semibold">Courses</h2>}</Link>
+                        </div>
+                        <div className="min-h-[500px] light-white flex-grow p-6">
+                            <ListCourses />
+                        </div>
                     </div>
-                    {/* Right column*/}
-                    <div className="flex-1">
-                        <h2 className="font-bold text-4xl mb-4">Assignments</h2>
 
-
+                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
+                        <div className="light-blue p-4">
+                        <p className="text-xl text-center font-semibold">Assignments</p>
+                        </div>
+                        <div className="light-white flex-grow p-6">
+                        </div>
                     </div>
-                </main>
-            </div>
+                </div>
+            </main>
 
-            <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-                <p>
-                    footer
-                </p>
+            <footer className="w-full font-bold light-grey p-4 bg-white text-center">
+                <p>&copy;2024 PeerGrader</p>
             </footer>
         </div>
     );
