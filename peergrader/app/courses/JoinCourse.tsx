@@ -58,14 +58,17 @@ export default function JoinCourse() {
     }
 
     return (
-        <div>
+        <div className="flex items-center space-x-2">
             <input
                 type="text"
                 placeholder="Enter class code"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
+                className="py-2 px-4 rounded-md"
             />
-            <button onClick={joinCourse} disabled={isLoading}>
+            <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover" 
+            onClick={joinCourse} 
+            disabled={isLoading}>
                 {isLoading ? 'Loading...' : 'Join Class'}
             </button>
         </div>

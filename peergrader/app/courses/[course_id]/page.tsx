@@ -45,16 +45,22 @@ export default function CoursePage() {
         <div>
             {courseData && (
                 <>
-                    <p>Owner: {courseData.owner}</p>
-                    <Link href={{ pathname: `${course_id}/create-assignment` }}>Add assignment
+                    <p className = "mb-4">Owner: {courseData.owner}</p>
+                    <Link href={{ pathname: `${course_id}/create-assignment` }}>
+                        {<button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
+                        Add assignment</button>}
                     </Link>
                 </>
 
             )}
-            <h3>Asignments: </h3>
+            <h3 className = "mt-4">Asignments: </h3>
             <ListAsgn course_id={course_id} />
-            <h3>Students: </h3>
+            <h3 className = "mt-4">Students: </h3>
             <ListStudents course_id={course_id} />
+
+            <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+                <p>&copy;2024 PeerGrader</p>
+            </footer>
         </div>
     );
 }

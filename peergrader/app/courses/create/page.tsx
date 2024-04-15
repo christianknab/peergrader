@@ -39,16 +39,18 @@ export default function CreateCoursePage() {
 
     return (
         <div>
-            <h1>Create Course Page</h1>
-            <div>
+            <h1 className="text-5xl text-center font-bold mb-8 write-blue">Create Course Page</h1>
+            <div className="flex items-center space-x-6">
                 <label htmlFor="courseName">Course Name:</label>
                 <input
                     type="text"
                     placeholder="Enter course name"
                     value={courseName}
                     onChange={(e) => setCourseName(e.target.value)}
+                    className="py-2 px-4 rounded-md"
                 />
-                <button onClick={createCourse} disabled={isLoading}>
+                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover" 
+                onClick={createCourse} disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Create Course'}
                 </button>
             </div>
