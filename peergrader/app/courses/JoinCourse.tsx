@@ -6,14 +6,6 @@ import { useState } from "react";
 export default function JoinCourse() {
     const supabase = createClient();
     const userContext = useUser();
-    if (!userContext) {
-        return <div>Loading...</div>;
-    }
-    const { currentUser } = userContext;
-    if (!currentUser) {
-        return <div>Loading...</div>;
-    }
-
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -41,7 +33,7 @@ export default function JoinCourse() {
             // Add the user to the course
             const { error: insertError } = await supabase.from('account_courses').insert({
                 course_id: data.course_id,
-                uid: (currentUser as AppUser).uid,
+                uid: (userContext?.currentUser as AppUser).uid,
             });
 
             if (insertError) {
@@ -66,9 +58,9 @@ export default function JoinCourse() {
                 onChange={(e) => setJoinCode(e.target.value)}
                 className="py-2 px-4 rounded-md"
             />
-            <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover" 
-            onClick={joinCourse} 
-            disabled={isLoading}>
+            <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                onClick={joinCourse}
+                disabled={isLoading}>
                 {isLoading ? 'Loading...' : 'Join Class'}
             </button>
         </div>

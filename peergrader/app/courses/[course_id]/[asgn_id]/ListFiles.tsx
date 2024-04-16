@@ -19,19 +19,13 @@ interface ListFilesProps {
 export default function ListFiles({ course_id, asgn_id }: ListFilesProps) {
     const supabase = createClient();
     const userContext = useUser();
-    if (!userContext) {
-        return <div>Loading...</div>;
-    }
-    const { currentUser } = userContext;
-    if (!currentUser) {
-        return <div>Loading...</div>;
-    }
-
     const [files, setFiles] = useState<FileData[]>([]);
 
     useEffect(() => {
-        fetchFiles(currentUser.uid, asgn_id).then(setFiles);
-    }, [currentUser.uid]);
+        if (userContext?.currentUser) {
+            fetchFiles(userContext?.currentUser.uid, asgn_id).then(setFiles);
+        }
+    }, [userContext?.currentUser]);
 
 
     async function fetchFiles(userId: string, asgn_id: string) {

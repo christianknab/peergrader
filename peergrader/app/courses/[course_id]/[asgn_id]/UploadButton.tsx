@@ -6,13 +6,6 @@ import { useUser } from '@/utils/providers/UserDataProvider';
 
 export default function UploadButton({ asgn_id }: { asgn_id: string }) {
     const userContext = useUser();
-    if (!userContext) {
-        return <div>Loading...</div>;
-    }
-    const { currentUser } = userContext;
-    if (!currentUser) {
-        return <div>Loading...</div>;
-    }
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -30,11 +23,16 @@ export default function UploadButton({ asgn_id }: { asgn_id: string }) {
             return;
         }
 
+        if (!userContext?.currentUser) {
+            alert('You must be logged in');
+            return;
+        }
+
         setIsLoading(true);
 
         // Call the upload function
         try {
-            const { success } = await uploadFile(selectedFile, currentUser.uid, asgn_id);
+            const { success } = await uploadFile(selectedFile, userContext?.currentUser.uid, asgn_id);
 
             if (!success) {
                 alert('Error uploading file.');

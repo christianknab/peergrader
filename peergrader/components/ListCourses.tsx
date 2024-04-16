@@ -12,26 +12,20 @@ interface CourseData {
 export default function ListCourses() {
     const supabase = createClient();
     const userContext = useUser();
-    if (!userContext) {
-        return <div>Loading...</div>;
-    }
-    const { currentUser } = userContext;
-    if (!currentUser) {
-        return <div>Loading...</div>;
-    }
-
     const [userCourses, setUserCourses] = useState<CourseData[]>([]);
 
     useEffect(() => {
-        fetchUserCourses(currentUser.uid).then(setUserCourses);
-    }, [currentUser.uid]);
+        if (userContext?.currentUser) {
+        fetchUserCourses(userContext.currentUser.uid).then(setUserCourses);
+        }
+    }, [userContext?.currentUser]);
 
     async function fetchUserCourses(userId: string) {
-        if (currentUser?.is_teacher) {
+        if (userContext?.currentUser?.is_teacher) {
             const { data, error } = await supabase
                 .from('courses')
                 .select('course_id, name')
-                .eq('owner', currentUser.uid)
+                .eq('owner', userContext?.currentUser.uid)
 
             if (error) {
                 console.error('Error fetching course names:', error);

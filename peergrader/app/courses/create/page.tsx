@@ -9,21 +9,19 @@ export default function CreateCoursePage() {
     const supabase = createClient();
     const userContext = useUser();
     const router = useRouter()
-    if (!userContext) {
-        return <div>Loading...</div>;
-    }
-    const { currentUser } = userContext;
-    if (!currentUser) {
-        return <div>Loading...</div>;
-    }
     const [courseName, setCourseName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const createCourse = async () => {
+        if (!userContext?.currentUser) {
+            alert('You must be logged in');
+            return;
+        }
+
         try {
             setIsLoading(true);
             const { data, error } = await supabase.from('courses').insert([
-                { name: courseName, owner: currentUser.uid },
+                { name: courseName, owner: userContext?.currentUser.uid },
             ]);
 
             if (error) {
@@ -49,8 +47,8 @@ export default function CreateCoursePage() {
                     onChange={(e) => setCourseName(e.target.value)}
                     className="py-2 px-4 rounded-md"
                 />
-                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover" 
-                onClick={createCourse} disabled={isLoading}>
+                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                    onClick={createCourse} disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Create Course'}
                 </button>
             </div>
