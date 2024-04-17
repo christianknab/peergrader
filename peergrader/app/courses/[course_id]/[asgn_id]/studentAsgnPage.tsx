@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import UploadButton from '@/app/courses/[course_id]/[asgn_id]/UploadButton';
-import ListMyFiles from './ListMyFiles';
+import MySubmission from './MySubmission';
 
 interface AsgnData {
   asgn_id: string;
@@ -51,7 +51,7 @@ export default function StudentAsgnPage() {
         <p>Asgn Name: {asgnData.name}</p>
       )}
       <UploadButton asgn_id={asgn_id} />
-      <ListMyFiles course_id={course_id} asgn_id={asgn_id} />
+      <MySubmission course_id={course_id} asgn_id={asgn_id} />
     </div>
   );
 }
