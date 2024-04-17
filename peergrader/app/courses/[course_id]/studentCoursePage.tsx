@@ -44,7 +44,6 @@ export default function StudentCoursePage() {
         <div>
             {courseData && (
                 <>
-                    <p className="mb-4">Owner: {courseData.owner}</p>
                     <Link href={{ pathname: `${course_id}/create-assignment` }}>
                         {<button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
                             Add assignment</button>}

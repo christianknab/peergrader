@@ -15,9 +15,9 @@ export async function uploadFile(file: File, uid: string, asgn_id?: string) {
         return { success: false };
     }
 
-    // Write to the files table
+    // Write to the submissions table
     const { data: tableData, error: tabletError } = await supabase
-        .from('files')
+        .from('submissions')
         .insert([
             { file_id: timestamp, owner: uid, filename: file.name, asgn_id: asgn_id || null },
         ]);

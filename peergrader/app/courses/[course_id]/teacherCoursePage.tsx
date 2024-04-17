@@ -8,6 +8,7 @@ import ListStudents from './ListStudents';
 
 interface CourseData {
     owner: string;
+    join_code: string;
 }
 
 export default function TeacherCoursePage() {
@@ -21,7 +22,7 @@ export default function TeacherCoursePage() {
             try {
                 const { data, error } = await supabase
                     .from('courses')
-                    .select('owner')
+                    .select('owner, join_code')
                     .eq('course_id', course_id)
                     .single();
 
@@ -44,7 +45,7 @@ export default function TeacherCoursePage() {
         <div>
             {courseData && (
                 <>
-                    <p className="mb-4">Owner: {courseData.owner}</p>
+                    <p className="mb-4">Join Code: {courseData.join_code}</p>
                     <Link href={{ pathname: `${course_id}/create-assignment` }}>
                         {<button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
                             Add assignment</button>}
