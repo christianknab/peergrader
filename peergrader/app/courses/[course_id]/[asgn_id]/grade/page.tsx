@@ -3,9 +3,11 @@
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
+import { useUser } from '@/utils/providers/UserDataProvider';
 
 export default function FilesPage() {
     const supabase = createClient();
+    const userContext = useUser();
     const searchParams = useSearchParams();
     const owner = searchParams.get('owner');
     const file_id = searchParams.get('file_id');
@@ -42,11 +44,17 @@ export default function FilesPage() {
     }, [file_id]);
 
     const handleSaveGrade = async () => {
+        if (!userContext?.currentUser) {
+            alert('You must be logged in');
+            return;
+        }
+        const graded_by = userContext?.currentUser.uid;
+
         setIsLoading(true);
         try {
             const { data, error } = await supabase
                 .from('grades')
-                .upsert({ file_id, grade })
+                .upsert({ file_id, grade, graded_by })
                 .single();
 
             if (error) {
