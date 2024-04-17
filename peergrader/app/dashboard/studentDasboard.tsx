@@ -1,3 +1,4 @@
+import ListAllAsgn from "@/components/ListAllAsgn";
 import ListCourses from "@/components/ListCourses";
 import Link from "next/link";
 
@@ -18,6 +19,7 @@ export default async function StudentDashboardPage() {
               <p className="text-xl text-center font-semibold">Assignments</p>
             </div>
             <div className="light-white flex-grow p-6">
+              <ListAllAsgn />
             </div>
           </div>
 

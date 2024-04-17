@@ -41,7 +41,7 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
                         <Link
                             href={{
                                 pathname: `/courses/${course_id}/${asgnData.asgn_id}`,
-                            }}>
+                            }} className="text-blue-500 hover:text-blue-700 underline">
                             {asgnData.name}
                         </Link>
                     </li>

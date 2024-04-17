@@ -44,7 +44,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div>
       <header>
-        <h1>{courseData?.name || 'Course Page'}</h1>
+        <h1 className="text-5xl font-bold text-center mb-8 write-blue">{courseData?.name || 'Course Page'}</h1>
       </header>
       <main>{children}</main>
     </div>
