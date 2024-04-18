@@ -6,20 +6,19 @@ import { useState } from "react";
 
 export default function JoinCourse() {
     const supabase = createClient();
-    // const userContext = useUser();
-    const { 
-        data: currentUser, 
-        isLoading: isUserLoading, 
-        isError 
-      } = useCurrentUserQuery();
-     
-      if (isUserLoading) {
+    const {
+        data: currentUser,
+        isLoading: isUserLoading,
+        isError
+    } = useCurrentUserQuery();
+
+    if (isUserLoading) {
         return <div>Loading...</div>;
-      }
-     
-      if (isError || !currentUser) {
+    }
+
+    if (isError || !currentUser) {
         return <div>Error</div>;
-      }
+    }
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 

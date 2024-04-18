@@ -1,37 +1,26 @@
 'use client';
-
 import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
 import { createClient } from '@/utils/supabase/client';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { AssignmentForm } from './AssignmentForm';
 
 interface Rubric {
-    names: string[]; // Array of strings representing the names of the rubric categories
-    descriptions: string[]; // Array of objects, each containing a descriptions property which is an array of strings
+    names: string[];
+    descriptions: string[];
 }
-
 
 export default function CreateAssignmentPage() {
     const supabase = createClient();
-    const { 
-        data: currentUser, 
-        isLoading: isUserLoading, 
-        isError 
-      } = useCurrentUserQuery();
-     
-      if (isUserLoading) {
-        return <div>Loading...</div>;
-      }
-     
-      if (isError || !currentUser) {
-        return <div>Error</div>;
-      }
-    const router = useRouter()
-    const { course_id } = useParams();
-    const [assignmentName, setCourseName] = useState('');
+    const {
+        data: currentUser,
+        isLoading: isUserLoading,
+        isError
+    } = useCurrentUserQuery();
+
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [rubric, setRubric] = useState<Rubric[]>([]);
-
 
     useEffect(() => {
         const fetchRubric = async () => {
@@ -40,9 +29,6 @@ export default function CreateAssignmentPage() {
                 if (error) {
                     throw new Error('Error fetching rubric');
                 }
-                console.log(data);
-
-
                 setRubric(data);
             } catch (error) {
                 console.error('Error fetching rubric:', error);
@@ -52,73 +38,39 @@ export default function CreateAssignmentPage() {
         fetchRubric();
     }, []);
 
-
-
-
-    const createAssignment = async () => {
+    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[]) => {
         if (currentUser) {
             try {
                 setIsLoading(true);
-                const { data, error } = await supabase.from('assignments').insert([
-                    { name: assignmentName, owner: currentUser.uid, course_id: course_id },
+                const { error } = await supabase.from('assignments').insert([
+                    { name: assignmentName, owner: currentUser.uid, rubric: editedRubric },
                 ]);
 
                 if (error) {
-                    console.error('Error creating course:', error);
+                    console.error('Error creating assignment:', error);
                 } else {
-                    router.push(`/courses/${course_id}`);
+                    router.push('/courses');
                 }
             } catch (error) {
-                console.error('Error creating course:', error);
+                console.error('Error creating assignment:', error);
             } finally {
                 setIsLoading(false);
             }
         }
     };
 
+    if (isUserLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError || !currentUser) {
+        return <div>Error</div>;
+    }
+
     return (
         <div>
             <h1>Create Assignment Page</h1>
-            <div>
-                <label htmlFor="assignmentName">Assignment Name:</label>
-                <input
-                    type="text"
-                    id="assignmentName"
-                    value={assignmentName}
-                    onChange={(e) => setCourseName(e.target.value)}
-                />
-                {rubric && (
-                    <div style={{ fontFamily: 'Arial, sans-serif' }}>
-                        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Rubric for Assignment ID:</h2>
-                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                            <thead>
-                                <tr>
-                                    <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Criteria</th>
-                                    <th style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'left' }}>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {rubric.map((rubricItem, index) => (
-                                    <tr key={index}>
-                                        <td style={{ border: '1px solid #ddd', padding: '8px', fontWeight: 'bold' }}>{rubricItem.names[0]}</td>
-                                        <td style={{ border: '1px solid #ddd', padding: '8px' }}>
-                                            <ul style={{ listStyleType: 'none', margin: 0, padding: 0 }}>
-                                                {rubricItem.descriptions.map((description, descIndex) => (
-                                                    <li key={descIndex}>{description}</li>
-                                                ))}
-                                            </ul>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-
-                <button onClick={createAssignment} disabled={isLoading}>
-                    {isLoading ? 'Loading...' : 'Create Assignment'}
-                </button>
-            </div>
+            <AssignmentForm onSubmit={handleSubmit} initialRubric={rubric} />
         </div>
     );
 }

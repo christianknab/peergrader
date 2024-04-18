@@ -20,16 +20,16 @@ interface MySubmissionProps {
 export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) {
   const supabase = createClient();
 
-  const { 
-    data: currentUser, 
-    isLoading: isUserLoading, 
-    isError 
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    isError
   } = useCurrentUserQuery();
- 
+
   if (isUserLoading) {
     return <div>Loading...</div>;
   }
- 
+
   if (isError || !currentUser) {
     return <div>Error</div>;
   }
@@ -44,7 +44,7 @@ export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) 
   async function fetchFiles(userId: string, asgn_id: string) {
     const { data, error } = await supabase
       .from('submissions')
-      .select('file_id, filename, created_at')
+      .select('file_id, filename, created_at, final_grade')
       .eq('owner', userId)
       .eq('asgn_id', asgn_id)
       .order('created_at', { ascending: false })
@@ -55,24 +55,12 @@ export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) 
       return [];
     }
 
-    const fileData = await Promise.all(
-      data.map(async (file) => {
-        const { data: gradeData, error: gradeError } = await supabase
-          .from('grades')
-          .select('grade')
-          .eq('file_id', file.file_id)
-          .single();
-
-        if (gradeError) {
-          console.error('Error fetching grade:', gradeError);
-          return { ...file, grade: null };
-        }
-
-        return { ...file, grade: gradeData?.grade ?? null };
-      })
-    );
-
-    return fileData;
+    return data.map((file) => ({
+      file_id: file.file_id,
+      filename: file.filename,
+      created_at: file.created_at,
+      grade: file.final_grade,
+    }));
   }
 
   return (

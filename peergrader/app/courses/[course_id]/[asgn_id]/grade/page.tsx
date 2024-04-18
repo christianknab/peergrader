@@ -3,8 +3,23 @@
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
 
 export default function FilesPage() {
+    const {
+        data: currentUser,
+        isLoading,
+        isError
+    } = useCurrentUserQuery();
+
+    if (isLoading) {
+        return <div>Loading...</div>;
+    }
+
+    if (isError) {
+        return <div>Error</div>;
+    }
+
     const supabase = createClient();
     const searchParams = useSearchParams();
     const owner = searchParams.get('owner');
@@ -13,7 +28,7 @@ export default function FilesPage() {
     const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${file_id}` || '');
     const [grade, setGrade] = useState('');
     const [currentGrade, setCurrentGrade] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchCurrentGrade = async () => {
@@ -42,11 +57,17 @@ export default function FilesPage() {
     }, [file_id]);
 
     const handleSaveGrade = async () => {
-        setIsLoading(true);
+        if (!currentUser) {
+            alert('You must be logged in');
+            return;
+        }
+        const graded_by = currentUser.uid;
+
+        setLoading(true);
         try {
             const { data, error } = await supabase
                 .from('grades')
-                .upsert({ file_id, grade })
+                .upsert({ file_id, grade, graded_by })
                 .single();
 
             if (error) {
@@ -59,7 +80,7 @@ export default function FilesPage() {
         } catch (error) {
             console.error('Error writing to grades table:', error);
         } finally {
-            setIsLoading(false);
+            setLoading(false);
         }
     };
 
@@ -86,8 +107,8 @@ export default function FilesPage() {
                         <p>No grade yet</p>
                     )}
                     <input type="text" id="gradeInput" value={grade} onChange={(e) => setGrade(e.target.value)} />
-                    <button onClick={handleSaveGrade} disabled={isLoading}>
-                        {isLoading ? 'Saving...' : 'Save Grade'}
+                    <button onClick={handleSaveGrade} disabled={loading}>
+                        {loading ? 'Saving...' : 'Save Grade'}
                     </button>
                 </div>
             </div>

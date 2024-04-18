@@ -18,10 +18,6 @@ export default function CoursePage() {
   if (isError || !currentUser) {
     return <div>Error</div>;
   }
-  if (!currentUser) {
-    alert('You must be logged in');
-    return;
-  } if (!currentUser) { }
 
   if (currentUser.is_teacher) { return (<TeacherAsgnPage />); } else { return (<StudentAsgnPage />); }
 }
