@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import UploadButton from '@/app/courses/[course_id]/[asgn_id]/UploadButton';
 import MySubmission from './MySubmission';
+import ListTasks from './ListTasks';
 
 interface AsgnData {
   asgn_id: string;
@@ -52,6 +53,7 @@ export default function StudentAsgnPage() {
       )}
       <UploadButton asgn_id={asgn_id} />
       <MySubmission course_id={course_id} asgn_id={asgn_id} />
+      <ListTasks course_id={course_id} asgn_id={asgn_id} />
     </div>
   );
 }

@@ -7,7 +7,6 @@ import LogoutButton from "./LogoutButton";
 
 export default async function DashboardPage() {
   const supabase = createClient();
-  // const userContext = useUser();
   const { data: { user } } = await supabase.auth.getUser();
 
 
