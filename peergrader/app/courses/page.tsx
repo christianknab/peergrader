@@ -1,14 +1,28 @@
 'use client';
 import ListCourses from '@/components/ListCourses';
-import { useUser } from '@/utils/providers/UserDataProvider';
+
 import Link from 'next/link';
 import JoinCourse from './JoinCourse';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
 
-export default async function CoursesPage() {
-    const userContext = useUser();
+export default function CoursesPage() {
+
+    const { 
+        data: currentUser, 
+        isLoading: isUserLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isUserLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
     
-    if (userContext?.currentUser)
-        if (userContext?.currentUser.is_teacher) {
+    if (currentUser)
+        if (currentUser.is_teacher) {
             return (
                 <div>
                     <h1 className="text-5xl font-bold text-center mb-8 write-blue">Courses Page</h1>

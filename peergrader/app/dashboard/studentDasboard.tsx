@@ -3,7 +3,7 @@ import ListCourses from "@/components/ListCourses";
 import Link from "next/link";
 
 
-export default async function StudentDashboardPage() {
+export default function StudentDashboardPage() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-white">
 

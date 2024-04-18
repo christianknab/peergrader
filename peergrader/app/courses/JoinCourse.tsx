@@ -1,11 +1,25 @@
 "use client";
-import { AppUser, useUser } from "@/utils/providers/UserDataProvider";
+import useCurrentUserQuery from "@/utils/hooks/CurrentUser";
+
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 
 export default function JoinCourse() {
     const supabase = createClient();
-    const userContext = useUser();
+    // const userContext = useUser();
+    const { 
+        data: currentUser, 
+        isLoading: isUserLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isUserLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
@@ -33,7 +47,7 @@ export default function JoinCourse() {
             // Add the user to the course
             const { error: insertError } = await supabase.from('account_courses').insert({
                 course_id: data.course_id,
-                uid: (userContext?.currentUser as AppUser).uid,
+                uid: currentUser?.uid,
             });
 
             if (insertError) {

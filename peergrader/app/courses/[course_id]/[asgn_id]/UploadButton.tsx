@@ -1,11 +1,24 @@
 "use client";
 import { useState } from 'react';
 import { uploadFile } from "@/utils/uploadFile";
-import { useUser } from '@/utils/providers/UserDataProvider';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+
 
 
 export default function UploadButton({ asgn_id }: { asgn_id: string }) {
-    const userContext = useUser();
+    const { 
+        data: currentUser, 
+        isLoading: isUserLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isUserLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -23,7 +36,7 @@ export default function UploadButton({ asgn_id }: { asgn_id: string }) {
             return;
         }
 
-        if (!userContext?.currentUser) {
+        if (!currentUser) {
             alert('You must be logged in');
             return;
         }
@@ -32,7 +45,7 @@ export default function UploadButton({ asgn_id }: { asgn_id: string }) {
 
         // Call the upload function
         try {
-            const { success } = await uploadFile(selectedFile, userContext?.currentUser.uid, asgn_id);
+            const { success } = await uploadFile(selectedFile, currentUser.uid, asgn_id);
 
             if (!success) {
                 alert('Error uploading file.');

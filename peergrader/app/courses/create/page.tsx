@@ -1,5 +1,5 @@
 'use client';
-import { useUser } from '@/utils/providers/UserDataProvider';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -7,13 +7,25 @@ import { useState } from 'react';
 
 export default function CreateCoursePage() {
     const supabase = createClient();
-    const userContext = useUser();
+    const { 
+        data: currentUser, 
+        isLoading: isUserLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isUserLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
     const router = useRouter()
     const [courseName, setCourseName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const createCourse = async () => {
-        if (!userContext?.currentUser) {
+        if (!currentUser) {
             alert('You must be logged in');
             return;
         }
@@ -21,7 +33,7 @@ export default function CreateCoursePage() {
         try {
             setIsLoading(true);
             const { data, error } = await supabase.from('courses').insert([
-                { name: courseName, owner: userContext?.currentUser.uid },
+                { name: courseName, owner: currentUser.uid },
             ]);
 
             if (error) {
