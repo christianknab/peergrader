@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import { useUser } from '@/utils/providers/UserDataProvider';
+
 import Link from 'next/link';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
 
 interface AsgnData {
   asgn_id: string;
@@ -12,17 +13,31 @@ interface AsgnData {
 
 export default function ListAllAsgn() {
   const supabase = createClient();
-  const userContext = useUser();
+
+  const { 
+    data: currentUser, 
+    isLoading, 
+    isError 
+  } = useCurrentUserQuery();
+ 
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+ 
+  if (isError) {
+    return <div>Error</div>;
+  }
+
   const [userAssignments, setUserAssignments] = useState<AsgnData[]>([]);
 
   useEffect(() => {
-    if (userContext?.currentUser) {
-      fetchUserAssignments(userContext.currentUser.uid).then(setUserAssignments);
+    if (currentUser) {
+      fetchUserAssignments(currentUser.uid).then(setUserAssignments);
     }
-  }, [userContext?.currentUser]);
+  }, [currentUser]);
 
   async function fetchUserAssignments(userId: string) {
-    if (userContext?.currentUser?.is_teacher) {
+    if (currentUser?.is_teacher) {
       const { data: courses, error: coursesError } = await supabase
         .from('courses')
         .select('course_id')

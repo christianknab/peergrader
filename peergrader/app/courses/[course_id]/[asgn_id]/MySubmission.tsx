@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
-import { useUser } from '@/utils/providers/UserDataProvider';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+
 
 interface FileData {
   file_id: string;
@@ -18,14 +19,27 @@ interface MySubmissionProps {
 
 export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) {
   const supabase = createClient();
-  const userContext = useUser();
+
+  const { 
+    data: currentUser, 
+    isLoading: isUserLoading, 
+    isError 
+  } = useCurrentUserQuery();
+ 
+  if (isUserLoading) {
+    return <div>Loading...</div>;
+  }
+ 
+  if (isError || !currentUser) {
+    return <div>Error</div>;
+  }
   const [files, setFiles] = useState<FileData[]>([]);
 
   useEffect(() => {
-    if (userContext?.currentUser) {
-      fetchFiles(userContext?.currentUser.uid, asgn_id).then(setFiles);
+    if (currentUser) {
+      fetchFiles(currentUser.uid, asgn_id).then(setFiles);
     }
-  }, [userContext?.currentUser]);
+  }, [currentUser]);
 
   async function fetchFiles(userId: string, asgn_id: string) {
     const { data, error } = await supabase
@@ -72,7 +86,7 @@ export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) 
                 href={{
                   pathname: `/courses/${course_id}/${asgn_id}/view`,
                   query: {
-                    owner: userContext?.currentUser?.uid,
+                    owner: currentUser?.uid,
                     file_id: file.file_id,
                     filename: file.filename,
                   },

@@ -1,8 +1,6 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-import { createClient } from "../utils/supabase/server";
-import { readUser } from "@/utils/readUser";
-import { UserProvider } from "@/utils/providers/UserDataProvider";
+import { ReactQueryClientProvider } from "@/utils/providers/ReactQueryClientProvider";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -19,17 +17,18 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
- 
-  const appUser = user != null ? await readUser(user.id): null;
+  // const supabase = createClient();
+  // const { data: { user } } = await supabase.auth.getUser();
+
+  // const appUser = user != null ? await readUser(user.id) : null;
   return (
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
         <main className="min-h-screen flex flex-col items-center">
-          <UserProvider appUser={appUser}>
-            {children}
-          </UserProvider>
+          
+            <ReactQueryClientProvider>{children}</ReactQueryClientProvider>
+
+          
         </main>
       </body>
     </html>

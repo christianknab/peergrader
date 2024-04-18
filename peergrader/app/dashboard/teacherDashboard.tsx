@@ -2,7 +2,7 @@ import ListAllAsgn from "@/components/ListAllAsgn";
 import ListCourses from "@/components/ListCourses";
 import Link from "next/link";
 
-export default async function TeacherDashboardPage() {
+export default function TeacherDashboardPage() {
     return (
         <div className="flex flex-col min-h-screen w-full bg-white">
             <header className="w-full py-8">

@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
-import { useUser } from '@/utils/providers/UserDataProvider';
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+
 
 interface CourseData {
     course_id: string;
@@ -11,21 +12,34 @@ interface CourseData {
 
 export default function ListCourses() {
     const supabase = createClient();
-    const userContext = useUser();
     const [userCourses, setUserCourses] = useState<CourseData[]>([]);
 
+    const { 
+        data: currentUser, 
+        isLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError) {
+        return <div>Error</div>;
+      }
+
     useEffect(() => {
-        if (userContext?.currentUser) {
-        fetchUserCourses(userContext.currentUser.uid).then(setUserCourses);
+        if (currentUser) {
+        fetchUserCourses(currentUser.uid).then(setUserCourses);
         }
-    }, [userContext?.currentUser]);
+    }, [currentUser]);
 
     async function fetchUserCourses(userId: string) {
-        if (userContext?.currentUser?.is_teacher) {
+        if (currentUser?.is_teacher) {
             const { data, error } = await supabase
                 .from('courses')
                 .select('course_id, name')
-                .eq('owner', userContext?.currentUser.uid)
+                .eq('owner', currentUser.uid)
 
             if (error) {
                 console.error('Error fetching course names:', error);

@@ -1,14 +1,27 @@
 "use client";
-import { useUser } from "@/utils/providers/UserDataProvider";
+
 import TeacherCoursePage from "./teacherCoursePage";
 import StudentCoursePage from "./studentCoursePage";
+import useCurrentUserQuery from "@/utils/hooks/CurrentUser";
 
-export default async function CoursePage() {
-    const userContext = useUser();
-    if (!userContext?.currentUser) {
+export default function CoursePage() {
+    const { 
+        data: currentUser, 
+        isLoading: isUserLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isUserLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
+    if (!currentUser) {
         alert('You must be logged in');
         return;
-    } if (!userContext?.currentUser) { }
+    } if (!currentUser) { }
 
-    if (userContext?.currentUser.is_teacher) { return (<TeacherCoursePage />); } else { return (<StudentCoursePage />); }
+    if (currentUser.is_teacher) { return (<TeacherCoursePage />); } else { return (<StudentCoursePage />); }
 }

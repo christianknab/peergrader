@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import DashboardClientPage from "./dasboardClient";
 import LogoutButton from "./LogoutButton";
 
-// import { useUser } from '../../providers/UserDataProvider';
+
 
 export default async function DashboardPage() {
   const supabase = createClient();

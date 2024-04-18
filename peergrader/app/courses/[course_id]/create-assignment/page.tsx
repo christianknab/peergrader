@@ -1,5 +1,6 @@
 'use client';
-import { useUser } from '@/utils/providers/UserDataProvider';
+
+import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
 import { createClient } from '@/utils/supabase/client';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -12,7 +13,19 @@ interface Rubric {
 
 export default function CreateAssignmentPage() {
     const supabase = createClient();
-    const userContext = useUser();
+    const { 
+        data: currentUser, 
+        isLoading: isUserLoading, 
+        isError 
+      } = useCurrentUserQuery();
+     
+      if (isUserLoading) {
+        return <div>Loading...</div>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
     const router = useRouter()
     const { course_id } = useParams();
     const [assignmentName, setCourseName] = useState('');
@@ -43,11 +56,11 @@ export default function CreateAssignmentPage() {
 
 
     const createAssignment = async () => {
-        if (userContext?.currentUser) {
+        if (currentUser) {
             try {
                 setIsLoading(true);
                 const { data, error } = await supabase.from('assignments').insert([
-                    { name: assignmentName, owner: userContext?.currentUser.uid, course_id: course_id },
+                    { name: assignmentName, owner: currentUser.uid, course_id: course_id },
                 ]);
 
                 if (error) {
