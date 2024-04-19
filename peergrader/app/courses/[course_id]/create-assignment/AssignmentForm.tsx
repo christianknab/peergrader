@@ -1,12 +1,13 @@
 'use client';
 
-import { useParams } from 'next/navigation';
 import { useState } from 'react';
-import styles from './AssignmentForm.module.css';
+import { useEffect } from 'react';
 
 interface Rubric {
     names: string[];
     descriptions: string[];
+    row_points: number[];
+    col_points: number[];
 }
 
 interface AssignmentFormProps {
@@ -17,6 +18,10 @@ interface AssignmentFormProps {
 export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps) => {
     const [assignmentName, setAssignmentName] = useState('');
     const [rubric, setRubric] = useState<Rubric[]>(initialRubric);
+
+    useEffect(() => {
+        setRubric(initialRubric);
+    }, [initialRubric]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -30,16 +35,35 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
         setRubric(newRubric);
     };
 
+    const handleNameChange = (index: number, value: string) => {
+        const newRubric = [...rubric];
+        newRubric[index].names[0] = value;
+        setRubric(newRubric);
+    };
+
+
     const addColumn = (rowIndex: number) => {
         const newRubric = [...rubric];
-        newRubric[rowIndex].names.push('');
+        // newRubric[rowIndex].names.push('');
         newRubric[rowIndex].descriptions.push('');
         setRubric(newRubric);
     };
 
+    const delColumn = (rowIndex: number, colIndex: number) => {
+        const newRubric = [...rubric];
+        newRubric[rowIndex].descriptions.splice(colIndex, 1);
+        setRubric(newRubric);
+    }
+
     const addRow = () => {
-        const newRow = { names: [''], descriptions: [''] };
+        const newRow = { names: [''], descriptions: [''], row_points: [0], col_points: [0] };
         setRubric([...rubric, newRow]);
+    };
+
+    const delRow = (rowIndex: number) => {
+        const newRubric = [...rubric];
+        newRubric.splice(rowIndex, 1);
+        setRubric(newRubric);
     };
 
     return (
@@ -59,38 +83,73 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
 
             <div className="mb-3">
                 <h2>Rubric:</h2>
-                <table className="border border-collapse table-auto w-full">
+                <table className="border-l table-auto max-w-screen-lg">
+                    <thead>
+                        <tr>
+                            <th className="border-b border-t w-1/4">Criteria</th>
+                            <th className="border-b border-t border-l w-3/5">Rating</th>
+                            <th className="border w-1/8">Points</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         {rubric.map((rubricItem, index) => (
-                            <tr key={index} className="border-b">
-                                <td className="border-r p-2">{rubricItem.names[0]}</td>
-                                <td className="border-r p-2">
-                                    <ul className="list-none p-0">
+                            <tr key={index}>
+                                <td className="border-b border-r p-2">
+                                    <textarea
+                                        className="resize-none h-10 rounded-md p-1 w-full h-24"
+                                        value={rubricItem.names[0]}
+                                        onChange={(e) => handleNameChange(index, e.target.value)}
+                                    />
+                                </td>
+                                <td className="border-b p-0">
+                                    <ul className="list-none p-0 w-full">
                                         {rubricItem.descriptions.map((description, descIndex) => (
-                                            <li key={descIndex} className="mb-2 inline-block border-r p-2">
-                                                <textarea
-                                                    className="form-control"
-                                                    value={description}
-                                                    onChange={(e) => handleRubricChange(index, descIndex, e.target.value)}
-                                                />
+                                            <li key={descIndex} className="inline-block p-2 w-full">
+                                                <div className="flex justify-between items-center space-x-2">
+                                                    <input type="number" value={rubricItem.col_points[descIndex]} className="border text-sm rounded-lg p-2.5 w-1/6" placeholder="10" required />
+                                                    <textarea
+                                                        className="resize-none h-20 rounded-md p-1 flex-grow"
+                                                        value={description}
+                                                        onChange={(e) => handleRubricChange(index, descIndex, e.target.value)}
+                                                    />
+                                                    <button className="text-red-500" role="alert" onClick={() => delColumn(index, descIndex)}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clipRule="evenodd" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
                                             </li>
                                         ))}
+                                        <div className="flex justify-center p-2"><button className="text-gray-500" onClick={() => addRow()}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                                            <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clipRule="evenodd" />
+                                        </svg></button></div>
                                     </ul>
                                 </td>
-                                <td className="p-2">
-                                    <button type="button" className="btn-secondary" onClick={() => addColumn(index)}>
-                                        Add Column
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
 
-                <button type="button" className="btn btn-secondary" onClick={addRow}>
-                    Add Row
-                </button>
+                                <td className="border-l border-r border-b p-4">
+                                    <input type="number" className="border text-sm rounded-lg block w-full p-2.5" placeholder="10" value={rubricItem.row_points[0]} required />
+                                </td>
+                                <td><div className="flex justify-center p-2"><button className="text-red-500" role="alert" onClick={() => delRow(index)}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                        <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clipRule="evenodd" />
+                                    </svg>
+                                </button></div></td>
+
+
+
+                            </tr>
+
+                        ))}
+
+                    </tbody>
+
+                </table>
+                <div className="flex justify-center p-2"><button className="text-gray-500" onClick={() => addRow()}><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                    <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clipRule="evenodd" />
+                </svg></button></div>
             </div>
+
+
             <button type="submit" className="btn btn-primary">
                 Create Assignment
             </button>

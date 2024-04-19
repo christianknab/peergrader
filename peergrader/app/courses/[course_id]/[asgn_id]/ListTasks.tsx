@@ -42,7 +42,7 @@ export default function ListTasks({ course_id, asgn_id }: ListTasks) {
             .from('account_courses')
             .select('uid')
             .eq('course_id', course_id)
-            // .not('uid', 'eq', currentUser?.uid);
+            .not('uid', 'eq', currentUser?.uid);
 
         if (accountCoursesError) {
             console.error('Error fetching accounts:', accountCoursesError);
