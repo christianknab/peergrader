@@ -69,7 +69,6 @@ export default function CreateAssignmentPage() {
 
     return (
         <div>
-            <h1>Create Assignment Page</h1>
             <AssignmentForm onSubmit={handleSubmit} initialRubric={rubric} />
         </div>
     );
