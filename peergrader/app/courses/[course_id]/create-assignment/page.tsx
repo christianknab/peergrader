@@ -8,6 +8,8 @@ import { AssignmentForm } from './AssignmentForm';
 interface Rubric {
     names: string[];
     descriptions: string[];
+    row_points: number[];
+    col_points: number[];
 }
 
 export default function CreateAssignmentPage() {
@@ -26,9 +28,11 @@ export default function CreateAssignmentPage() {
         const fetchRubric = async () => {
             try {
                 const { data, error } = await supabase.rpc('get_rubric');
+                console.log(data);
                 if (error) {
                     throw new Error('Error fetching rubric');
                 }
+                
                 setRubric(data);
             } catch (error) {
                 console.error('Error fetching rubric:', error);
