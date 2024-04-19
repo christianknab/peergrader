@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { uploadFile } from "@/utils/uploadFile";
-import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 
 
 

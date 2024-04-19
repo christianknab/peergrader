@@ -5,3 +5,4 @@ export default async function GetUserById(client: SupabaseClient, userId: string
         .select('uid, email, is_teacher').eq('uid', userId).throwOnError().single();
         return data;
 }
+

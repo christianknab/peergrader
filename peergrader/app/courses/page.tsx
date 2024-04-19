@@ -3,7 +3,7 @@ import ListCourses from '@/components/ListCourses';
 
 import Link from 'next/link';
 import JoinCourse from './JoinCourse';
-import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 
 export default function CoursesPage() {
 

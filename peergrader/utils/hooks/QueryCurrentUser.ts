@@ -2,9 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { createClient } from "../supabase/client";
 import GetUserById from "../queries/GetUser";
-
-
-
+import { AppUser } from "../types/user";
 
 function useCurrentUserQuery() {
 
@@ -16,7 +14,7 @@ function useCurrentUserQuery() {
         const { data: { user } } = await client.auth.getUser();
         if (!user) throw "No User";
         return GetUserById(client, user.id).then(
-            (result) => result.data
+            (result) => (result.data as AppUser)
         );
     };
 
@@ -24,9 +22,3 @@ function useCurrentUserQuery() {
 }
 
 export default useCurrentUserQuery;
-
-export type AppUser = {
-    uid: string;
-    email: string;
-    is_teacher: boolean;
-};
