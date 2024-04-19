@@ -72,20 +72,22 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
                 <table className="border border-collapse table-auto max-w-screen-md">
                     <thead>
                         <tr>
-                            <th className="border-b w-1/6">Criteria</th>
-                            <th className="border-b border-l w-1/2">Rating</th>
-                            <th className="border-b border-l w-1/6">Points</th>
-                            <th className="border-b border-l">Actions</th>
+                            <th className="border-b w-1/4">Criteria</th>
+                            <th className="border-b border-l w-2/4">Rating</th>
+                            <th className="border-b border-l w-1/8">Points</th>
+                            <th className="border-b border-l w-1/8">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {rubric.map((rubricItem, index) => (
                             <tr key={index}>
-                                <td className="border-b p-2"><textarea
-                                                        className="resize-none rounded-md p-1 flex-grow"
-                                                        value={rubricItem.names[0]}
-                                                        onChange={(e) => handleNameChange(index, e.target.value)}
-                                                    /></td>
+                                <td className="border-b p-2">
+                                    <textarea
+                                        className="resize-none rounded-md p-1 w-full h-24"
+                                        value={rubricItem.names[0]}
+                                        onChange={(e) => handleNameChange(index, e.target.value)}
+                                    />
+                                </td>
                                 <td className="border-b p-0">
                                     <ul className="list-none p-0 w-full">
                                         {rubricItem.descriptions.map((description, descIndex) => (
@@ -97,32 +99,32 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
                                                         value={description}
                                                         onChange={(e) => handleRubricChange(index, descIndex, e.target.value)}
                                                     />
-
+                                                    <button className="text-red-500" role="alert" onClick={() => addColumn(index)}>
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                                                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </button>
                                                 </div>
                                             </li>
                                         ))}
                                     </ul>
                                 </td>
-                                <td className="border-l border-t p-4 w-1/6">
+                                <td className="border-l border-t p-4">
                                     <form className="max-w-sm mx-auto">
                                         <input type="number" className="border text-sm rounded-lg block w-full p-2.5" placeholder="10" required />
                                     </form>
                                 </td>
-                                <td className="border-l border-t p-4 w-1/12">
+                                <td className="border-l border-t p-4">
                                     <button className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded" onClick={() => addColumn(index)}>
                                         +
                                     </button>
                                 </td>
                             </tr>
                         ))}
-
-
                     </tbody>
                 </table>
-                <button type="button" className="btn btn-secondary" onClick={addRow}>
-                    Add Row
-                </button>
             </div>
+
 
             <button type="submit" className="btn btn-primary">
                 Create Assignment
