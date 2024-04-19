@@ -33,6 +33,13 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
         setRubric(newRubric);
     };
 
+    const handleNameChange = (index: number, value: string) => {
+        const newRubric = [...rubric];
+        newRubric[index].names[0] = value;
+        setRubric(newRubric);
+    };
+
+
     const addColumn = (rowIndex: number) => {
         const newRubric = [...rubric];
         newRubric[rowIndex].names.push('');
@@ -74,7 +81,11 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
                     <tbody>
                         {rubric.map((rubricItem, index) => (
                             <tr key={index}>
-                                <td className="border-b p-2">{rubricItem.names[0]}</td>
+                                <td className="border-b p-2"><textarea
+                                                        className="resize-none rounded-md p-1 flex-grow"
+                                                        value={rubricItem.names[0]}
+                                                        onChange={(e) => handleNameChange(index, e.target.value)}
+                                                    /></td>
                                 <td className="border-b p-0">
                                     <ul className="list-none p-0 w-full">
                                         {rubricItem.descriptions.map((description, descIndex) => (
