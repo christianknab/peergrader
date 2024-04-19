@@ -51,7 +51,7 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
       accounts.map(async (account) => {
         const { data: latestSubmission, error: latestSubmissionError } = await supabase
           .from('submissions')
-          .select('filename, file_id')
+          .select('filename, file_id, final_grade')
           .eq('asgn_id', asgn_id)
           .eq('owner', account.uid)
           .order('created_at', { ascending: false })
@@ -59,27 +59,9 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
           .single();
 
         if (latestSubmissionError) {
-          console.error('Error fetching latest submission:', latestSubmissionError);
           return {
             filename: 'No submission',
             file_id: null,
-            ownerEmail: account.email,
-            owner: account.uid,
-            grade: null,
-          };
-        }
-
-        const { data: gradeData, error: gradeError } = await supabase
-          .from('grades')
-          .select('grade')
-          .eq('file_id', latestSubmission?.file_id)
-          .single();
-
-        if (gradeError) {
-          console.error('Error fetching grade:', gradeError);
-          return {
-            filename: latestSubmission?.filename,
-            file_id: latestSubmission?.file_id,
             ownerEmail: account.email,
             owner: account.uid,
             grade: null,
@@ -91,7 +73,7 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
           file_id: latestSubmission?.file_id,
           ownerEmail: account.email,
           owner: account.uid,
-          grade: gradeData?.grade,
+          grade: latestSubmission?.final_grade,
         };
       })
     );
