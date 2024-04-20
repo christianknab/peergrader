@@ -72,7 +72,7 @@ export default function ForgotPasswordClient() {
                     {...props}
                     style={{
                         width: '50px', // You can use pixels or any other units too, like '96px'
-                        height: '50pxm',
+                        height: '75px',
                         textAlign: 'center',
                         outline: 'none',
                         borderRadius: '1rem',
