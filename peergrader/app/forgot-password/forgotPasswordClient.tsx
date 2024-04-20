@@ -62,15 +62,34 @@ export default function ForgotPasswordClient() {
             <span className="text-sm pb-1">Check {email} for a verification code or a password reset link.</span>
             <div className="flex justify-center">
 
-                <OtpInput
-                    value={otp}
-                    onChange={setOtp}
-                    numInputs={6}
-                    inputStyle={"items-center outline-none rounded-xl border border-gray-200 text-lg focus:bg-gray-50 focus:ring-1 ring-blue-700"}
-                    renderInput={(props) => <input {...props} />}
-                />
+            <OtpInput
+                value={otp}
+                onChange={setOtp}
+                numInputs={6}
+                inputStyle="width: 4rem !important; height: 4rem !important; text-center outline-none rounded-xl border border-gray-200 mx-3 mt-8 mb-8 focus:bg-gray-50 focus:ring-1 ring-blue-700 text-xl"
+                renderInput={(props, index) => (
+                    <input
+                    {...props}
+                    style={{
+                        width: '50px', // You can use pixels or any other units too, like '96px'
+                        height: '50pxm',
+                        textAlign: 'center',
+                        outline: 'none',
+                        borderRadius: '1rem',
+                        border: '1px solid #ccc',
+                        margin: '0 0.75rem', // This sets both right and left margins
+                        marginTop: '2rem',
+                        marginBottom: '3rem',
+                        marginRight: '5px',
+                        marginLeft: '5px',
+                        fontSize: '1.25rem',
+                        backgroundColor: '#fff'
+                    }}
+                    />
+                )}
+            />
             </div>
-            <form className="animate-in flex flex-col justify-center gap-2 text-foreground"><SubmitButton
+            <form className="animate-in flex flex-col justify-center text-foreground"><SubmitButton
                 formAction={validateCode}
                 pendingText="Verifying..."
                 className="bg-btn-background hover:bg-btn-background-hover rounded-full px-3 py-3 text-foreground mb-2"
