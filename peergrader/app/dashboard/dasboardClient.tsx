@@ -19,7 +19,7 @@ export default function DashboardClientPage() {
         return <div>Loading...</div>;
       }
      
-      if (isError) {
+      if (isError ) {
         return <div>Error</div>;
       }
     
