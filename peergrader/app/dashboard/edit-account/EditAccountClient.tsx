@@ -10,20 +10,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function EditAccountClient({ user }: { user: User }) {
-    const supabase = createClient();
+    // const supabase = createClient();
     const router = useRouter();
-    const onMutationSettled = () => {
-        // This function will execute after the mutation is settled (successful or failed)
-        console.log('Mutation has settled');
-        // You can add any additional logic here
-      };
+
     const currentUserMutation = useCurrentUserMutation();//router.push("/dashboard"); 
     const save = async (formData: FormData) => {
         const accountType = formData.get("account_type");
-        console.log("saving")
-        console.log(user.email);
-        await currentUserMutation.mutateAsync({ uid: user.id, email: user.email!, is_teacher: accountType == "teacher" });
-        router.push("/dashboard"); 
+        currentUserMutation.mutate({ uid: user.id, email: user.email!, is_teacher: accountType == "teacher" }, { onSuccess: () => { router.push("/dashboard"); } });
+        // if (!currentUserMutation.error) { router.push("/dashboard"); }
     }
     return (<div><form className="animate-in flex flex-col justify-center gap-2 text-foreground ">
         {/* <SingleLineInputField label="Email" name="email" type="email" placeholder="you@example.com" required />
@@ -36,8 +30,8 @@ export default function EditAccountClient({ user }: { user: User }) {
             <option value="teacher">Teacher</option>
         </select>
         {currentUserMutation.isError && <span>Failed to save. Please try again later.</span>}
-        
-        <button className="bg-btn-background hover:bg-btn-background-hover rounded-full px-3 py-2 text-foreground mb-2" formAction={save}>{currentUserMutation.isPending ? "Saving...": "Save"}</button>
+
+        <button className="bg-btn-background hover:bg-btn-background-hover rounded-full px-3 py-2 text-foreground mb-2" formAction={save}>{currentUserMutation.isPending ? "Saving..." : "Save"}</button>
 
 
 

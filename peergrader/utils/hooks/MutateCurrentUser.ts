@@ -4,15 +4,17 @@ import { createClient } from "../supabase/client";
 import SetUser from "../queries/SetUser";
 import { AppUser } from "../types/user";
 
-function useCurrentUserMutation(onSettledCallback?: () => void) {
+function useCurrentUserMutation() {
     const client = createClient();
     const queryClient = useQueryClient();
 
     const mutation = useMutation<AppUser, unknown, AppUser>({
         mutationFn: async (userData: AppUser) => {
-            const {data, error} = await SetUser(client, userData);
-            if (error) throw new Error(error.message);
-            return data;
+            try {
+                const { data } = await SetUser(client, userData);
+                // if (error) throw error;
+                return data;
+            } catch (error) { throw error; }
         },
         onSuccess: (data) => {
             queryClient.setQueryData(["currentUser"], data as AppUser);
@@ -20,7 +22,7 @@ function useCurrentUserMutation(onSettledCallback?: () => void) {
         onError: (error) => {
             console.error("Error creating user:", error);
         },
-        onSettled: onSettledCallback
+
     });
 
     return mutation;
