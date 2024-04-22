@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
-import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import ListGrades from '@/components/ListGrades';
 
 export default function TeacherGradePage() {
