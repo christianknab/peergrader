@@ -42,7 +42,7 @@
 }
 
 .light-blue {
-  background-color: rgb(190, 196, 211);
+  background-color: rgb(198, 214, 240);
 }
 
 .light-grey {
@@ -54,7 +54,11 @@
 }
 
 .write-blue {
-  color: rgb(52, 62, 91);
+  color: rgb(67, 84, 134);
+}
+
+.write-grey {
+  color: rgb(69, 71, 75);
 }
 
 .bold-large-text {
