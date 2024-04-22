@@ -1,5 +1,5 @@
 'use client';
-import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';

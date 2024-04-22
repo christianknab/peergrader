@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 
 import Link from 'next/link';
-import useCurrentUserQuery from '@/utils/hooks/CurrentUser';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 
 interface AsgnData {
   asgn_id: string;

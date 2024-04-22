@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { SubmitButton } from "../../components/submit-button";
 import GoogleSignInButton from "../../components/google-signin";
 import SingleLineInputField from "@/components/SingleLineInputFeild";
+import SetUser from "@/utils/queries/SetUser";
 
 
 export default function Login({
@@ -13,7 +14,7 @@ export default function Login({
   searchParams: { message: string };
 }) {
 
-
+  const hasError = searchParams?.message != null;
   const signUp = async (formData: FormData) => {
     "use server";
 
@@ -28,23 +29,17 @@ export default function Login({
     });
 
     if (error) {
-      console.log(error);
-      return redirect("/login?message=Could not authenticate user");
+      return redirect("/signup?message=Could not authenticate user");
     }
 
     // If sign up is successful, add the user to the accounts table
     if (data && data.user) {
-      const { data: insertData, error: insertError } = await supabase
-        .from('accounts')
-        .insert([
-          { uid: data.user.id, email: data.user.email },
-        ]);
-
-      if (insertError) {
-        console.log('Error inserting to accounts:', insertError);
+      const { error} = await SetUser(supabase, { uid: data.user.id, email: data.user.email!, is_teacher: false });
+      if (error){
+        //handle error
+        console.log("server error");
       }
     }
-
     return redirect("/dashboard");
   };
 
@@ -57,6 +52,7 @@ export default function Login({
         <form className="animate-in flex flex-col justify-center gap-2 text-foreground ">
           <SingleLineInputField label="Email" name="email" type="email" placeholder="you@example.com" required />
           <SingleLineInputField label="Password" name="password" type="password" placeholder="••••••••" required />
+          {hasError && (<span className="text-sm">Sign Up Failed. Please check your email and password, or login.</span>)}
           <SubmitButton
             formAction={signUp}
             className="bg-btn-background hover:bg-btn-background-hover rounded-full px-3 py-2 text-foreground mb-2"
@@ -65,12 +61,7 @@ export default function Login({
             Sign Up
           </SubmitButton>
 
-          {/* TODO */}
-          {searchParams?.message && (
-            <p className="mt-4 p-4 bg-foreground/10 text-foreground text-center">
-              {searchParams.message}
-            </p>
-          )}
+
 
         </form>
         <div className="flex items-center my-4">
@@ -79,12 +70,12 @@ export default function Login({
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
         <div className="flex justify-center">
-          <GoogleSignInButton nextUrl="/dashboard" text="Sign up with Google"/>
+          <GoogleSignInButton nextUrl="/dashboard" text="Sign up with Google" />
         </div>
       </div>
       <div className="flex justify-center">
         <span>Already have an account? <Link href='/login' className="text-blue-700 hover:underline">Sign in</Link></span>
-        </div>
+      </div>
     </div>
   );
 }

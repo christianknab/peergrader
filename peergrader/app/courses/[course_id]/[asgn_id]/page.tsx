@@ -2,7 +2,7 @@
 
 import TeacherAsgnPage from "./teacherAsgnPage";
 import StudentAsgnPage from "./studentAsgnPage";
-import useCurrentUserQuery from "@/utils/hooks/CurrentUser";
+import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 
 export default function CoursePage() {
   const { 

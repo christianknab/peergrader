@@ -1,6 +1,6 @@
 "use client";
 import TeacherDashboardPage from "./teacherDashboard";
-import useCurrentUserQuery, { } from "@/utils/hooks/CurrentUser";
+import useCurrentUserQuery, { } from "@/utils/hooks/QueryCurrentUser";
 import StudentDashboardPage from "./studentDasboard";
 import { createClient } from "@/utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
@@ -19,7 +19,7 @@ export default function DashboardClientPage() {
         return <div>Loading...</div>;
       }
      
-      if (isError) {
+      if (isError ) {
         return <div>Error</div>;
       }
     

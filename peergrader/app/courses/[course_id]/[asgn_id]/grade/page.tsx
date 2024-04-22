@@ -1,6 +1,6 @@
 "use client";
 
-import useCurrentUserQuery from "@/utils/hooks/CurrentUser";
+import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import StudentGradePage from "./studentGradePage";
 import TeacherGradePage from "./teacherGradePage";
 
