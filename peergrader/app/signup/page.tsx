@@ -34,11 +34,13 @@ export default function Login({
 
     // If sign up is successful, add the user to the accounts table
     if (data && data.user) {
-      const { error} = await SetUser(supabase, { uid: data.user.id, email: data.user.email!, is_teacher: false });
-      if (error){
+      try {
+        await SetUser(supabase, { uid: data.user.id, email: data.user.email!, is_teacher: false });
+      } catch {
         //handle error
         console.log("server error");
       }
+
     }
     return redirect("/dashboard");
   };
