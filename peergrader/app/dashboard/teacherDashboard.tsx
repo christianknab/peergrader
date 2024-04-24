@@ -1,5 +1,4 @@
 import ListAllAsgn from "@/components/ListAllAsgn";
-import ListCourses from "@/components/ListCourses";
 import '@fortawesome/fontawesome-free/css/all.css';
 import Link from "next/link";
 import { useEffect, useState } from 'react';
