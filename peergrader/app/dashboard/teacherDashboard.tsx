@@ -121,7 +121,7 @@ export default function ListCourses() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col flex-grow">
+                    <div className="flex flex-col flex-grow gap-4">
                         <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
                             <div className="light-blue p-5">
                             <p className="text-xl text-left write-blue font-semibold">Assignments</p>
