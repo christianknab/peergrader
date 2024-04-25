@@ -5,6 +5,8 @@ import { createClient } from '@/utils/supabase/client';
 import UploadButton from '@/app/courses/[course_id]/[asgn_id]/UploadButton';
 import MySubmission from './MySubmission';
 import ListTasks from './ListTasks';
+import ListGraded from './ListGraded';
+import GetNextToGrade from './GetNextToGrade';
 
 interface AsgnData {
   asgn_id: string;
@@ -53,7 +55,8 @@ export default function StudentAsgnPage() {
       )}
       <UploadButton asgn_id={asgn_id} />
       <MySubmission course_id={course_id} asgn_id={asgn_id} />
-      <ListTasks course_id={course_id} asgn_id={asgn_id} />
+      <ListGraded course_id={course_id} asgn_id={asgn_id} />
+      <GetNextToGrade course_id={course_id} asgn_id={asgn_id} />
     </div>
   );
 }

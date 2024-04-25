@@ -25,10 +25,7 @@ export default function FilesPage() {
                             overflow: 'hidden',
                         }}
                     >
-                        This browser does not support PDFs. Please download the PDF to view it:{' '}
-                        <a href={publicUrl} target="_blank" rel="noopener noreferrer">
-                            Download PDF
-                        </a>
+                        This browser does not support PDFs.
                     </iframe>
                 </div>
             ) : (

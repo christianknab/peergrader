@@ -96,7 +96,7 @@ export default function StudentGradePage() {
                     // Update the 'final_grades' table with the average grade
                     await supabase
                         .from('submissions')
-                        .upsert({ file_id, final_grade: averageGrade })
+                        .upsert({ file_id, final_grade: averageGrade, num_grades: gradeData.length })
                         .single();
 
                     console.log('Final grade updated successfully');

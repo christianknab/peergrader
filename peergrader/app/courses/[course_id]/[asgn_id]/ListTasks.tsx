@@ -11,12 +11,16 @@ interface SubmissionData {
     grade: string | null;
 }
 
-interface ListTasks {
+interface ListTasksProps {
     course_id: string;
     asgn_id: string;
 }
 
-export default function ListTasks({ course_id, asgn_id }: ListTasks) {
+// make it a button, on pressed should get a new submission to grade (should get a random one that has the lowest amount of grades already) and should direct you to the grade page.
+// should still list people you have already graded with the option to regrade them
+// and should show the number of people you have grades out of how many you need to do
+
+export default function ListTasksProps({ course_id, asgn_id }: ListTasksProps) {
     const {
         data: currentUser,
         isLoading: isUserLoading,
