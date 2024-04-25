@@ -2,11 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import Link from 'next/link';
 import ListAsgn from '@/app/courses/[course_id]/ListAsgn';
 import ListStudents from './ListStudents';
 import { useRouter } from 'next/navigation';
-import ListAllAsgn from "@/components/ListAllAsgn";
 
 interface CourseData {
     owner: string;
