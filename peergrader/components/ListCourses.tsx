@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
@@ -14,23 +14,23 @@ export default function ListCourses() {
     const supabase = createClient();
     const [userCourses, setUserCourses] = useState<CourseData[]>([]);
 
-    const { 
-        data: currentUser, 
-        isLoading, 
-        isError 
-      } = useCurrentUserQuery();
-     
-      if (isLoading) {
+    const {
+        data: currentUser,
+        isLoading,
+        isError
+    } = useCurrentUserQuery();
+
+    if (isLoading) {
         return <div>Loading...</div>;
-      }
-     
-      if (isError) {
+    }
+
+    if (isError) {
         return <div>Error</div>;
-      }
+    }
 
     useEffect(() => {
         if (currentUser) {
-        fetchUserCourses(currentUser.uid).then(setUserCourses);
+            fetchUserCourses(currentUser.uid).then(setUserCourses);
         }
     }, [currentUser]);
 

@@ -18,7 +18,6 @@ export default function TeacherAsgnPage() {
 
   const [asgnData, setAsgnData] = useState<AsgnData | null>(null);
 
-
   useEffect(() => {
     async function fetchAsgnData() {
       try {
