@@ -75,6 +75,16 @@ export default function TeacherCoursePage() {
 
         <div className="flex flex-col rounded-lg overflow-hidden"> 
             <div className="light-blue p-5">
+                <p className="text-xl text-left font-semibold">Join Link</p>
+            </div>
+            <div className="light-grey flex-grow p-6"> 
+            http://localhost:3000/courses?code={courseData.join_code} {/* TODO: change this domain and make copyable */}
+            
+            </div>
+        </div>
+
+        <div className="flex flex-col rounded-lg overflow-hidden"> 
+            <div className="light-blue p-5">
                 <p className="text-xl text-left font-semibold">Students</p>
             </div>
             <div className="light-grey flex-grow p-6"> 
