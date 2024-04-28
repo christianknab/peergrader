@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import UploadButton from '@/app/courses/[course_id]/[asgn_id]/UploadButton';
 import MySubmission from './MySubmission';
-import ListTasks from './ListTasks';
 import ListGraded from './ListGraded';
 import GetNextToGrade from './GetNextToGrade';
 

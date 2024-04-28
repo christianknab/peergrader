@@ -2,25 +2,31 @@
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 
 import { createClient } from "@/utils/supabase/client";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function JoinCourse() {
+    const router = useRouter();
     const supabase = createClient();
-    const {
-        data: currentUser,
-        isLoading: isUserLoading,
-        isError
-    } = useCurrentUserQuery();
-
-    if (isUserLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (isError || !currentUser) {
-        return <div>Error</div>;
-    }
+    const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
+    const searchParams = useSearchParams();
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [autoJoin, setAutoJoin] = useState(false);
+
+    useEffect(() => {
+        const code = searchParams.get("code");
+        if (code) {
+            setJoinCode(code);
+            setAutoJoin(true);
+        }
+    }, [searchParams]);
+
+    useEffect(() => {
+        if (joinCode != '') {
+            joinCourse();
+        }
+    }, [autoJoin]);
 
     async function joinCourse() {
         try {
@@ -38,7 +44,7 @@ export default function JoinCourse() {
                 return;
             }
 
-            if (!data.name) {
+            if (!data) {
                 console.error('No course found with the given course code:', joinCode);
                 return;
             }
@@ -48,13 +54,14 @@ export default function JoinCourse() {
                 course_id: data.course_id,
                 uid: currentUser?.uid,
             });
-
             if (insertError) {
                 console.error('Error adding user to course:', insertError);
                 return;
             }
+            setJoinCode('');
+            const coursePageUrl = `/courses/${data.course_id}`
+            router.push(coursePageUrl);
 
-            window.location.reload();
         } catch (error) {
             console.error('Error joining course:', error);
         } finally {
