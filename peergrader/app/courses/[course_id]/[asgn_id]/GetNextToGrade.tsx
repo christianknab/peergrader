@@ -64,7 +64,8 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
     };
 
     return (
-        <button onClick={handleGetNextToGrade}>
+        <button onClick={handleGetNextToGrade}
+        className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
             Get Next Submission to Grade
         </button>
     );

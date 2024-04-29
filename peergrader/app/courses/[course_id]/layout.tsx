@@ -44,6 +44,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   }, [course_id]);
 
   return (
+    <div className="w-full min-h-screen flex flex-col">
+      <main>{children}</main>
+    </div>
     // <div className="w-full min-h-screen flex flex-col">
     //   <main>
     //     <div className="w-full flex justify-between items-center p-4 light-grey">
@@ -60,7 +63,6 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     //       </div>
     //     </header>
     //     <div className="w-4/5 mx-auto">
-          <main>{children}</main>
     //     </div>
     //   </main>
     //   <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
