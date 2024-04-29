@@ -13,6 +13,7 @@
     "autoprefixer": "10.4.17",
     "canvas": "^2.11.2",
     "geist": "^1.2.1",
+    "lodash.throttle": "^4.1.1",
     "next": "^14.1.4",
     "postcss": "8.4.33",
     "react": "^18.2.0",
@@ -26,6 +27,7 @@
     "typescript": "5.3.3"
   },
   "devDependencies": {
+    "@types/lodash.throttle": "^4.1.9",
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",

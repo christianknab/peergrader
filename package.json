@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "lodash.throttle": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/lodash.throttle": "^4.1.9",
+    "@types/react-resizable": "^3.0.7"
+  }
+}

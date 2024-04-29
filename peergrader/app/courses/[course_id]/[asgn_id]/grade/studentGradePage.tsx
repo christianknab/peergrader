@@ -1,76 +1,80 @@
 'use client';
-
-import { useSearchParams } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
-import { useEffect, useState } from 'react';
-import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from "react-pdf";
-import 'react-pdf/dist/Page/TextLayer.css';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+import { useEffect, useRef, useState } from 'react';
+import PDFView from './PdfView';
+import throttle from 'lodash.throttle';
+import Marker from './AnnotationMarker';
+import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 
 export default function StudentGradePage() {
-  const {
-    data: currentUser,
-    isLoading,
-    isError
-  } = useCurrentUserQuery();
+  const [columnWidth, setColumnWidth] = useState(75);
+  const [annotationMarkers, setAnnotationMarkers] = useState<readonly AnnotationMarkerData[]>([{page: 1, x: 500, y:500}]);
+  const [PDFWidth, setPDFWidth] = useState<number | undefined>(undefined);
+  const pdfContainerRef = useRef<HTMLDivElement>(null);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const setPDFWidthThrottled = throttle(() => {
+      const width = pdfContainerRef.current?.offsetWidth;
+      setPDFWidth(width || undefined);
+    }, 500);
 
-  if (isError) {
-    return <div>Error</div>;
-  }
+    setPDFWidthThrottled();
+    window.addEventListener('resize', setPDFWidthThrottled);
 
-  // const supabase = createClient();
-  // const searchParams = useSearchParams();
-  // const owner = searchParams.get('owner');
-  // const file_id = searchParams.get('file_id');
-  // const filename = searchParams.get('filename');
-  // const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${file_id}` || '');
-  // const [grade, setGrade] = useState('');
-  // const [currentGrade, setCurrentGrade] = useState<string | null>(null);
-  // const [loading, setLoading] = useState(false);
+    return () => {
+      window.removeEventListener('resize', setPDFWidthThrottled);
+    };
+  }, []);
 
 
+  const dragResizeHandler = () => {
 
-  const [numPages, setNumPages] = useState<number>();
+    function onMouseMove(mouseMoveEvent: MouseEvent) {
+      requestAnimationFrame(() => {
+        setColumnWidth((mouseMoveEvent.pageX / document.body.offsetWidth) * 100);
+      });
+    }
+    function onMouseUp() {
+      setPDFWidth(pdfContainerRef.current?.offsetWidth);
+      document.body.removeEventListener("mousemove", onMouseMove);
+     
+    }
 
-
-  function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-    setNumPages(numPages);
-  }
-  // function onDocumentLoadError({error}:{error:OnPageLoadError}){
-  //     console.log("error", error.message);
-  // }
-
-  const onDocumentLoadError = (err: any) => {
-    console.log(`Error loading PDF: ${err.message}`);
+    document.body.addEventListener("mousemove", onMouseMove);
+    document.body.addEventListener("mouseup", onMouseUp, { once: true });
   };
-  const onDocumentClick = (event: React.MouseEvent<HTMLDivElement>, pageIndex:number) => {
+
+  const documentClickHandler = (event: React.MouseEvent<HTMLDivElement>, pageIndex: number):void => {
     const pdfRect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - pdfRect.left;
-    const y = event.clientY - pdfRect.x;
-    console.log(`Clicked at x: ${x}, y: ${y}`);
-  };
+    //normalize with linear interpolation
+    const x = ((event.clientX - pdfRect.left) / (pdfRect.right - pdfRect.left)) * 1000;
+    const y = ((event.clientY - pdfRect.top) / (pdfRect.bottom - pdfRect.top)) * 1000;
+    console.log(`Page ${pageIndex + 1} Clicked at x: ${x}, y: ${y}`);
+  }
 
   return (
-    <div>
-      <Document file="https://vrmbrpvpedkdpziqlbzp.supabase.co/storage/v1/object/public/files/d647afcc-fb40-4859-8e7f-562374d652cc/1714072602171" onLoadSuccess={onDocumentLoadSuccess} onLoadError={onDocumentLoadError} >
-        {Array.from(
-          new Array(numPages),
-          (_, index) => (
-            <div key={`page-container-${index + 1}`} className="mb-4"><Page
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              onClick={(event:React.MouseEvent<HTMLDivElement>) => onDocumentClick(event, index)}
-            /></div>
-          ),
-        )}
-      </Document>
+    <div className='flex w-full'>
+      <div style={{ width: `${columnWidth}%` }}>
+        <div className='overflow-y-auto h-screen' ref={pdfContainerRef}>
+
+          <PDFView fileUrl='https://vrmbrpvpedkdpziqlbzp.supabase.co/storage/v1/object/public/files/699eca23-2746-46e6-b549-437ba53f93ec/Copy%20of%20Homework%202%20CSE120%20Spring%202024.docx.pdf'
+            width={PDFWidth} onPageClick={documentClickHandler}
+            annotationMarkers={annotationMarkers}/>
+        </div>
+      </div>
+      <button type="button" onMouseDown={dragResizeHandler} className="h-screen w-1 bg-gradient-to-r from-gray-100 via-gray-500 to-gray-100 cursor-col-resize">
+      </button>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div className='overflow-y-auto h-screen'>
+          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa
+          quae ab illo inventore veritatis et quasi architecto beatae vitae
+          dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit
+          aspernatur aut odit aut fugit, sed quia consequuntur magni dolores
+          eos qui ratione voluptatem sequi nesciunt.
+
+        </div>
+        
+      </div>
     </div>
   );
 }
@@ -182,3 +186,18 @@ export default function StudentGradePage() {
 //     </div>
 // </div>
 // </div> */}
+
+
+
+
+
+
+// const supabase = createClient();
+// const searchParams = useSearchParams();
+// const owner = searchParams.get('owner');
+// const file_id = searchParams.get('file_id');
+// const filename = searchParams.get('filename');
+// const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${file_id}` || '');
+// const [grade, setGrade] = useState('');
+// const [currentGrade, setCurrentGrade] = useState<string | null>(null);
+// const [loading, setLoading] = useState(false);
