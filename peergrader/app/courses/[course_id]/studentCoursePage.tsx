@@ -11,12 +11,18 @@ interface CourseData {
     name: string;
 }
 
+interface Assignments {
+    asgn_id: string;
+    name: string;
+}
+
 export default function StudentCoursePage() {
     const router = useRouter();
     const supabase = createClient();
     const params = useParams();
     const course_id = params.course_id as string;
     const [courseData, setCourseData] = useState<CourseData | null>(null);
+    const [assignments, setAssignments] = useState<Assignments[]>([]);
 
     useEffect(() => {
         async function fetchCourseData() {
@@ -39,6 +45,25 @@ export default function StudentCoursePage() {
 
         if (course_id) {
             fetchCourseData();
+        }
+    }, [course_id]);
+
+    useEffect(() => {
+        async function fetchAssignments() {
+            const { data, error } = await supabase
+                .from('assignments')
+                .select('asgn_id, name') 
+                .eq('course_id', course_id);
+
+            if (error) {
+                console.error('Error fetching assignments:', error);
+            } else {
+                setAssignments(data);
+            }
+        }
+
+        if (course_id) {
+            fetchAssignments();
         }
     }, [course_id]);
 
@@ -70,8 +95,21 @@ export default function StudentCoursePage() {
                         <div className="light-blue p-5"> 
                             <p className="text-xl text-left font-semibold">Assignments</p>
                         </div>
-                        <div className="light-grey flex-grow p-6"> 
-                            <ListAsgn course_id={course_id} />
+                        <div className="light-grey flex-grow p-6">
+                            {assignments && assignments.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-4">
+                                    {assignments.map((assignment) => (
+                                        <div key={assignment.asgn_id} className="rounded-lg border p-4 bg-white shadow">
+                                            <Link href={`/courses/${course_id}/${assignment.asgn_id}`}
+                                                className="block text-left text-lg font-semibold hover:text-blue-700">
+                                                    {assignment.name}
+                                            </Link>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <p>No assignments to display.</p>
+                            )}
                         </div>
                     </div>
                 </div>
