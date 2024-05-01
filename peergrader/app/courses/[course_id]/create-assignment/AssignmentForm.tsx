@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { SetStateAction, useState } from 'react';
 import { useEffect } from 'react';
-import Datepicker from "react-tailwindcss-datepicker";
+
 
 interface Rubric {
     names: string[];
@@ -12,32 +12,141 @@ interface Rubric {
 }
 
 interface AssignmentFormProps {
-    onSubmit: (assignmentName: string, rubric: Rubric[]) => void;
+    onSubmit: (assignmentName: string, rubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date) => void;
     initialRubric: Rubric[];
+    anonymousGrading: boolean;
+    startDate: Date | null;
+    endDate: Date | null;
+    startTime: string;
+    endTime: string;
 }
 
-export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps) => {
+function addDays(date: string | number | Date, days: number) {
+    var result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+}
+
+export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: AssignmentFormProps) => {
     const [assignmentName, setAssignmentName] = useState('');
-    const [anonymousGrading, setAnonymousGrading] = useState(true);
+    const [anonymous, setAnonymous] = useState(anonymousGrading);
     const [rubric, setRubric] = useState<Rubric[]>(initialRubric);
     const [showSettings, setShowSettings] = useState(false);
+    const [startSubmitDate, setSubmitStartDate] = useState(new Date());
+    const [endSubmitDate, setSubmitEndDate] = useState(addDays(new Date(), 7));
+    const [startGradeDate, setGradeStartDate] = useState(addDays(new Date(), 8));
+    const [endGradeDate, setGradeEndDate] = useState(addDays(new Date(), 10));
+    const [startSubmitTime, setSubmitStartTime] = useState("00:00");
+    const [endSubmitTime, setSubmitEndTime] = useState("23:59");
+    const [startGradeTime, setGradeStartTime] = useState("00:00");
+    const [endGradeTime, setGradeEndTime] = useState("23:59");
+    const [dateError, setDateError] = useState('');
 
-    const [date, setValue] = useState({
-        startDate: null,
-        endDate: null
-    });
+    function validateDates(): boolean {
+        const submitStartDateAdjusted = combineDateTime(startSubmitDate, startSubmitTime);
+        const sumbitEndDateAdjusted = combineDateTime(endSubmitDate, endSubmitTime);
+        const gradeStartDateAdjusted = combineDateTime(startGradeDate, startGradeTime);
+        const gradeEndDateAdjusted = combineDateTime(endGradeDate, endGradeTime);
 
-    const handleValueChange = (newValue: any) => {
-        setValue(newValue);
+        if (gradeStartDateAdjusted < sumbitEndDateAdjusted) {
+            setDateError('Grading must start after submission ends.');
+            return false;
+        }
+        else if (submitStartDateAdjusted > sumbitEndDateAdjusted) {
+            setDateError('Submission end date must come after start date.');
+            return false;
+        }
+        else if (gradeStartDateAdjusted > gradeEndDateAdjusted) {
+            setDateError('Grading end date must come after start date.');
+            return false;
+        }
+        else {
+            setDateError('');
+            return true;
+        }
     }
+
+    function checkDates(): boolean {
+        const submitStartDateAdjusted = combineDateTime(startSubmitDate, startSubmitTime);
+        const sumbitEndDateAdjusted = combineDateTime(endSubmitDate, endSubmitTime);
+        const gradeStartDateAdjusted = combineDateTime(startGradeDate, startGradeTime);
+        const gradeEndDateAdjusted = combineDateTime(endGradeDate, endGradeTime);
+
+        if (gradeStartDateAdjusted < sumbitEndDateAdjusted) {
+            return false;
+        }
+        else if (submitStartDateAdjusted > sumbitEndDateAdjusted) {
+            return false;
+        }
+        else if (gradeStartDateAdjusted > gradeEndDateAdjusted) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    function combineDateTime(dateString: any, timeString: any) {
+        // Combine date and time string into a full ISO string format
+        const dateTimeString = `${dateString.toISOString().split('T')[0]}T${timeString}:00`; // Adding seconds '00' for full format
+        console.log(dateTimeString);
+        return new Date(dateTimeString);
+    }
+
+    const handleSubmitStartDateChange = (event: { target: { value: string | number | Date; }; }) => {
+        setSubmitStartDate(new Date(event.target.value));
+    };
+
+    const handleSubmitEndDateChange = (event: { target: { value: string | number | Date; }; }) => {
+        setSubmitEndDate(new Date(event.target.value));
+    };
+
+    const handleGradeStartDateChange = (event: { target: { value: string; }; }) => {
+        setGradeStartDate(new Date(event.target.value));
+    };
+
+    const handleGradeEndDateChange = (event: { target: { value: string | number | Date; }; }) => {
+        setGradeEndDate(new Date(event.target.value));
+    };
+
+    const handleSubmitStartTimeChange = (event: { target: { value: string; }; }) => {
+        setSubmitStartTime(event.target.value);
+    };
+
+    const handleSubmitEndTimeChange = (event: { target: { value: string }; }) => {
+        setSubmitEndTime(event.target.value);
+    };
+
+    const handleGradeStartTimeChange = (event: { target: { value: string }; }) => {
+        setGradeStartTime(event.target.value);
+    };
+
+    const handleGradeEndTimeChange = (event: { target: { value: string }; }) => {
+        setGradeEndTime(event.target.value);
+    };
+
+    useEffect(() => {
+        validateDates();
+    }, [
+        startSubmitDate,
+        endSubmitDate,
+        startGradeDate,
+        endGradeDate,
+        startSubmitTime,
+        endSubmitTime,
+        startGradeTime,
+        endGradeTime,
+    ]);
+
 
     useEffect(() => {
         setRubric(initialRubric);
+        setAnonymous(anonymousGrading);
     }, [initialRubric]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(assignmentName, rubric);
+        onSubmit(assignmentName, rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime));
     };
 
     const toggleSettings = () => {
@@ -102,7 +211,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
             return item.names.every(name => name !== '') &&
                 item.descriptions.every(description => description !== '') &&
                 item.col_points.every(point => !Number.isNaN(point));
-        }) && assignmentName !== '';
+        }) && assignmentName !== '' && checkDates();
     };
 
     return (
@@ -122,19 +231,74 @@ export const AssignmentForm = ({ onSubmit, initialRubric }: AssignmentFormProps)
             </div>
 
             <label className="inline-flex items-center cursor-pointer">
-                <input type="checkbox" checked={anonymousGrading} className="sr-only peer" onChange={() => setAnonymousGrading(!anonymousGrading)} />
+                <input type="checkbox" checked={anonymousGrading} className="sr-only peer" onChange={() => setAnonymous(!anonymousGrading)} />
                 <span>Anonymous Grading: </span>
                 <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label>
 
-            {/* Will add later */}
-            {/* <Datepicker
-                primaryColor={"blue"}
-                value={date}
-                onChange={handleValueChange}
-                showShortcuts={true}
-            /> */}
+            <div>Accepting Submissions:
 
+                <div className="flex items-center">
+                    <input
+                        type="date"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={startSubmitDate ? startSubmitDate.toISOString().split('T')[0] : ''}
+                        onChange={handleSubmitStartDateChange}
+                    />
+                    <input
+                        type="time"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2"
+                        value={startSubmitTime}
+                        onChange={handleSubmitStartTimeChange}
+                    />
+                    <span className="p-2">to</span>
+                    <input
+                        type="date"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={endSubmitDate ? endSubmitDate.toISOString().split('T')[0] : ''}
+                        onChange={handleSubmitEndDateChange}
+                    />
+                    <input
+                        type="time"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2"
+                        value={endSubmitTime}
+                        onChange={handleSubmitEndTimeChange}
+                    />
+                </div>
+
+
+            </div>
+
+            <div>Grading:
+                <div className="flex items-center">
+                    <input
+                        type="date"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={startGradeDate ? startGradeDate.toISOString().split('T')[0] : ''}
+                        onChange={handleGradeStartDateChange}
+                    />
+                    <input
+                        type="time"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2"
+                        value={startGradeTime}
+                        onChange={handleGradeStartTimeChange}
+                    />
+                    <span className="p-2">to</span>
+                    <input
+                        type="date"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        value={endGradeDate ? endGradeDate.toISOString().split('T')[0] : ''}
+                        onChange={handleGradeEndDateChange}
+                    />
+                    <input
+                        type="time"
+                        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 ml-2"
+                        value={endGradeTime}
+                        onChange={handleGradeEndTimeChange}
+                    />
+                </div>
+            </div>
+            <div className="text-red-500">{dateError}</div>
             <div className="mb-3">
                 <div className="flex justify-between">Rubric:</div>
                 <table className="border-l table-auto max-w-screen-lg">
