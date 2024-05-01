@@ -42,22 +42,47 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     const [endGradeTime, setGradeEndTime] = useState("23:59");
     const [dateError, setDateError] = useState('');
 
-    function validateDates() {
+    function validateDates(): boolean {
+        const submitStartDateAdjusted = combineDateTime(startSubmitDate, startSubmitTime);
         const sumbitEndDateAdjusted = combineDateTime(endSubmitDate, endSubmitTime);
         const gradeStartDateAdjusted = combineDateTime(startGradeDate, startGradeTime);
-        console.log(sumbitEndDateAdjusted, gradeStartDateAdjusted);
+        const gradeEndDateAdjusted = combineDateTime(endGradeDate, endGradeTime);
 
+        if (gradeStartDateAdjusted < sumbitEndDateAdjusted) {
+            setDateError('Grading must start after submission ends.');
+            return false;
+        }
+        else if (submitStartDateAdjusted > sumbitEndDateAdjusted) {
+            setDateError('Submission end date must come after start date.');
+            return false;
+        }
+        else if (gradeStartDateAdjusted > gradeEndDateAdjusted) {
+            setDateError('Grading end date must come after start date.');
+            return false;
+        }
+        else {
+            setDateError('');
+            return true;
+        }
+    }
 
-        if (sumbitEndDateAdjusted && gradeStartDateAdjusted) {
-            // const nextDay = addDays(submitEndDate, 1);
-            // console.log(submitEndDate, gradeStartDate, nextDay);
-            console.log(sumbitEndDateAdjusted, gradeStartDateAdjusted);
-            console.log(gradeStartDateAdjusted < sumbitEndDateAdjusted)
-            if (gradeStartDateAdjusted < sumbitEndDateAdjusted) {
-                setDateError('Grading must start at least one day after submission ends.');
-            } else {
-                setDateError('');
-            }
+    function checkDates(): boolean {
+        const submitStartDateAdjusted = combineDateTime(startSubmitDate, startSubmitTime);
+        const sumbitEndDateAdjusted = combineDateTime(endSubmitDate, endSubmitTime);
+        const gradeStartDateAdjusted = combineDateTime(startGradeDate, startGradeTime);
+        const gradeEndDateAdjusted = combineDateTime(endGradeDate, endGradeTime);
+
+        if (gradeStartDateAdjusted < sumbitEndDateAdjusted) {
+            return false;
+        }
+        else if (submitStartDateAdjusted > sumbitEndDateAdjusted) {
+            return false;
+        }
+        else if (gradeStartDateAdjusted > gradeEndDateAdjusted) {
+            return false;
+        }
+        else {
+            return true;
         }
     }
 
@@ -186,7 +211,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
             return item.names.every(name => name !== '') &&
                 item.descriptions.every(description => description !== '') &&
                 item.col_points.every(point => !Number.isNaN(point));
-        }) && assignmentName !== '';
+        }) && assignmentName !== '' && checkDates();
     };
 
     return (
@@ -241,7 +266,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     />
                 </div>
 
-                <div className="text-red-500">{dateError}</div>
+
             </div>
 
             <div>Grading:
@@ -273,8 +298,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     />
                 </div>
             </div>
-
-
+            <div className="text-red-500">{dateError}</div>
             <div className="mb-3">
                 <div className="flex justify-between">Rubric:</div>
                 <table className="border-l table-auto max-w-screen-lg">
@@ -360,29 +384,3 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
         </form>
     );
 };
-
-
-// import { Datepicker } from 'flowbite-react';
-
-// const DatePicker = ({ initialDate }) => {
-//     console.log(initialDate);
-// const [selectedDate, setSelectedDate] = useState(initialDate || null);
-
-// const handleDateChange = (event) => {
-//     setSelectedDate(event.target.value);
-// };
-
-//     return (
-//         <div className="flex items-center">
-//             <input
-//                 type="date"
-//                 className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-//                 value={selectedDate || ''}
-//                 onChange={handleDateChange}
-//             />
-//             {selectedDate && (
-//                 <span className="ml-4 text-gray-600">Selected date: {selectedDate}</span>
-//             )}
-//         </div>
-//     );
-// };
