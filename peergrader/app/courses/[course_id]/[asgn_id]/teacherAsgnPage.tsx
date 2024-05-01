@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import ListSubmissions from './ListSubmissions';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface AsgnData {
   asgn_id: string;
@@ -75,13 +76,6 @@ export default function TeacherAsgnPage() {
   }, [course_id]);
 
   return (
-    // <div>
-    //   <h1>Asignment Page</h1>
-    //   {asgnData && (
-    //     <p>Asgn Name: {asgnData.name}</p>
-    //   )}
-    //   <ListSubmissions course_id={course_id} asgn_id={asgn_id} />
-    // </div>
     <div className="w-full min-h-screen flex flex-col">
       <main className="flex-1 w-full">
           <div className="w-full flex justify-between items-center p-4 light-grey">
@@ -93,8 +87,15 @@ export default function TeacherAsgnPage() {
               <span className="font-bold text-lg">PeerGrader</span>
           </div>
           <header>
-              <div className="w-4/5 mx-auto bold-blue rounded-lg">
-                  <h2 className="text-4xl font-bold text-left mt-4 mb-8 p-14 text-white">
+              <div className="w-4/5 mx-auto">
+                  <nav className="rounded-md w-1/5 bg-light-grey">
+                      <ul className="flex justify-between px-4 py-2">
+                      <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
+                      <li className="text-black hover:text-blue-800">Students</li>
+                      <li className="text-black hover:text-blue-800">Grades</li>
+                      </ul>
+                  </nav>
+                  <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
                       {courseData?.name || 'Course Page'}
                   </h2>
               </div>
