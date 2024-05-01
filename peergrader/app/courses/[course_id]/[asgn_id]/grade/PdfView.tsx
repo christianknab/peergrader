@@ -8,13 +8,14 @@ import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
 interface PDFViewProps {
+    pointSelectionEnabled: boolean
     annotationMarkers: readonly AnnotationMarkerData[];
     fileUrl: string;
     width: number | undefined;
     onPageClick?: (event: React.MouseEvent<HTMLDivElement>, pageIndex: number) => void;
 }
 
-const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotationMarkers }) => {
+const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotationMarkers , pointSelectionEnabled}) => {
     const [numPages, setNumPages] = useState<number>();
     const [pageLayouts, setPageLayouts] = useState<readonly ({ width: number, height: number } | undefined)[]>([]);
 
@@ -39,7 +40,7 @@ const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotati
                     new Array(numPages),
                     (_, index) => (
                         <div key={`page-container-extern${index + 1}`} className="flex justify-center mb-2 mt-2">
-                            <div key={`page-container-${index + 1}`} className="cursor-pointer relative" >
+                            <div key={`page-container-${index + 1}`} className={`${pointSelectionEnabled && "cursor-pointer"} relative`} >
                                 <Page
                                     key={`page_${index + 1}`}
                                     pageNumber={index + 1}

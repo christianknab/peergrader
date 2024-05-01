@@ -1,5 +1,6 @@
 import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 import React from 'react';
+import { supportedColors } from '@/utils/constants';
 
 const Marker = ({ radius, data, page }: { radius: number, data: AnnotationMarkerData , page:{ width: number, height: number } | undefined}) => {
 
@@ -13,8 +14,7 @@ const Marker = ({ radius, data, page }: { radius: number, data: AnnotationMarker
 
   return (
     <div style={{ width: `${radius * 2}px`, height: `${radius * 2}px`, position: 'absolute', top: `${y}px`, right: `${x}px` }}>
-      <div className="w-full h-full bg-red-500 rounded-full">
-
+      <div className="w-full h-full rounded-full" style={{backgroundColor: supportedColors[data.colorIndex]}}>
       </div>
     </div>
   );

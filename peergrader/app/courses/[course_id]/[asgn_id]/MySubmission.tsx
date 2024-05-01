@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import UploadButton from './UploadButton';
 
 
 interface FileData {
@@ -65,8 +66,8 @@ export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) 
 
   return (
     <div>
-      <h3>Your submission:</h3>
       {files.length > 0 ? (
+        
         <ul>
           {files.map((file) => (
             <li key={file.filename}>
@@ -80,13 +81,18 @@ export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) 
                   },
                 }}
               >
+                <h3>Your submission:</h3>
                 View File: {file.filename} {file.grade !== null ? `-- Grade: ${file.grade}` : '-- Not graded yet'}
               </Link>
             </li>
           ))}
         </ul>
       ) : (
-        <p>No submissions found.</p>
+        <div>
+          <h2>Submit assignment</h2>
+          < UploadButton asgn_id={asgn_id} />
+        </div>
+
       )}
     </div>
   );
