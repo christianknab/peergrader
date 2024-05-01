@@ -25,6 +25,11 @@ export default function CreateAssignmentPage() {
     const [rubric, setRubric] = useState<Rubric[]>([]);
     const params = useParams();
 
+    // Set default start and end dates
+    const defaultStartDate = new Date();
+    const defaultEndDate = new Date();
+    defaultEndDate.setDate(defaultEndDate.getDate() + 7);
+
     useEffect(() => {
         const fetchRubric = async () => {
             try {
@@ -41,7 +46,7 @@ export default function CreateAssignmentPage() {
         fetchRubric();
     }, []);
 
-    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[]) => {
+    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean) => {
         if (currentUser) {
             try {
                 setIsLoading(true);
@@ -50,7 +55,7 @@ export default function CreateAssignmentPage() {
                 const { data: assignmentData, error: assignmentError } = await supabase
                     .from('assignments')
                     .insert([
-                        { name: assignmentName, owner: currentUser.uid, course_id: params.course_id },
+                        { name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading },
                     ]).select();
 
                 if (assignmentError) {
@@ -123,7 +128,15 @@ export default function CreateAssignmentPage() {
 
     return (
         <div>
-            <AssignmentForm onSubmit={handleSubmit} initialRubric={rubric} />
+            <AssignmentForm
+                onSubmit={handleSubmit}
+                initialRubric={rubric}
+                anonymousGrading={true}
+                startDate={defaultStartDate} // Pass the default start date
+                endDate={defaultEndDate} // Pass the default end date
+                startTime="00:00" // Pass a default start time (e.g., 00:00 for midnight)
+                endTime="23:59" // Pass a default end time (e.g., 23:59 for 11:59 PM)
+            />
         </div>
     );
 }
