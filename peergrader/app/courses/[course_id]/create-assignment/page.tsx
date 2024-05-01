@@ -46,7 +46,7 @@ export default function CreateAssignmentPage() {
         fetchRubric();
     }, []);
 
-    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean) => {
+    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date) => {
         if (currentUser) {
             try {
                 setIsLoading(true);
@@ -55,7 +55,7 @@ export default function CreateAssignmentPage() {
                 const { data: assignmentData, error: assignmentError } = await supabase
                     .from('assignments')
                     .insert([
-                        { name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading },
+                        { name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading, start_date_submission: startSubmitDate, end_date_submission: endSubmitDate, start_date_grading: startGradeDate, end_date_grading: endGradeDate },
                     ]).select();
 
                 if (assignmentError) {
@@ -69,7 +69,7 @@ export default function CreateAssignmentPage() {
 
                 // Loop through all rows of the rubric
                 for (const row of editedRubric) {
-                    
+
                     // Upload all the columns and get their respective col ids
                     const { data: colsData, error: rubricColsError } = await supabase
                         .from('rubric_cols')
@@ -95,17 +95,17 @@ export default function CreateAssignmentPage() {
 
                 // Now insert the rubric row with collected column IDs
                 const { error: rubricError } = await supabase
-                .from('rubrics')
-                .insert({
-                    asgn_id: assignmentId,
-                    row_ids: colIds,
-                    names: rowNames,
-                    row_points: rowPoints,
-                });
+                    .from('rubrics')
+                    .insert({
+                        asgn_id: assignmentId,
+                        row_ids: colIds,
+                        names: rowNames,
+                        row_points: rowPoints,
+                    });
 
-            if (rubricError) {
-                throw new Error(`Error inserting rubric: ${rubricError.message}`);
-            }
+                if (rubricError) {
+                    throw new Error(`Error inserting rubric: ${rubricError.message}`);
+                }
 
                 // If everything goes well, redirect the user
                 router.push(`/courses/${params.course_id}`);
@@ -132,10 +132,10 @@ export default function CreateAssignmentPage() {
                 onSubmit={handleSubmit}
                 initialRubric={rubric}
                 anonymousGrading={true}
-                startDate={defaultStartDate} // Pass the default start date
-                endDate={defaultEndDate} // Pass the default end date
-                startTime="00:00" // Pass a default start time (e.g., 00:00 for midnight)
-                endTime="23:59" // Pass a default end time (e.g., 23:59 for 11:59 PM)
+                startDate={defaultStartDate}
+                endDate={defaultEndDate}
+                startTime="00:00"
+                endTime="23:59"
             />
         </div>
     );

@@ -12,7 +12,7 @@ interface Rubric {
 }
 
 interface AssignmentFormProps {
-    onSubmit: (assignmentName: string, rubric: Rubric[], anonymousGrading: boolean) => void;
+    onSubmit: (assignmentName: string, rubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date) => void;
     initialRubric: Rubric[];
     anonymousGrading: boolean;
     startDate: Date | null;
@@ -62,9 +62,6 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     }
 
     function combineDateTime(dateString: any, timeString: any) {
-        if (!dateString || !timeString) {
-            return null;
-        }
         // Combine date and time string into a full ISO string format
         const dateTimeString = `${dateString.toISOString().split('T')[0]}T${timeString}:00`; // Adding seconds '00' for full format
         console.log(dateTimeString);
@@ -124,7 +121,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(assignmentName, rubric, anonymous);
+        onSubmit(assignmentName, rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime));
     };
 
     const toggleSettings = () => {
