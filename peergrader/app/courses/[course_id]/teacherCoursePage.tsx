@@ -13,12 +13,18 @@ interface CourseData {
     name: string;
 }
 
+interface Assignments {
+    asgn_id: string;
+    name: string;
+}
+
 export default function TeacherCoursePage() {
     const router = useRouter();
     const supabase = createClient();
     const params = useParams();
     const course_id = params.course_id as string;
     const [courseData, setCourseData] = useState<CourseData | null>(null);
+    const [assignments, setAssignments] = useState<Assignments[]>([]);
 
     useEffect(() => {
         async function fetchCourseData() {
@@ -41,6 +47,25 @@ export default function TeacherCoursePage() {
 
         if (course_id) {
             fetchCourseData();
+        }
+    }, [course_id]);
+
+    useEffect(() => {
+        async function fetchAssignments() {
+            const { data, error } = await supabase
+                .from('assignments')
+                .select('asgn_id, name') 
+                .eq('course_id', course_id);
+
+            if (error) {
+                console.error('Error fetching assignments:', error);
+            } else {
+                setAssignments(data);
+            }
+        }
+
+        if (course_id) {
+            fetchAssignments();
         }
     }, [course_id]);
 
@@ -103,20 +128,33 @@ export default function TeacherCoursePage() {
                             </div>
                         </div>
 
-                        <div className="flex flex-col w-2/3 gap-6 h-full"> 
+                        <div className="flex flex-col w-2/3 gap-6 h-full">
                             <div className="flex flex-col rounded-lg overflow-hidden flex-grow"> 
                                 <div className="light-blue p-5"> 
-                                    <div className="flex items-center justify-between">  {/* Flex row with gap between elements */}
-                                        <p className="text-xl text-left font-semibold">Assignments</p>  {/* Left-aligned text */}
-                                        <Link href={{ pathname: `${course_id}/create-assignment` }}>  {/* Link containing the button */}
+                                    <div className="flex items-center justify-between"> 
+                                        <p className="text-xl text-left font-semibold">Assignments</p>
+                                        <Link href={{ pathname: `${course_id}/create-assignment` }}> 
                                             <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
                                             Add assignment
                                             </button>
                                         </Link>
                                     </div>
                                 </div>
-                                <div className="light-grey flex-grow p-6"> 
-                                    <ListAsgn course_id={course_id} />
+                                <div className="light-grey flex-grow p-6">
+                                    {assignments && assignments.length > 0 ? (
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {assignments.map((assignment) => (
+                                                <div key={assignment.asgn_id} className="rounded-lg border p-4 bg-white shadow">
+                                                    <Link href={`/courses/${course_id}/${assignment.asgn_id}`}
+                                                        className="block text-left text-lg font-semibold hover:text-blue-700">
+                                                            {assignment.name}
+                                                    </Link>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p>No assignments to display.</p>
+                                    )}
                                 </div>
                             </div>
                         </div>
