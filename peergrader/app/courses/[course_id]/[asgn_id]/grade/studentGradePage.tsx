@@ -8,16 +8,11 @@ import { supportedColors } from '@/utils/constants';
 import MoveIcon from '@/components/icons/Move';
 import DeleteIcon from '@/components/icons/Delete';
 
-interface markerState {
-  moveSelected: boolean;
-}
-
-
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
 
   const [annotationMarkers, setAnnotationMarkers] = useState<readonly AnnotationMarkerData[]>([]);
-  const [annotationMarkersState, setAnnotationMarkersState] = useState<readonly markerState[]>([]);
+  const [annotationMoveIndex, setAnnotationMoveIndex] = useState<number | undefined>();
 
   const [PDFWidth, setPDFWidth] = useState<number | undefined>(undefined);
   const [selectedTab, setSelectedTab] = useState<number>(0);
@@ -42,15 +37,11 @@ export default function StudentGradePage() {
   }, []);
 
   const handleMoveAnnotationMarker = (index: number) => {
-    const newStates: markerState[] = Array.from({ length: annotationMarkersState.length }, () => ({ moveSelected: false }));
-    const prevVal = annotationMarkersState[index].moveSelected;
-    newStates[index].moveSelected = !prevVal;
-    setAnnotationMarkersState(newStates);
+    setAnnotationMoveIndex(index);
   }
   const handleAddCommentPressed = () => {
     setAddPointSelected((val) => !val);
-    const newStates: markerState[] = Array.from({ length: annotationMarkersState.length }, () => ({ moveSelected: false }));
-    setAnnotationMarkersState(newStates);
+    setAnnotationMoveIndex(undefined);
   }
 
   const handleAddAnnotationMarker = (value: AnnotationMarkerData) => {
@@ -59,11 +50,6 @@ export default function StudentGradePage() {
       newStates.push(value);
       return newStates;
     });
-    setAnnotationMarkersState((prevStates) => {
-      const newStates = [...prevStates];
-      newStates.push({ moveSelected: false });
-      return newStates;
-    })
   };
 
   const commentColorClickHandler = (index: number) => {
@@ -180,7 +166,7 @@ export default function StudentGradePage() {
                           </button>
                         </div>
                         <div className='w-6 h-6 p-0.5'>
-                          <button className={`w-full h-full rounded-md ${annotationMarkersState[index].moveSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_)=>handleMoveAnnotationMarker(index)}>
+                          <button className={`w-full h-full rounded-md ${annotationMoveIndex == index ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_)=>handleMoveAnnotationMarker(index)}>
                             <MoveIcon />
                           </button>
                         </div>
