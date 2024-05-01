@@ -5,19 +5,27 @@ import throttle from 'lodash.throttle';
 import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 import Textarea from 'react-expanding-textarea'
 import { supportedColors } from '@/utils/constants';
+import MoveIcon from '@/components/icons/Move';
+import DeleteIcon from '@/components/icons/Delete';
+
+interface markerState {
+  moveSelected: boolean;
+}
 
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
+
   const [annotationMarkers, setAnnotationMarkers] = useState<readonly AnnotationMarkerData[]>([]);
+  const [annotationMarkersState, setAnnotationMarkersState] = useState<readonly markerState[]>([]);
+
   const [PDFWidth, setPDFWidth] = useState<number | undefined>(undefined);
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [addPointSelected, setAddPointSelected] = useState<boolean>(false);
 
+
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const tabs: (readonly string[]) = ["Grade", "Comment"];
-
-
 
   useEffect(() => {
     const setPDFWidthThrottled = throttle(() => {
@@ -33,12 +41,29 @@ export default function StudentGradePage() {
     };
   }, []);
 
+  const handleMoveAnnotationMarker = (index: number) => {
+    const newStates: markerState[] = Array.from({ length: annotationMarkersState.length }, () => ({ moveSelected: false }));
+    const prevVal = annotationMarkersState[index].moveSelected;
+    newStates[index].moveSelected = !prevVal;
+    setAnnotationMarkersState(newStates);
+  }
+  const handleAddCommentPressed = () => {
+    setAddPointSelected((val) => !val);
+    const newStates: markerState[] = Array.from({ length: annotationMarkersState.length }, () => ({ moveSelected: false }));
+    setAnnotationMarkersState(newStates);
+  }
+
   const handleAddAnnotationMarker = (value: AnnotationMarkerData) => {
     setAnnotationMarkers((prevStates) => {
       const newStates = [...prevStates];
       newStates.push(value);
       return newStates;
     });
+    setAnnotationMarkersState((prevStates) => {
+      const newStates = [...prevStates];
+      newStates.push({ moveSelected: false });
+      return newStates;
+    })
   };
 
   const commentColorClickHandler = (index: number) => {
@@ -128,7 +153,7 @@ export default function StudentGradePage() {
             :
             (<div>
               <div className='flex w-full p-2 border-b border-gray-300 justify-end'>
-                <button className={`flex items-center rounded-md  ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => setAddPointSelected((val) => !val)}>
+                <button className={`flex items-center rounded-md ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => handleAddCommentPressed()}>
                   <span className='text-sm pl-4 pr-2'>Add Comment</span>
                   <svg xmlns="http://www.w3.org/2000/svg" className='w-11 h-11 p-2 fill-gray-500' viewBox="0 0 45.4 45.4"><path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z" /></svg>
                 </button>
@@ -149,26 +174,14 @@ export default function StudentGradePage() {
                       placeholder="Add a comment..."
                     />
                       <div className='flex'>
-                        <div className='w-6 h-6 pr-1 pb-1'>
-                          <button className='w-full h-full'>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24"><path d="m256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z" /></svg></button>
+                        <div className="w-6 h-6 p-0.5">
+                          <button className={`w-full h-full p-0.5 rounded-md ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`}>
+                            <DeleteIcon />
+                          </button>
                         </div>
-                        <div className='w-6 h-6 pl-1 pb-1'>
-                          <button className='w-full h-full'>
-                            <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 28.577 28.577" ><path d="M28.19,13.588l-3.806-3.806c-0.494-0.492-1.271-0.519-1.733-0.054
-   c-0.462,0.462-0.439,1.237,0.057,1.732l1.821,1.821h-9.047V4.118l1.82,1.82c0.495,0.493,1.271,0.521,1.732,0.055
-   c0.464-0.464,0.442-1.238-0.055-1.733l-3.805-3.807c-0.495-0.493-1.271-0.517-1.733-0.054c-0.013,0.012-0.021,0.024-0.031,0.038
-   c-0.017,0.013-0.036,0.025-0.054,0.044l-3.75,3.754C9.118,4.724,9.097,5.493,9.562,5.957c0.463,0.461,1.233,0.443,1.723-0.044
-   l1.825-1.828v9.196H4.017l1.83-1.827c0.488-0.489,0.505-1.26,0.041-1.721C5.426,9.268,4.656,9.289,4.169,9.776l-3.756,3.752
-   c-0.017,0.02-0.028,0.037-0.043,0.053c-0.012,0.012-0.026,0.021-0.037,0.03c-0.465,0.467-0.44,1.241,0.057,1.734l3.804,3.807
-   c0.494,0.495,1.271,0.52,1.733,0.056s0.438-1.24-0.056-1.733l-1.82-1.82h9.059v8.803l-1.817-1.82
-   c-0.495-0.494-1.271-0.519-1.734-0.054c-0.463,0.463-0.439,1.237,0.056,1.73l3.805,3.807c0.495,0.496,1.271,0.52,1.734,0.057
-   c0.013-0.013,0.021-0.024,0.029-0.04c0.018-0.013,0.036-0.026,0.056-0.042l3.751-3.756c0.489-0.484,0.51-1.256,0.045-1.721
-   c-0.465-0.46-1.234-0.442-1.722,0.042l-1.829,1.829l0.001-8.835h9.078l-1.83,1.83c-0.488,0.485-0.506,1.255-0.043,1.722
-   c0.462,0.462,1.232,0.443,1.721-0.046l3.754-3.754c0.017-0.016,0.029-0.036,0.045-0.053c0.013-0.012,0.027-0.019,0.039-0.03
-   C28.708,14.859,28.684,14.084,28.19,13.588z"/>
-                            </svg>
+                        <div className='w-6 h-6 p-0.5'>
+                          <button className={`w-full h-full rounded-md ${annotationMarkersState[index].moveSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_)=>handleMoveAnnotationMarker(index)}>
+                            <MoveIcon />
                           </button>
                         </div>
                       </div>
