@@ -130,7 +130,14 @@ export default function StudentCoursePage() {
                 </div>
                 <header>
                     <div className="w-4/5 mx-auto">
-                        <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mt-4 mb-6 p-14 text-white">
+                        <nav className="rounded-md w-1/5 bg-light-grey">
+                            <ul className="flex justify-between px-4 py-2">
+                            <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
+                            <li className="text-black hover:text-blue-800">Students</li>
+                            <li className="text-black hover:text-blue-800">Grades</li>
+                            </ul>
+                        </nav>
+                        <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
                     </div>
@@ -182,13 +189,6 @@ export default function StudentCoursePage() {
                         </div>
                     </div>
                 </div>
-                <nav className="rounded-md w-1/5 bg-light-grey">
-                    <ul className="flex justify-between px-4 py-2">
-                    <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
-                    <li className="text-black hover:text-blue-800">Students</li>
-                    <li className="text-black hover:text-blue-800">Grades</li>
-                    </ul>
-                </nav>
             </main>
             <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
                 <p>&copy;2024 PeerGrader</p>
