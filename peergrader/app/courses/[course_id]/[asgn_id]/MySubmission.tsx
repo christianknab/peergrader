@@ -77,6 +77,8 @@ export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) 
       {submission ? (
         <div>
           <h1>Your submission:</h1>
+          {submission.grade ? 'Grade: '+ submission.grade : 'Not graded yet'}
+
           <h1>{submission.filename}</h1>
           <div style={{ height: '90vh', width: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <iframe
