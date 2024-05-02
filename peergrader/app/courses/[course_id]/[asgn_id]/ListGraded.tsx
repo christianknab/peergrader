@@ -77,7 +77,7 @@ export default function ListGraded({ course_id, asgn_id }: ListGradedProps) {
 
     return (
         <div>
-            <h3>People i have graded</h3>
+            <h3>Peer Grades: {graded.length}\5</h3>
             <ul>
                 {graded.map((submission, index) => (
                     <li key={index}>
