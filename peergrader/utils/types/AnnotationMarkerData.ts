@@ -3,4 +3,5 @@ export type AnnotationMarkerData = {
     x:number;
     y:number;
     colorIndex:number;
+    text:string;
 };

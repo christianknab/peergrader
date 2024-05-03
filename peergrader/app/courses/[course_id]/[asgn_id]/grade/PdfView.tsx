@@ -51,7 +51,7 @@ const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotati
                                     onClick={(event) => onPageClick?.(event, index)}
                                     onRenderSuccess={(page) => { handleSetState(index, { width: page.width, height: page.height }); }}
                                 />
-                                {annotationMarkers.map((value, markIndex) => ((value.page == index + 1 && markIndex != excludeIndex) && <Marker selected={selectedIndex == markIndex} radius={width ? width * 0.02 : 10} data={value} page={pageLayouts[index]} key={`marker${markIndex}`} />))}
+                                {annotationMarkers.map((value, markIndex) => ((value.page == index + 1 && markIndex != excludeIndex) && <Marker selected={selectedIndex == markIndex} index={markIndex} radius={width ? width * 0.02 : 10} data={value} page={pageLayouts[index]} key={`marker${markIndex}`} />))}
 
                             </div>
                         </div>

@@ -7,6 +7,8 @@ import Textarea from 'react-expanding-textarea'
 import { supportedColors } from '@/utils/constants';
 import MoveIcon from '@/components/icons/Move';
 import DeleteIcon from '@/components/icons/Delete';
+import DownArrow from '@/components/icons/DownArrow';
+import UpArrow from '@/components/icons/UpArrow';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
@@ -78,6 +80,31 @@ export default function StudentGradePage() {
     setAnnotationMarkers(newStates);
   }
 
+  const handleMoveDown = (index: number) => {
+    const newStates = [...annotationMarkers];
+    const temp = newStates[index];
+    newStates[index] = newStates[index + 1];
+    newStates[index + 1] = temp;
+    setAnnotationMarkers(newStates);
+    setSelectedIndex((value) => { if (value != undefined) return value + 1 });
+  }
+
+  const handleMoveUp = (index: number) => {
+    const newStates = [...annotationMarkers];
+    const temp = newStates[index];
+    newStates[index] = newStates[index - 1];
+    newStates[index - 1] = temp;
+    setAnnotationMarkers(newStates);
+    setSelectedIndex((value) => { if (value != undefined) return value - 1 });
+
+  }
+
+  const handleCommentChanged = (event:React.ChangeEvent<HTMLTextAreaElement> ,index: number) => {
+    const newStates = [...annotationMarkers];
+    newStates[index].text = event.target.value;
+    setAnnotationMarkers(newStates);
+  }
+
 
   const dragResizeHandler = () => {
 
@@ -105,7 +132,7 @@ export default function StudentGradePage() {
     if (addPointSelected) {
       setAddPointSelected((val) => !val);
 
-      handleAddAnnotationMarker({ page: pageIndex + 1, x: x, y: y, colorIndex: 0 });
+      handleAddAnnotationMarker({ page: pageIndex + 1, x: x, y: y, colorIndex: 0, text: "" });
     } else if (annotationMoveIndex != undefined) {
       setAnnotationMoveIndex(undefined);
       setAnnotationMarkers((prevStates) => {
@@ -179,8 +206,8 @@ export default function StudentGradePage() {
             width={PDFWidth} onPageClick={documentClickHandler}
             annotationMarkers={selectedTab == 1 ? annotationMarkers : []}
             pointSelectionEnabled={addPointSelected || annotationMoveIndex != undefined}
-            excludeIndex={annotationMoveIndex} 
-            selectedIndex={selectedIndex}/>
+            excludeIndex={annotationMoveIndex}
+            selectedIndex={selectedIndex} />
         </div>
       </div>
       <button type="button" onMouseDown={dragResizeHandler} className="h-screen w-1 bg-gradient-to-r from-gray-100 via-gray-500 to-gray-100 cursor-col-resize">
@@ -227,17 +254,20 @@ export default function StudentGradePage() {
                       {/* Circle */}
                       <div className='w-14 h-14 p-3'>
                         <button className="w-full h-full rounded-full aspect-square" style={{ backgroundColor: supportedColors[value.colorIndex] }} onClick={(_) => commentColorClickHandler(index)}>
-                        
+                          {index + 1}
                         </button>
                       </div>
                       {/* Text */}
-                      <div className='w-full'><Textarea
-                        className="w-full pt-2 pr-2 text-gray-900 bg-gray-50 outline-none focus:ring-0 focus:shadow-none resize-none"
-                        id="my-textarea"
-                        maxLength={2000}
-                        placeholder="Add a comment..."
-                      // onFocus={(_)=>setSelectedIndex(index)}
-                      />
+                      <div className='w-full'>
+                        <Textarea
+                          className="w-full pt-2 pr-2 text-gray-900 bg-gray-50 outline-none focus:ring-0 focus:shadow-none resize-none"
+                          id="my-textarea"
+                          maxLength={2000}
+                          placeholder="Add a comment..."
+                          value={annotationMarkers[index].text}
+                          onChange={(event)=>handleCommentChanged(event, index)}
+                        // onFocus={(_)=>setSelectedIndex(index)}
+                        />
                         <div className='flex'>
                           <div className="w-6 h-6 p-0.5">
                             <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(_) => setDeletePendingIndex(index)}>
@@ -249,6 +279,16 @@ export default function StudentGradePage() {
                               <MoveIcon />
                             </button>
                           </div>
+                          {(index != annotationMarkers.length - 1) && (<div className='w-6 h-6 p-0.5'>
+                            <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(e) => {e.stopPropagation(); handleMoveDown(index);}}>
+                              <DownArrow />
+                            </button>
+                          </div>)}
+                          {(index != 0) && (<div className='w-6 h-6 p-0.5'>
+                            <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(e) => {e.stopPropagation(); handleMoveUp(index);}}>
+                              <UpArrow />
+                            </button>
+                          </div>)}
                         </div>
                       </div>
                     </div>);
