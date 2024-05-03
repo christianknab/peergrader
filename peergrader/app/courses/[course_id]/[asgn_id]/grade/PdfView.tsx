@@ -7,6 +7,7 @@ import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+
 interface PDFViewProps {
     pointSelectionEnabled: boolean
     annotationMarkers: readonly AnnotationMarkerData[];

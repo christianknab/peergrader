@@ -1,4 +1,4 @@
-import ListAllAsgn from "@/components/ListAllAsgn";
+import ListAllAsgn from "@/app/dashboard/studentListAllAsgn";
 import ListCourses from "@/components/ListCourses";
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
+import StudentListAllAsgn from "@/app/dashboard/studentListAllAsgn";
 
 
 export default function StudentDashboardPage() {
@@ -95,7 +96,7 @@ export default function StudentDashboardPage() {
               <p className="text-xl text-left font-semibold write-grey">Assignments</p>
             </div>
             <div className="light-white flex-grow p-6">
-              <ListAllAsgn />
+              <StudentListAllAsgn />
             </div>
           </div>
 
