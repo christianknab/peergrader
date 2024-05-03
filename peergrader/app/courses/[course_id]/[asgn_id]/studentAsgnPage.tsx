@@ -104,10 +104,9 @@ export default function StudentAsgnPage() {
           </div>
         </header>
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
-          <h1 className="text-3xl font-bold text-center mb-6">Assignment Page</h1>
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment Name: {asgnData.name}</h2>
+              <h2 className="text-xl font-semibold">Assignment: {asgnData.name}</h2>
             </div>
           )}
           <div className="flex space-x-4">
