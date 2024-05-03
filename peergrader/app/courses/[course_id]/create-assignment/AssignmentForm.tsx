@@ -1,15 +1,8 @@
 'use client';
 
-import { SetStateAction, useState } from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
-
-
-interface Rubric {
-    names: string[];
-    descriptions: string[];
-    row_points: number[];
-    col_points: number[];
-}
+import {Rubric} from './page';
 
 interface AssignmentFormProps {
     onSubmit: (assignmentName: string, rubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date) => void;

@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AssignmentForm } from './AssignmentForm';
 
-interface Rubric {
+export interface Rubric {
     names: string[];
     descriptions: string[];
     row_points: number[];

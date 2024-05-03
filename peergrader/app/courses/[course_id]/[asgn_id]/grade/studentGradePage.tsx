@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import PDFView from './PdfView';
+import { StudentRubric } from './studentRubricView';
 import throttle from 'lodash.throttle';
 import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 import Textarea from 'react-expanding-textarea'
@@ -134,7 +135,7 @@ export default function StudentGradePage() {
           {/* Tabs */}
           {selectedTab == 0 ?
             (<div>
-              Grade
+              <StudentRubric />
             </div>)
             :
             (<div>
@@ -166,7 +167,7 @@ export default function StudentGradePage() {
                           </button>
                         </div>
                         <div className='w-6 h-6 p-0.5'>
-                          <button className={`w-full h-full rounded-md ${annotationMoveIndex == index ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_)=>handleMoveAnnotationMarker(index)}>
+                          <button className={`w-full h-full rounded-md ${annotationMoveIndex == index ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => handleMoveAnnotationMarker(index)}>
                             <MoveIcon />
                           </button>
                         </div>
