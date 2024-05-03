@@ -1,4 +1,4 @@
-import ListAllAsgn from "@/components/ListAllAsgn";
+import ListAllAsgn from "@/app/dashboard/studentListAllAsgn";
 import '@fortawesome/fontawesome-free/css/all.css';
 import Link from "next/link";
 import { useEffect, useState } from 'react';
@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { useRouter } from 'next/navigation';
+import TeacherListAllAsgn from "./teacherListAllAsgn";
 
 interface CourseData {
     course_id: string;
@@ -126,7 +127,7 @@ export default function ListCourses() {
                             <p className="text-xl text-left write-blue font-semibold">Assignments</p>
                             </div>
                             <div className="light-white flex-grow p-6">
-                            <ListAllAsgn />
+                            <TeacherListAllAsgn />
                             </div>
                         </div>
                         <div className="flex flex-col flex-grow rounded-lg overflow-hidden">

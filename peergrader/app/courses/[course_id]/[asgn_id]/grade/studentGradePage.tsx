@@ -8,20 +8,38 @@ import Textarea from 'react-expanding-textarea'
 import { supportedColors } from '@/utils/constants';
 import MoveIcon from '@/components/icons/Move';
 import DeleteIcon from '@/components/icons/Delete';
+import DownArrow from '@/components/icons/DownArrow';
+import UpArrow from '@/components/icons/UpArrow';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
 
   const [annotationMarkers, setAnnotationMarkers] = useState<readonly AnnotationMarkerData[]>([]);
-  const [annotationMoveIndex, setAnnotationMoveIndex] = useState<number | undefined>();
-
+  const [annotationMoveIndex, setAnnotationMoveIndex] = useState<number | undefined>(undefined);
+  const [deletePendingIndex, setDeletePendingIndex] = useState<number | undefined>(undefined);
+  const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
   const [PDFWidth, setPDFWidth] = useState<number | undefined>(undefined);
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [addPointSelected, setAddPointSelected] = useState<boolean>(false);
 
 
   const pdfContainerRef = useRef<HTMLDivElement>(null);
+  const commentSectionRef = useRef<HTMLDivElement>(null);
   const tabs: (readonly string[]) = ["Grade", "Comment"];
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (commentSectionRef.current && !commentSectionRef.current.contains(event.target as Node)) {
+        setSelectedIndex(undefined);
+      }
+    }
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [commentSectionRef]);
 
   useEffect(() => {
     const setPDFWidthThrottled = throttle(() => {
@@ -38,7 +56,7 @@ export default function StudentGradePage() {
   }, []);
 
   const handleMoveAnnotationMarker = (index: number) => {
-    setAnnotationMoveIndex(index);
+    if (annotationMoveIndex != index) { setAnnotationMoveIndex(index); } else { setAnnotationMoveIndex(undefined); }
   }
   const handleAddCommentPressed = () => {
     setAddPointSelected((val) => !val);
@@ -63,6 +81,31 @@ export default function StudentGradePage() {
     setAnnotationMarkers(newStates);
   }
 
+  const handleMoveDown = (index: number) => {
+    const newStates = [...annotationMarkers];
+    const temp = newStates[index];
+    newStates[index] = newStates[index + 1];
+    newStates[index + 1] = temp;
+    setAnnotationMarkers(newStates);
+    setSelectedIndex((value) => { if (value != undefined) return value + 1 });
+  }
+
+  const handleMoveUp = (index: number) => {
+    const newStates = [...annotationMarkers];
+    const temp = newStates[index];
+    newStates[index] = newStates[index - 1];
+    newStates[index - 1] = temp;
+    setAnnotationMarkers(newStates);
+    setSelectedIndex((value) => { if (value != undefined) return value - 1 });
+
+  }
+
+  const handleCommentChanged = (event:React.ChangeEvent<HTMLTextAreaElement> ,index: number) => {
+    const newStates = [...annotationMarkers];
+    newStates[index].text = event.target.value;
+    setAnnotationMarkers(newStates);
+  }
+
 
   const dragResizeHandler = () => {
 
@@ -82,14 +125,27 @@ export default function StudentGradePage() {
   };
 
   const documentClickHandler = (event: React.MouseEvent<HTMLDivElement>, pageIndex: number): void => {
+    const pdfRect = event.currentTarget.getBoundingClientRect();
+    //normalize with linear interpolation
+    const x = ((event.clientX - pdfRect.left) / (pdfRect.right - pdfRect.left)) * 1000;
+    const y = ((event.clientY - pdfRect.top) / (pdfRect.bottom - pdfRect.top)) * 1000;
+
     if (addPointSelected) {
       setAddPointSelected((val) => !val);
-      const pdfRect = event.currentTarget.getBoundingClientRect();
-      //normalize with linear interpolation
-      const x = ((event.clientX - pdfRect.left) / (pdfRect.right - pdfRect.left)) * 1000;
-      const y = ((event.clientY - pdfRect.top) / (pdfRect.bottom - pdfRect.top)) * 1000;
-      handleAddAnnotationMarker({ page: pageIndex + 1, x: x, y: y, colorIndex: 0 });
+
+      handleAddAnnotationMarker({ page: pageIndex + 1, x: x, y: y, colorIndex: 0, text: "" });
+    } else if (annotationMoveIndex != undefined) {
+      setAnnotationMoveIndex(undefined);
+      setAnnotationMarkers((prevStates) => {
+        const newStates = [...prevStates];
+        const obj = newStates[annotationMoveIndex];
+        obj.page = pageIndex + 1;
+        obj.x = x;
+        obj.y = y;
+        return newStates;
+      });
     }
+
   }
 
   return (
@@ -99,14 +155,60 @@ export default function StudentGradePage() {
           <span className='text-white'>Click the document to add a point.</span>
         </div>
       </div>}
+      {annotationMoveIndex != undefined &&
+        <div style={{ position: 'fixed', left: `${columnWidth / 2}%`, transform: 'translate(-50%, 0)', top: 13, zIndex: 50 }}>
+          <div className='bg-gray-800 rounded-full py-1 px-4'>
+            <span className='text-white'>Click the document to set new position.</span>
+          </div>
+        </div>}
+      {deletePendingIndex != undefined &&
+        <div>
+          <div className='fixed w-screen h-screen opacity-50 bg-black z-40'>
+          </div>
+          <div className='fixed z-50 flex items-center inset-0 justify-center'>
+            <div className="max-w-sm h-auto bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="px-6 py-4">
+                <h2 className="text-xl font-bold mb-2">Confirm Delete</h2>
+                <p className="text-gray-700 text-base">
+                  Are you sure you would like to delete this comment? This cannot be undone.
+                </p>
+              </div>
+              <div className="px-6 py-4 bg-gray-100 flex justify-end">
+                <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mr-2" onClick={(_) => setDeletePendingIndex(undefined)}>
+                  No
+                </button>
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={(_) => {
+                    setAnnotationMarkers((prevStates) => {
+                      const newStates = [...prevStates];
+                      newStates.splice(deletePendingIndex, 1);
+                      return newStates;
+                    });
+                    setDeletePendingIndex(undefined);
+                  }}>
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+          {/* <div className='fixed w-80 h-48 inset-0 rounded-lg m-auto bg-white z-50'>
+            <div className='text-xl px-7 pt-5'>
+              Are you sure you want to delete this comment?
+            </div>
+            <button className='bg-blue-600 rounded-lg px-2'>
+              Yes
+            </button>
+          </div> */}
+        </div>}
+
       <div style={{ width: `${columnWidth}%` }}>
         <div className='overflow-y-auto h-screen' ref={pdfContainerRef}>
-
-
           <PDFView fileUrl='https://vrmbrpvpedkdpziqlbzp.supabase.co/storage/v1/object/public/files/699eca23-2746-46e6-b549-437ba53f93ec/Copy%20of%20Homework%202%20CSE120%20Spring%202024.docx.pdf'
             width={PDFWidth} onPageClick={documentClickHandler}
             annotationMarkers={selectedTab == 1 ? annotationMarkers : []}
-            pointSelectionEnabled={addPointSelected} />
+            pointSelectionEnabled={addPointSelected || annotationMoveIndex != undefined}
+            excludeIndex={annotationMoveIndex}
+            selectedIndex={selectedIndex} />
         </div>
       </div>
       <button type="button" onMouseDown={dragResizeHandler} className="h-screen w-1 bg-gradient-to-r from-gray-100 via-gray-500 to-gray-100 cursor-col-resize">
@@ -139,42 +241,59 @@ export default function StudentGradePage() {
             </div>)
             :
             (<div>
-              <div className='flex w-full p-2 border-b border-gray-300 justify-end'>
+              <div className={`flex w-full p-2 border-b-2 justify-end ${(selectedIndex == 0) ? 'border-blue-300' : 'border-gray-100'}`}>
                 <button className={`flex items-center rounded-md ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => handleAddCommentPressed()}>
                   <span className='text-sm pl-4 pr-2'>Add Comment</span>
                   <svg xmlns="http://www.w3.org/2000/svg" className='w-11 h-11 p-2 fill-gray-500' viewBox="0 0 45.4 45.4"><path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z" /></svg>
                 </button>
-              </div>
-              {annotationMarkers.map((value, index) => {
-                return (
-                  <div className='flex w-full border-b border-gray-300 items-start' key={`comment${index}`}>
-                    {/* Circle */}
-                    <div className='w-14 h-14 p-3'>
-                      <button className="w-full h-full rounded-full aspect-square" style={{ backgroundColor: supportedColors[value.colorIndex] }} onClick={(_) => commentColorClickHandler(index)}>
-                      </button>
-                    </div>
-                    {/* Text */}
-                    <div><Textarea
-                      className="w-full pt-2 pr-4 text-gray-900 bg-gray-50 outline-none focus:ring-0 focus:shadow-none resize-none"
-                      id="my-textarea"
-                      maxLength={2000}
-                      placeholder="Add a comment..."
-                    />
-                      <div className='flex'>
-                        <div className="w-6 h-6 p-0.5">
-                          <button className={`w-full h-full p-0.5 rounded-md ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`}>
-                            <DeleteIcon />
-                          </button>
-                        </div>
-                        <div className='w-6 h-6 p-0.5'>
-                          <button className={`w-full h-full rounded-md ${annotationMoveIndex == index ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => handleMoveAnnotationMarker(index)}>
-                            <MoveIcon />
-                          </button>
+              </div><div ref={commentSectionRef}>
+                {annotationMarkers.map((value, index) => {
+                  return (
+                    <div className={`flex w-full border-b-2  items-start ${(selectedIndex == index || selectedIndex == index + 1) ? 'border-blue-300' : 'border-gray-100'}`}
+                      key={`comment${index}`}
+                      onClick={(_) => setSelectedIndex(index)}>
+                      {/* Circle */}
+                      <div className='w-14 h-14 p-3'>
+                        <button className="w-full h-full rounded-full aspect-square" style={{ backgroundColor: supportedColors[value.colorIndex] }} onClick={(_) => commentColorClickHandler(index)}>
+                          {index + 1}
+                        </button>
+                      </div>
+                      {/* Text */}
+                      <div className='w-full'>
+                        <Textarea
+                          className="w-full pt-2 pr-2 text-gray-900 bg-gray-50 outline-none focus:ring-0 focus:shadow-none resize-none"
+                          id="my-textarea"
+                          maxLength={2000}
+                          placeholder="Add a comment..."
+                          value={annotationMarkers[index].text}
+                          onChange={(event)=>handleCommentChanged(event, index)}
+                        // onFocus={(_)=>setSelectedIndex(index)}
+                        />
+                        <div className='flex'>
+                          <div className="w-6 h-6 p-0.5">
+                            <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(_) => setDeletePendingIndex(index)}>
+                              <DeleteIcon />
+                            </button>
+                          </div>
+                          <div className='w-6 h-6 p-0.5'>
+                            <button className={`w-full h-full rounded-md ${annotationMoveIndex == index ? "bg-gray-400" : "bg-gray-50"}`} onClick={(_) => handleMoveAnnotationMarker(index)}>
+                              <MoveIcon />
+                            </button>
+                          </div>
+                          {(index != annotationMarkers.length - 1) && (<div className='w-6 h-6 p-0.5'>
+                            <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(e) => {e.stopPropagation(); handleMoveDown(index);}}>
+                              <DownArrow />
+                            </button>
+                          </div>)}
+                          {(index != 0) && (<div className='w-6 h-6 p-0.5'>
+                            <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(e) => {e.stopPropagation(); handleMoveUp(index);}}>
+                              <UpArrow />
+                            </button>
+                          </div>)}
                         </div>
                       </div>
-                    </div>
-                  </div>);
-              })}
+                    </div>);
+                })}</div>
             </div>)}
         </div>
       </div>
@@ -309,4 +428,4 @@ export default function StudentGradePage() {
 // const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${file_id}` || '');
 // const [grade, setGrade] = useState('');
 // const [currentGrade, setCurrentGrade] = useState<string | null>(null);
-// const [loading, setLoading] = useState(false);
+// const [loading, setLoading] = useState(false);import React from 'react';

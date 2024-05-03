@@ -7,15 +7,18 @@ import { AnnotationMarkerData } from '@/utils/types/AnnotationMarkerData';
 
 pdfjs.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
+
 interface PDFViewProps {
     pointSelectionEnabled: boolean
     annotationMarkers: readonly AnnotationMarkerData[];
     fileUrl: string;
     width: number | undefined;
+    excludeIndex: number |undefined;
+    selectedIndex: number | undefined;
     onPageClick?: (event: React.MouseEvent<HTMLDivElement>, pageIndex: number) => void;
 }
 
-const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotationMarkers , pointSelectionEnabled}) => {
+const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotationMarkers , pointSelectionEnabled, excludeIndex, selectedIndex}) => {
     const [numPages, setNumPages] = useState<number>();
     const [pageLayouts, setPageLayouts] = useState<readonly ({ width: number, height: number } | undefined)[]>([]);
 
@@ -48,7 +51,7 @@ const PDFView: React.FC<PDFViewProps> = ({ fileUrl, width, onPageClick, annotati
                                     onClick={(event) => onPageClick?.(event, index)}
                                     onRenderSuccess={(page) => { handleSetState(index, { width: page.width, height: page.height }); }}
                                 />
-                                {annotationMarkers.map((value, markIndex) => (value.page == index + 1 && <Marker radius={width ? width * 0.01 : 10} data={value} page={pageLayouts[index]} key={`marker${markIndex}`} />))}
+                                {annotationMarkers.map((value, markIndex) => ((value.page == index + 1 && markIndex != excludeIndex) && <Marker selected={selectedIndex == markIndex} index={markIndex} radius={width ? width * 0.02 : 10} data={value} page={pageLayouts[index]} key={`marker${markIndex}`} />))}
 
                             </div>
                         </div>

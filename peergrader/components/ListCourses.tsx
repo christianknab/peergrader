@@ -79,7 +79,7 @@ export default function ListCourses() {
         <div>
             <ul>
                 {userCourses.map((courseData) => (
-                    <li key={courseData.course_id}>
+                    <li key={courseData.course_id} className="text-xl font-bold">
                         <Link href={{ pathname: `/courses/${courseData.course_id}` }}>
                             {courseData.name}
                         </Link>
