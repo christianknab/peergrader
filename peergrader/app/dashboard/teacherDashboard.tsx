@@ -98,7 +98,7 @@ export default function ListCourses() {
                             </Link>
                             <button
                                 className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover" 
-                                onClick={() => router.push('/courses')}>
+                                onClick={() => router.push('/courses/create')}>
                                 + Add Course  
                             </button>
                         </div>
