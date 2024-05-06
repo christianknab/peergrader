@@ -9,6 +9,7 @@ interface AsgnData {
     asgn_id: string;
     name: string;
     final_grade: number | null;
+    phase: string;
 }
 
 
@@ -42,12 +43,19 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
                     .order('created_at', { ascending: false })
                     .limit(1);
 
-                if (submissionsError) {
+                const { data: phaseData, error: phaseError } = await supabase
+                    .from('assignment_phases')
+                    .select('phase')
+                    .eq('asgn_id', assignment.asgn_id)
+                    .single();
+
+                if (submissionsError || phaseError) {
                     console.error('Error fetching submissions:', submissionsError);
                     return {
                         asgn_id: assignment.asgn_id,
                         name: assignment.name,
                         final_grade: null,
+                        phase: 'Closed',
                     };
                 }
 
@@ -57,6 +65,7 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
                     asgn_id: assignment.asgn_id,
                     name: assignment.name,
                     final_grade: finalGrade,
+                    phase: phaseData.phase,
                 };
             })
         );
@@ -79,6 +88,7 @@ export default function ListAsgn({ course_id }: { course_id: string }) {
                             <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-lg font-semibold">{assignment.name}</h3>
+                                    {'Phase: ' + assignment.phase +' -- '} 
                                     {assignment.final_grade ? 'Grade: ' + assignment.final_grade : 'Not graded yet'}
                                 </div>
                             </div>

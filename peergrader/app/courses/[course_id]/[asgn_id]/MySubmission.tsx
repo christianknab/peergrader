@@ -14,11 +14,10 @@ interface SubmissionData {
 }
 
 interface MySubmissionProps {
-  course_id: string;
   asgn_id: string;
 }
 
-export default function MySubmission({ course_id, asgn_id }: MySubmissionProps) {
+export default function MySubmission({ asgn_id }: MySubmissionProps) {
   const supabase = createClient();
 
   const {

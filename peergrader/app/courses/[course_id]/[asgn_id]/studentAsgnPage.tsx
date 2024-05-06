@@ -9,9 +9,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 interface AsgnData {
-  asgn_id: string;
   name: string;
-  course_id: string;
+  phase: string
 }
 
 interface CourseData {
@@ -57,26 +56,34 @@ export default function StudentAsgnPage() {
   useEffect(() => {
     async function fetchAsgnData() {
       try {
-        const { data, error } = await supabase
+        const { data: asgnData, error: asgnError } = await supabase
           .from('assignments')
-          .select('*')
+          .select('name')
           .eq('asgn_id', asgn_id)
           .single();
 
-        if (error) {
-          console.error('Error fetching asgn data:', error);
+        const { data: phaseData, error: phaseError } = await supabase
+          .from('assignment_phases')
+          .select('phase')
+          .eq('asgn_id', asgn_id)
+          .single();
+
+        if (asgnError || phaseError) {
+          console.error('Error fetching data:', asgnError || phaseError);
         } else {
-          setAsgnData(data);
+          setAsgnData({
+            name: asgnData.name,
+            phase: phaseData.phase,
+          });
         }
       } catch (error) {
-        console.error('Error fetching asgn data:', error);
+        console.error('Error fetching data:', error);
       }
     }
 
-    if (asgn_id) {
-      fetchAsgnData();
-    }
+    fetchAsgnData();
   }, [asgn_id]);
+
 
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -106,12 +113,12 @@ export default function StudentAsgnPage() {
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment: {asgnData.name}</h2>
+              <h2 className="text-xl font-semibold">Assignment: {asgnData.name} -- Phase: {asgnData.phase}</h2>
             </div>
           )}
           <div className="flex space-x-4">
             <div className="w-1/2">
-              <MySubmission course_id={course_id} asgn_id={asgn_id} />
+              <MySubmission asgn_id={asgn_id} />
             </div>
             <div className="w-1/2 flex flex-col space-y-4">
               <ListGraded course_id={course_id} asgn_id={asgn_id} />
