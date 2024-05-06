@@ -10,6 +10,7 @@ import MoveIcon from '@/components/icons/Move';
 import DeleteIcon from '@/components/icons/Delete';
 import DownArrow from '@/components/icons/DownArrow';
 import UpArrow from '@/components/icons/UpArrow';
+import { createClient } from '@/utils/supabase/client';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
@@ -26,6 +27,7 @@ export default function StudentGradePage() {
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const commentSectionRef = useRef<HTMLDivElement>(null);
   const tabs: (readonly string[]) = ["Grade", "Comment"];
+  const supabase = createClient()
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -104,6 +106,10 @@ export default function StudentGradePage() {
     const newStates = [...annotationMarkers];
     newStates[index].text = event.target.value;
     setAnnotationMarkers(newStates);
+  }
+
+  const handleSubmit = () => {
+    // SetSubmissionAnnotation(supabase, "a8bf851b-2af7-4f28-97af-0fbf512fd164", "171490132206", eval(JSON.stringify(annotationMarkers)));
   }
 
 
@@ -300,7 +306,7 @@ export default function StudentGradePage() {
           </div>
           <div className='p-3 w-full border-t-2 border-gray-200 h-16'>
             <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
-            onClick={(_)=>console.log(JSON.stringify(annotationMarkers))}>
+            onClick={handleSubmit}>
               Submit Review
             </button></div>
 

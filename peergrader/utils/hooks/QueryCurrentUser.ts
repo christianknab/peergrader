@@ -2,7 +2,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { createClient } from "../supabase/client";
 import GetUserById from "../queries/GetUser";
-import { AppUser } from "../types/user";
 import { useRouter } from "next/navigation";
 
 function useCurrentUserQuery() {

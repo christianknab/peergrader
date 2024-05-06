@@ -48,18 +48,18 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
         const randomIndex = Math.floor(Math.random() * leastGradedSubmissions.length);
         const leastGradedFileId = leastGradedSubmissions[randomIndex].file_id;
 
-        const { data: submission, error: submissionError } = await supabase
-            .from('submissions')
-            .select('filename, owner')
-            .eq('file_id', leastGradedFileId)
-            .eq('asgn_id', asgn_id)
-            .single();
+        // const { data: submission, error: submissionError } = await supabase
+        //     .from('submissions')
+        //     .select('filename, owner')
+        //     .eq('file_id', leastGradedFileId)
+        //     .eq('asgn_id', asgn_id)
+        //     .single();
 
-        if (submissionError) {
-            console.error('Error fetching submission:', submissionError);
-            return;
-        }
-        const queryString = `?owner=${submission.owner}&file_id=${leastGradedFileId}&filename=${submission.filename}`;
+        // if (submissionError) {
+        //     console.error('Error fetching submission:', submissionError);
+        //     return;
+        // }
+        const queryString = `?file_id=${leastGradedFileId}`;
         router.push(`/courses/${course_id}/${asgn_id}/grade${queryString}`);
     };
 
