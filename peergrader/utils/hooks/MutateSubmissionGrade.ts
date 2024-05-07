@@ -4,13 +4,13 @@ import { createClient } from "../supabase/client";
 import SetSubmissionGrade from "../queries/SetSubmissionGrade";
 
 function useSubmissionGradeMutation() {
-    const client = createClient();
+    const supabase = createClient();
     const queryClient = useQueryClient();
 
     const mutation = useMutation({
         mutationFn: async (annotationData: { userId: string, fileId: string, data: JSON }) => {
             try {
-                const { data } = await SetSubmissionGrade(client, annotationData);
+                const { data } = await SetSubmissionGrade(supabase, annotationData);
                 return data;
             } catch (error) { throw error; }
         },

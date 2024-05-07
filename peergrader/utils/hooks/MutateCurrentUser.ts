@@ -5,13 +5,13 @@ import SetUser from "../queries/SetUser";
 import { AppUser } from "../types/user";
 
 function useCurrentUserMutation() {
-    const client = createClient();
+    const supabase = createClient();
     const queryClient = useQueryClient();
 
     const mutation = useMutation<AppUser, unknown, AppUser>({
         mutationFn: async (userData: AppUser) => {
             try {
-                const { data } = await SetUser(client, userData);
+                const { data } = await SetUser(supabase, userData);
                 // if (error) throw error;
                 return data;
             } catch (error) { throw error; }

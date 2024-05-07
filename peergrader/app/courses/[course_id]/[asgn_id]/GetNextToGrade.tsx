@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface GetNextToGradeProps {
     course_id: string;
@@ -12,6 +13,7 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
     const router = useRouter();
     const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
     const supabase = createClient();
+    const queryClient = useQueryClient();
 
     if (isUserLoading) {
         return <div>Loading...</div>;
@@ -22,44 +24,14 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
     }
 
     const handleGetNextToGrade = async () => {
-        const { data: submissionGradeCounts, error: submissionGradeCountsError } = await supabase
-            .from('submissions')
-            .select('file_id, num_grades')
-            .eq('asgn_id', asgn_id)
-            .neq('owner', currentUser.uid)
-
-        if (submissionGradeCountsError) {
-            console.error('Error fetching submission grade counts:', submissionGradeCountsError);
+        
+        const {data, error} = await supabase.rpc('get_next_asgn_grade', {p_asgn_id: asgn_id, p_grader: currentUser.uid});
+        if (error || data == null) {
+            console.error('Error fetching submission:', error);
             return;
         }
-
-        const sortedSubmissionGradeCounts = submissionGradeCounts.sort((a, b) => a.num_grades - b.num_grades);
-        const leastGradeCount = sortedSubmissionGradeCounts[0]?.num_grades;
-
-        const leastGradedSubmissions = sortedSubmissionGradeCounts.filter(
-            (submission) => submission.num_grades === leastGradeCount
-        );
-
-        if (leastGradedSubmissions.length === 0) {
-            console.error('No submissions found for grading');
-            return;
-        }
-
-        const randomIndex = Math.floor(Math.random() * leastGradedSubmissions.length);
-        const leastGradedFileId = leastGradedSubmissions[randomIndex].file_id;
-
-        // const { data: submission, error: submissionError } = await supabase
-        //     .from('submissions')
-        //     .select('filename, owner')
-        //     .eq('file_id', leastGradedFileId)
-        //     .eq('asgn_id', asgn_id)
-        //     .single();
-
-        // if (submissionError) {
-        //     console.error('Error fetching submission:', submissionError);
-        //     return;
-        // }
-        const queryString = `?file_id=${leastGradedFileId}`;
+        queryClient.invalidateQueries({queryKey: ['gradedSubs']})
+        const queryString = `?file_id=${data}`;
         router.push(`/courses/${course_id}/${asgn_id}/grade${queryString}`);
     };
 

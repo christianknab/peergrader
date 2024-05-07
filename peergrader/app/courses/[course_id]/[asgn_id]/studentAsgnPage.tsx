@@ -117,15 +117,15 @@ export default function StudentAsgnPage() {
             </div>
           )}
           <div className="flex space-x-4">
-            <div className="w-1/2">
+            <div className="w-full">
               <MySubmission asgn_id={asgn_id} />
             </div>
-            <div className="w-1/2 flex flex-col space-y-4">
+            {(asgnData?.phase == "Grading")&&<div className="w-full flex flex-col space-y-4">
               <ListGraded course_id={course_id} asgn_id={asgn_id} />
               <div className='flex justify-center w-full'>
                 <GetNextToGrade course_id={course_id} asgn_id={asgn_id} />
               </div>
-            </div>
+            </div>}
           </div>
         </div>
       </main>

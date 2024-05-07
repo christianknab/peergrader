@@ -7,13 +7,13 @@ import { useRouter } from "next/navigation";
 function useCurrentUserQuery() {
     const router = useRouter();
 
-    const client = createClient();
+    const supabase = createClient();
     const queryKey = ['currentUser'];
 
     const queryFn = async () => {
-        const { data: { user } } = await client.auth.getUser();
+        const { data: { user } } = await supabase.auth.getUser();
         if (!user) throw "No User";
-        const { data, error } = await GetUserById(client, user.id);
+        const { data, error } = await GetUserById(supabase, user.id);
         if (error) {
             if (error.code == "PGRST116") {
                 router.push('/dashboard/edit-account');
@@ -24,7 +24,7 @@ function useCurrentUserQuery() {
 
     };
 
-    return useQuery({ queryKey, queryFn });
+    return useQuery({ queryKey, queryFn, staleTime: 3 * (60 * 1000) }); //2 min
 }
 
 export default useCurrentUserQuery;
