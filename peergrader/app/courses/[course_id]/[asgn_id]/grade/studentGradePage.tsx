@@ -25,6 +25,9 @@ export default function StudentGradePage() {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [addPointSelected, setAddPointSelected] = useState<boolean>(false);
 
+  // For rubric
+  const [selectedPoints, setSelectedPoints] = useState<{ [key: string]: boolean }>({});
+
   const supabase = createClient();
   const pdfContainerRef = useRef<HTMLDivElement>(null);
   const commentSectionRef = useRef<HTMLDivElement>(null);
@@ -37,7 +40,7 @@ export default function StudentGradePage() {
     isLoading: isOwnerLoading,
     isError: isOwnerError
   } = useOwnerFromFileQuery(fileId);
-  
+
   const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${fileId}` || '');
   console.log(publicUrl);
   useEffect(() => {
@@ -67,6 +70,14 @@ export default function StudentGradePage() {
       window.removeEventListener('resize', setPDFWidthThrottled);
     };
   }, []);
+
+  const pointClicked = (rubricIndex: number, categoryIndex: number) => {
+    const key = `${rubricIndex}-${categoryIndex}`;
+    setSelectedPoints(prev => ({
+      ...prev,
+      [key]: !prev[key]  // Toggle the selection state
+    }));
+  };
 
   const handleMoveAnnotationMarker = (index: number) => {
     if (annotationMoveIndex != index) { setAnnotationMoveIndex(index); } else { setAnnotationMoveIndex(undefined); }
@@ -164,7 +175,7 @@ export default function StudentGradePage() {
     }
 
   }
-  if(isOwnerLoading) return (<div>Loading</div>);
+  if (isOwnerLoading) return (<div>Loading</div>);
   if (!owner || isOwnerError) return (<div>Error</div>);
 
   return (
@@ -249,7 +260,7 @@ export default function StudentGradePage() {
             {/* Tabs */}
             {selectedTab == 0 ?
               (<div>
-                <StudentRubric />
+                <StudentRubric pointClicked={pointClicked} selectedPoints={selectedPoints} />
               </div>)
               :
               (<div>

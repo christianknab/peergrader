@@ -4,43 +4,36 @@ import { createClient } from "@/utils/supabase/client";
 import { useEffect, useState } from "react";
 import { Rubric } from "../../create-assignment/page";
 import { useParams } from "next/navigation";
+import useRubricFromAsgnQuery from "@/utils/hooks/QueryRubric";
+import { divide } from "lodash";
 
-export const StudentRubric = () => {
-    const supabase = createClient();
+interface StudentRubricProps {
+    pointClicked: (rubricIndex: number, categoryIndex: number) => void;
+    selectedPoints: { [key: string]: boolean };
+}
+
+
+export const StudentRubric = ({ pointClicked, selectedPoints }: StudentRubricProps) => {
     const [rubric, setRubric] = useState<Rubric[]>([]);
-    const [selectedPoints, setSelectedPoints] = useState<{ [key: string]: boolean }>({});
     const params = useParams();
+    const { data, isLoading, isError, error } = useRubricFromAsgnQuery(params.asgn_id.toString());
 
     useEffect(() => {
-        const fetchRubric = async () => {
-            try {
-                const { data, error } = await supabase.rpc('get_rubric', { asgn_id_param: params.asgn_id }); // hardcoded to 1 to get default rubric
-                console.log(data);
-                if (error) {
-                    throw new Error('Error fetching rubric');
-                }
-                setRubric(data);
-            } catch (error) {
-                console.error('Error fetching rubric:', error);
-            }
-        };
-        fetchRubric();
-    }, []);
-
-    const pointClicked = (rubricIndex: number, categoryIndex: number) => {
-        const key = `${rubricIndex}-${categoryIndex}`;
-        setSelectedPoints(prev => ({
-            ...prev,
-            [key]: !prev[key]  // Toggle the selection state
-        }));
-    };
+        if (data) {
+            setRubric(data);
+        }
+    }, [data]); // Update rubric only when data changes
 
     const getSelectedCategoryIndex = (rubricIndex: number) => {
         const keys = Object.keys(selectedPoints);
         const filteredKey = keys.find(key => key.startsWith(`${rubricIndex}-`) && selectedPoints[key]);
-        console.log(filteredKey ? parseInt(filteredKey.split('-')[1], 10) : null);
         return filteredKey ? parseInt(filteredKey.split('-')[1], 10) : null;
     };
+
+    if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div>Error: {error?.message}</div>;
+    if (!data || data.length === 0) return <div>No data available.</div>;
+
 
     return (<div className="p-3 w-full">
         {rubric.map((rubricItem, index) => {
