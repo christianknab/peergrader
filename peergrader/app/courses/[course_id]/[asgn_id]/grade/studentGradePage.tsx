@@ -11,8 +11,11 @@ import DeleteIcon from '@/components/icons/Delete';
 import DownArrow from '@/components/icons/DownArrow';
 import UpArrow from '@/components/icons/UpArrow';
 import { createClient } from '@/utils/supabase/client';
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import useOwnerFromFileQuery from '@/utils/hooks/QueryOwnerFromFile';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import SetSubmissionGrade from '@/utils/queries/SetSubmissionGrade';
+import GetSubmissionGrade from '@/utils/queries/GetSubmissionGrade';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
@@ -21,33 +24,51 @@ export default function StudentGradePage() {
   const [annotationMoveIndex, setAnnotationMoveIndex] = useState<number | undefined>(undefined);
   const [deletePendingIndex, setDeletePendingIndex] = useState<number | undefined>(undefined);
   const [selectedIndex, setSelectedIndex] = useState<number | undefined>(undefined);
+  const pdfContainerRef = useRef<HTMLDivElement>(null);
   const [PDFWidth, setPDFWidth] = useState<number | undefined>(undefined);
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [addPointSelected, setAddPointSelected] = useState<boolean>(false);
+  const [isAnnotationIncomplete, setIsAnnotationIncomplete] = useState<boolean>(false);
+  const router = useRouter();
 
   // For rubric
   const [selectedPoints, setSelectedPoints] = useState<{ [key: string]: boolean }>({});
 
   const supabase = createClient();
-  const pdfContainerRef = useRef<HTMLDivElement>(null);
+
   const commentSectionRef = useRef<HTMLDivElement>(null);
   const tabs: (readonly string[]) = ["Grade", "Comment"];
   const fileId = searchParams.get('file_id');
+
   if (!fileId) return (<div>Error</div>);
-  //TODO handle error
+
   const {
     data: owner,
     isLoading: isOwnerLoading,
     isError: isOwnerError
   } = useOwnerFromFileQuery(fileId);
+  const {
+    data: currentUser,
+    isLoading: isUserLoading,
+    isError: isCurrentUserError
+  } = useCurrentUserQuery();
 
   const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${owner}/${fileId}` || '');
-  console.log(publicUrl);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isOwnerLoading || isUserLoading) return;
+      const { data } = await GetSubmissionGrade(supabase, currentUser?.uid, fileId)
+      setAnnotationMarkers(data?.annotation_data)
+    }
+    fetchData();
+  }, [isOwnerLoading, isUserLoading]);
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (commentSectionRef.current && !commentSectionRef.current.contains(event.target as Node)) {
         setSelectedIndex(undefined);
       }
+
     }
     // Bind the event listener
     document.addEventListener('mousedown', handleClickOutside);
@@ -56,6 +77,7 @@ export default function StudentGradePage() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [commentSectionRef]);
+
 
   useEffect(() => {
     const setPDFWidthThrottled = throttle(() => {
@@ -130,8 +152,27 @@ export default function StudentGradePage() {
     setAnnotationMarkers(newStates);
   }
 
-  const handleSubmit = () => {
-    // SetSubmissionAnnotation(supabase, "a8bf851b-2af7-4f28-97af-0fbf512fd164", "171490132206", eval(JSON.stringify(annotationMarkers)));
+  const handleSubmit = async () => {
+    //check grades
+    //check comments
+    for (let index = 0; index < annotationMarkers.length; index++) {
+      const item = annotationMarkers[index];
+      if (item.text == "") {
+        //set error
+        setSelectedTab(1);
+        setIsAnnotationIncomplete(true);
+        return;
+      }
+    }
+
+
+
+    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) });
+    if (error) {
+      console.error("upload Error")
+      return;
+    }
+    router.back();
   }
 
 
@@ -175,9 +216,9 @@ export default function StudentGradePage() {
     }
 
   }
-  if (isOwnerLoading) return (<div>Loading</div>);
-  if (!owner || isOwnerError) return (<div>Error</div>);
 
+  if (isOwnerLoading || isUserLoading) return (<div>Loading</div>);
+  if (!owner || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
   return (
     <div className='flex w-full'>
       {addPointSelected && <div style={{ position: 'fixed', left: `${columnWidth / 2}%`, transform: 'translate(-50%, 0)', top: 13, zIndex: 50 }}>
@@ -217,6 +258,29 @@ export default function StudentGradePage() {
                     setDeletePendingIndex(undefined);
                   }}>
                   Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>}
+      {isAnnotationIncomplete &&
+        <div>
+          <div className='fixed w-screen h-screen opacity-50 bg-black z-40'>
+          </div>
+          <div className='fixed z-50 flex items-center inset-0 justify-center'>
+            <div className="max-w-sm h-auto bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="px-6 py-4">
+                <h2 className="text-xl font-bold mb-2">Incomplete Comments</h2>
+                <p className="text-gray-700 text-base">
+                  All comments must have text.
+                </p>
+              </div>
+              <div className="px-6 py-4 bg-gray-100 flex justify-end">
+                <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+                  onClick={(_) => {
+                    setIsAnnotationIncomplete(false);
+                  }}>
+                  Ok
                 </button>
               </div>
             </div>
