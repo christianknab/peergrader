@@ -220,6 +220,15 @@ export default function StudentGradePage() {
   if (isOwnerLoading || isUserLoading) return (<div>Loading</div>);
   if (!owner || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
   return (
+    <main>
+      <div className="w-full flex justify-between items-center p-4 light-grey">
+          <button
+            className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+            onClick={() => router.back()}>
+            Return to Assignment
+          </button>
+          <span className="font-bold text-lg">PeerGrader</span>
+        </div>
     <div className='flex w-full'>
       {addPointSelected && <div style={{ position: 'fixed', left: `${columnWidth / 2}%`, transform: 'translate(-50%, 0)', top: 13, zIndex: 50 }}>
         <div className='bg-gray-800 rounded-full py-1 px-4'>
@@ -393,5 +402,9 @@ export default function StudentGradePage() {
         </div>
       </div>
     </div>
+    <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+        <p>&copy;2024 PeerGrader</p>
+    </footer>
+  </main>
   );
 }
