@@ -56,7 +56,7 @@ export default function ListGrades({ file_id }: ListGradesProps) {
 
     return (
         <div>
-            <h3>Peer grades:</h3>
+            <h3 className="font-bold text-lg">Peer grades:</h3>
             <ul>
                 {grades.map((gradeData) => (
                     <li key={gradeData.graded_by}>

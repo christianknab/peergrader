@@ -100,7 +100,7 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
                     },
                   }}
                 >
-                  <button>
+                  <button style={{ marginLeft: '15px' }} className="px-4 mb-1 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
                     {submission.grade !== null ? `-- Current Grade: ${submission.grade}` : ''}
                     {submission.grade !== null ? ' -- Regrade' : 'Grade'}{' '}
                   </button>

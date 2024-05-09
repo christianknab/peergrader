@@ -5,6 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import ListGrades from '@/components/ListGrades';
+import { useRouter } from 'next/navigation';
 
 export default function TeacherGradePage() {
     const {
@@ -21,6 +22,7 @@ export default function TeacherGradePage() {
         return <div>Error</div>;
     }
 
+    const router = useRouter();
     const supabase = createClient();
     const searchParams = useSearchParams();
     const owner = searchParams.get('owner');
@@ -87,33 +89,50 @@ export default function TeacherGradePage() {
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
-            <div style={{ width: '70%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                {filename ? (
-                    <div style={{ height: '90vh', width: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <iframe src={publicUrl} style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}>
-                            This browser does not support PDFs. Please download the PDF to view it:
-                            <a href={publicUrl} target="_blank" rel="noopener noreferrer"> Download PDF </a>
-                        </iframe>
-                    </div>
-                ) : (
-                    <p>Loading file...</p>
-                )}
+        <main>
+            <div className="w-full flex justify-between items-center p-4 light-grey">
+                <button
+                    className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                    onClick={() => router.back()}>
+                    Return to Assignment
+                </button>
+                <span className="font-bold text-lg">PeerGrader</span>
             </div>
-            <div style={{ width: '30%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-                <div>
-                    < ListGrades file_id={file_id as string} />
-                    {currentFinalGrade !== null ? (
-                        <p>Current final grade: {currentFinalGrade}</p>
+            <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
+                <div style={{ width: '70%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {filename ? (
+                        <div style={{ height: '90vh', width: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <iframe src={publicUrl} style={{ width: '100%', height: '100%', border: 'none', overflow: 'hidden' }}>
+                                This browser does not support PDFs. Please download the PDF to view it:
+                                <a href={publicUrl} target="_blank" rel="noopener noreferrer"> Download PDF </a>
+                            </iframe>
+                        </div>
                     ) : (
-                        <p>No grade yet</p>
+                        <p>Loading file...</p>
                     )}
-                    <input type="text" id="gradeInput" value={grade} onChange={(e) => setGrade(e.target.value)} />
-                    <button onClick={handleSaveGrade} disabled={loading}>
-                        {loading ? 'Saving...' : 'update final grade'}
-                    </button>
+                </div>
+                <div style={{ width: '30%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <div className="flex1 items-center space-y-3">
+                        < ListGrades file_id={file_id as string} />
+                        {currentFinalGrade !== null ? (
+                            <p>Current final grade: {currentFinalGrade}</p>
+                        ) : (
+                            <p>No grade yet</p>
+                        )}
+                        <div className="flex items-center space-x-4">
+                            <input type="text" id="gradeInput" className="py-2 px-3 rounded-md" value={grade} onChange={(e) => setGrade(e.target.value)} />
+                            <button 
+                            onClick={handleSaveGrade} disabled={loading}
+                            className="py-2 px-3 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
+                                {loading ? 'Saving...' : 'update final grade'}
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+                <p>&copy;2024 PeerGrader</p>
+            </footer>
+        </main>
     );
 }

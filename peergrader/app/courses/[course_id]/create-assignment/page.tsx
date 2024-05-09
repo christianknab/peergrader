@@ -127,16 +127,29 @@ export default function CreateAssignmentPage() {
     }
 
     return (
-        <div>
-            <AssignmentForm
-                onSubmit={handleSubmit}
-                initialRubric={rubric}
-                anonymousGrading={true}
-                startDate={defaultStartDate}
-                endDate={defaultEndDate}
-                startTime="00:00"
-                endTime="23:59"
-            />
-        </div>
+        <main>
+            <div className="w-full flex justify-between items-center p-4 light-grey">
+                <button
+                    className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                    onClick={() => router.back()}>
+                    Return to Home
+                </button>
+                <span className="font-bold text-lg">PeerGrader</span>
+            </div>
+            <div className="px-12">
+                <AssignmentForm
+                    onSubmit={handleSubmit}
+                    initialRubric={rubric}
+                    anonymousGrading={true}
+                    startDate={defaultStartDate}
+                    endDate={defaultEndDate}
+                    startTime="00:00"
+                    endTime="23:59"
+                />
+            </div>
+            <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+                <p>&copy;2024 PeerGrader</p>
+            </footer>
+        </main>
     );
 }

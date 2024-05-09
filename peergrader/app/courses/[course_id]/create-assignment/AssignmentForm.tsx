@@ -384,7 +384,9 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                             <path fillRule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clipRule="evenodd" />
                         </svg></button></div>)}
             </div>
-            <button type="submit" className="btn btn-primary" disabled={!isFormValid()}>
+            <button type="submit" 
+            className="btn btn-primary py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover" 
+            disabled={!isFormValid()}>
                 Create Assignment
             </button>
         </form>
