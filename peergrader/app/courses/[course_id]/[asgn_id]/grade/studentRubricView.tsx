@@ -1,6 +1,3 @@
-import useRubricFromAsgnQuery from "@/utils/hooks/QueryRubric";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
 import { Rubric } from "../../create-assignment/page";
 
 interface StudentRubricProps {
@@ -24,7 +21,6 @@ export const StudentRubric = ({ setSelectedPoints, selectedPoints, rubric }: Stu
 
         // Set the clicked point to true
         newSelectedPoints[rubricIndex][categoryIndex] = true;
-
         setSelectedPoints(newSelectedPoints);
     };
 

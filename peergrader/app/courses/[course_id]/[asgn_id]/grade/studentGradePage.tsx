@@ -185,16 +185,23 @@ export default function StudentGradePage() {
       }
     }
 
+    let total: number = 0;
+    const indicesSelected: number[] = [];
+    for (let i = 0; i < rubric.length; i++) {
+      for (let j = 0; j < rubric[i].descriptions.length; j++)
+        if (selectedPoints[i][j]) {
+          indicesSelected.push(j);
+          total += rubric[0].col_points[i];
+        }
+    }
 
-
-    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) });
+    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) }, { points_selected: indicesSelected, total: total });
     if (error) {
       console.error("upload Error")
       return;
     }
     router.back();
   }
-
 
   const dragResizeHandler = () => {
 
