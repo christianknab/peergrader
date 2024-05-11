@@ -10,7 +10,11 @@ import Link from 'next/link';
 
 interface AsgnData {
   name: string;
-  phase: string
+  phase: string;
+  start_date_submission: Date;
+  end_date_submission: Date;
+  start_date_grading: Date;
+  end_date_grading: Date;
 }
 
 interface CourseData {
@@ -58,22 +62,27 @@ export default function StudentAsgnPage() {
       try {
         const { data: asgnData, error: asgnError } = await supabase
           .from('assignments')
-          .select('name')
+          .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading')
           .eq('asgn_id', asgn_id)
           .single();
 
-        const { data: phaseData, error: phaseError } = await supabase
-          .from('assignment_phases')
-          .select('phase')
-          .eq('asgn_id', asgn_id)
-          .single();
+          const { data: phase, error: phaseError } = await supabase.rpc('get_assignment_phase', {
+            start_date_submission: asgnData?.start_date_submission,
+            end_date_submission: asgnData?.end_date_submission,
+            start_date_grading: asgnData?.start_date_grading,
+            end_date_grading: asgnData?.end_date_grading
+          });
 
         if (asgnError || phaseError) {
           console.error('Error fetching data:', asgnError || phaseError);
         } else {
           setAsgnData({
             name: asgnData.name,
-            phase: phaseData.phase,
+            phase: phase,
+            start_date_submission: asgnData?.start_date_submission,
+            end_date_submission: asgnData?.end_date_submission,
+            start_date_grading: asgnData?.start_date_grading,
+            end_date_grading: asgnData?.end_date_grading,
           });
         }
       } catch (error) {

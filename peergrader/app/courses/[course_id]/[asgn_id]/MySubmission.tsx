@@ -44,11 +44,12 @@ export default function MySubmission({ asgn_id }: MySubmissionProps) {
   async function fetchSubmission(userId: string, asgn_id: string) {
     const { data, error } = await supabase
       .from('submissions')
-      .select('file_id, filename, created_at, final_grade')
+      .select('file_id, filename, created_at')
       .eq('owner', userId)
       .eq('asgn_id', asgn_id)
       .order('created_at', { ascending: false })
       .limit(1);
+
 
     if (error) {
       console.error('Error fetching user files:', error);
@@ -59,11 +60,20 @@ export default function MySubmission({ asgn_id }: MySubmissionProps) {
     if (data.length > 0) {
       const view_url = supabase.storage.from('files').getPublicUrl(`${userId}/${data[0].file_id}` || '');
 
+      const { data: average_grade, error: averageGradeError } = await supabase.rpc('calculate_average_grade', { file_id_param: data[0].file_id });
+
+      if (averageGradeError) {
+        console.error('Error fetching average grade:', error);
+        return null;
+      }
+
+
+
       return {
         file_id: data[0].file_id,
         filename: data[0].filename,
         created_at: data[0].created_at,
-        grade: data[0].final_grade,
+        grade: average_grade,
         view_url: view_url.data.publicUrl,
       };
     }
@@ -76,7 +86,7 @@ export default function MySubmission({ asgn_id }: MySubmissionProps) {
       {submission ? (
         <div>
           <h1>Your submission:</h1>
-          {submission.grade ? 'Grade: '+ submission.grade : 'Not graded yet'}
+          {submission.grade ? 'Grade: ' + submission.grade : 'Not graded yet'}
 
           <h1>{submission.filename}</h1>
           <div style={{ height: '90vh', width: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

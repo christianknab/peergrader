@@ -36,17 +36,13 @@ export default function TeacherGradePage() {
     useEffect(() => {
         const fetchCurrentFinalGrade = async () => {
             try {
-                const { data, error } = await supabase
-                    .from('submissions')
-                    .select('final_grade')
-                    .eq('file_id', file_id)
-                    .single();
+                const { data: average_grade, error: averageGradeError } = await supabase.rpc('calculate_average_grade', { file_id_param: file_id });
 
-                if (error) {
-                    console.error('Error fetching current grade:', error);
+                if (averageGradeError) {
+                    console.error('Error fetching current grade:', averageGradeError);
                 }
-                if (data) {
-                    setcurrentFinalGrade(data.final_grade);
+                if (average_grade) {
+                    setcurrentFinalGrade(average_grade);
                 } else {
                     setcurrentFinalGrade(null);
                 }
@@ -58,6 +54,7 @@ export default function TeacherGradePage() {
         fetchCurrentFinalGrade();
     }, [file_id]);
 
+    // TODO: this will be broken now, fix later
     const handleSaveGrade = async () => {
         if (!currentUser) {
             alert('You must be logged in');

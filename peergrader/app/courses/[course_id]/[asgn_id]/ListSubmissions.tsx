@@ -51,14 +51,16 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
       accounts.map(async (account) => {
         const { data: latestSubmission, error: latestSubmissionError } = await supabase
           .from('submissions')
-          .select('filename, file_id, final_grade')
+          .select('filename, file_id')
           .eq('asgn_id', asgn_id)
           .eq('owner', account.uid)
           .order('created_at', { ascending: false })
           .limit(1)
           .single();
 
-        if (latestSubmissionError) {
+        const { data: average_grade, error: averageGradeError } = await supabase.rpc('calculate_average_grade', { file_id_param: submissions });
+
+        if (latestSubmissionError || averageGradeError) {
           return {
             filename: 'No submission',
             file_id: null,
@@ -73,7 +75,7 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
           file_id: latestSubmission?.file_id,
           ownerEmail: account.email,
           owner: account.uid,
-          grade: latestSubmission?.final_grade,
+          grade: average_grade,
         };
       })
     );
