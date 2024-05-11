@@ -1,26 +1,33 @@
+import { useState } from "react";
 import { Rubric } from "../../create-assignment/page";
 
 interface StudentRubricProps {
-    setSelectedPoints: (points: boolean[][]) => void;
-    selectedPoints: boolean[][];
+    setSelectedPoints: (points: number[]) => void;
+    selectedPoints: number[];
     rubric: Rubric[];
+    maxPoints: number;
+    setTotal: (points: number) => void;
+    total: number;
 }
 
-export const StudentRubric = ({ setSelectedPoints, selectedPoints, rubric }: StudentRubricProps) => {
+export const StudentRubric = ({ setSelectedPoints, selectedPoints, rubric, maxPoints, setTotal, total }: StudentRubricProps) => {
+
+    const computeTotal = (selectedPoints: number[]) => {
+        let tmp: number = 0;
+        selectedPoints.forEach((num, index) => { if (num != -1) tmp += rubric[index].col_points[num] })
+        setTotal(tmp);
+    }
 
     const pointClicked = (rubricIndex: number, categoryIndex: number) => {
         const newSelectedPoints = [...selectedPoints];
-
-        if (newSelectedPoints[rubricIndex][categoryIndex] == true) {
-            newSelectedPoints[rubricIndex][categoryIndex] = false;
+        if (newSelectedPoints[rubricIndex] == categoryIndex) {
+            newSelectedPoints[rubricIndex] = -1;
+            computeTotal(newSelectedPoints);
             setSelectedPoints(newSelectedPoints);
             return;
         }
-        // Reset all points in the current row to false
-        newSelectedPoints[rubricIndex] = newSelectedPoints[rubricIndex].map(() => false);
-
-        // Set the clicked point to true
-        newSelectedPoints[rubricIndex][categoryIndex] = true;
+        newSelectedPoints[rubricIndex] = categoryIndex;
+        computeTotal(newSelectedPoints);
         setSelectedPoints(newSelectedPoints);
     };
 
@@ -31,7 +38,7 @@ export const StudentRubric = ({ setSelectedPoints, selectedPoints, rubric }: Stu
                     <table className="w-full table-auto border-collapse">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="border p-2 w-1/6">Points/{rubricItem.row_points[0]}</th>
+                                <th className="border p-2 w-1/6">{selectedPoints[index] != -1 ? rubricItem.col_points[selectedPoints[index]] : 0}/{rubricItem.row_points[0]}</th>
                                 <th className="border p-2">{rubricItem.names[0]}</th>
                             </tr>
                         </thead>
@@ -41,7 +48,7 @@ export const StudentRubric = ({ setSelectedPoints, selectedPoints, rubric }: Stu
                                     <td className="border-l border-b p-2 w-1/6">
                                         <button
                                             onClick={() => pointClicked(index, descIndex)}
-                                            className={`font-semibold py-2 px-3 border rounded ${selectedPoints[index][descIndex]
+                                            className={`font-semibold py-2 px-3 border rounded ${selectedPoints[index] == descIndex
                                                 ? 'bg-blue-500 text-white border-blue-500'
                                                 : 'text-blue-700 hover:bg-gray-400 hover:text-white border-blue-500 hover:border-transparent'
                                                 }`}
@@ -56,6 +63,8 @@ export const StudentRubric = ({ setSelectedPoints, selectedPoints, rubric }: Stu
                     </table>
                 </div>
             ))}
+            <div className="font-semibold">Total: {total} / {maxPoints}</div>
         </div>
+
     );
 };

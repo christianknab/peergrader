@@ -37,18 +37,21 @@ export default function StudentGradePage() {
 
   // For rubric
   const [rubric, setRubric] = useState<Rubric[]>([]);
-  const [selectedPoints, setSelectedPoints] = useState<boolean[][]>([]);
+  const [selectedPoints, setSelectedPoints] = useState<number[]>([]);
+  const [maxPoints, setMaxPoints] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
 
-  const { data, isLoading, isError, error } = useRubricFromAsgnQuery(params.asgn_id.toString());
+  const { data } = useRubricFromAsgnQuery(params.asgn_id.toString());
 
   useEffect(() => {
     if (data) {
-      setRubric(data);
+      setRubric(data.rubric);
       setSelectedPoints(
-        data.map((rubricItem: Rubric) =>
-          rubricItem.descriptions.map(() => false)
+        data.rubric.map((rubricItem: Rubric) =>
+          -1
         )
       );
+      setMaxPoints(data.maxScore);
     }
   }, [data]);
 
@@ -166,9 +169,7 @@ export default function StudentGradePage() {
 
   const handleSubmit = async () => {
     // check grades
-    const isEveryRowValid = selectedPoints.every((row) => row.some((value) => value));
-
-    if (!isEveryRowValid) {
+    if (selectedPoints.includes(-1)) {
       // Set error
       setSelectedTab(0);
       setIsGradesIncomplete(true);
@@ -185,17 +186,7 @@ export default function StudentGradePage() {
       }
     }
 
-    let total: number = 0;
-    const indicesSelected: number[] = [];
-    for (let i = 0; i < rubric.length; i++) {
-      for (let j = 0; j < rubric[i].descriptions.length; j++)
-        if (selectedPoints[i][j]) {
-          indicesSelected.push(j);
-          total += rubric[0].col_points[i];
-        }
-    }
-
-    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) }, { points_selected: indicesSelected, total: total });
+    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) }, { points_selected: selectedPoints, total: total });
     if (error) {
       console.error("upload Error")
       return;
@@ -366,7 +357,7 @@ export default function StudentGradePage() {
               {/* Tabs */}
               {selectedTab == 0 ?
                 (<div>
-                  <StudentRubric setSelectedPoints={setSelectedPoints} selectedPoints={selectedPoints} rubric={rubric} />
+                  <StudentRubric setSelectedPoints={setSelectedPoints} selectedPoints={selectedPoints} rubric={rubric} maxPoints={maxPoints} setTotal={setTotal} total={total} />
                 </div>)
                 :
                 (<div>
