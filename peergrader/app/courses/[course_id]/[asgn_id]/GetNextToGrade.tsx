@@ -17,7 +17,7 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
 
     if (isUserLoading) {
         return <div>Loading...</div>;
-    }
+    }   
 
     if (isError || !currentUser) {
         return <div>Error</div>;
