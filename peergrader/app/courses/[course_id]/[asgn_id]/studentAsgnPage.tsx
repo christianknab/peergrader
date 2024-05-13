@@ -7,6 +7,8 @@ import ListGraded from './ListGraded';
 import GetNextToGrade from './GetNextToGrade';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { format } from 'date-fns';
+import UploadButton from './UploadButton';
 
 interface AsgnData {
   name: string;
@@ -58,6 +60,7 @@ export default function StudentAsgnPage() {
 
 
   useEffect(() => {
+    // get asgn data for asgn page
     async function fetchAsgnData() {
       try {
         const { data: asgnData, error: asgnError } = await supabase
@@ -66,12 +69,12 @@ export default function StudentAsgnPage() {
           .eq('asgn_id', asgn_id)
           .single();
 
-          const { data: phase, error: phaseError } = await supabase.rpc('get_assignment_phase', {
-            start_date_submission: asgnData?.start_date_submission,
-            end_date_submission: asgnData?.end_date_submission,
-            start_date_grading: asgnData?.start_date_grading,
-            end_date_grading: asgnData?.end_date_grading
-          });
+        const { data: phase, error: phaseError } = await supabase.rpc('get_assignment_phase', {
+          start_date_submission: asgnData?.start_date_submission,
+          end_date_submission: asgnData?.end_date_submission,
+          start_date_grading: asgnData?.start_date_grading,
+          end_date_grading: asgnData?.end_date_grading
+        });
 
         if (asgnError || phaseError) {
           console.error('Error fetching data:', asgnError || phaseError);
@@ -125,17 +128,50 @@ export default function StudentAsgnPage() {
               <h2 className="text-xl font-semibold">Assignment: {asgnData.name} -- Phase: {asgnData.phase}</h2>
             </div>
           )}
-          <div className="flex space-x-4">
-            <div className="w-full">
-              <MySubmission asgn_id={asgn_id} />
+          {asgnData && (
+            <div>
+              {(() => {
+                switch (asgnData.phase) {
+                  case 'Early':
+                    return <div>This assignment opens for submission {format(asgnData.start_date_submission, 'MMMM d, yyyy h:mm a')}.</div>;
+                  case 'Submit':
+                    return (
+                      <div className="flex flex-col items-center space-y-4">
+                        <MySubmission asgn_id={asgn_id} />
+                        <div className="w-full items-center">
+                          <UploadButton asgn_id={asgn_id} />
+                        </div>
+                      </div>
+                    );
+                  case 'Grading':
+                    return (
+                      <div className="flex space-x-4">
+                        <div className="w-full">
+                          <MySubmission asgn_id={asgn_id} />
+                        </div>
+                        <div className="w-full flex flex-col space-y-4">
+                          <ListGraded course_id={course_id} asgn_id={asgn_id} />
+                          <div className="flex justify-center w-full">
+                            <GetNextToGrade course_id={course_id} asgn_id={asgn_id} />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  case 'Closed':
+                    return (
+                      <div className="flex space-x-4">
+                        <div className="w-full">
+                          <MySubmission asgn_id={asgn_id} />
+                        </div>
+                        <div className="w-full flex flex-col space-y-4">
+                          <ListGraded course_id={course_id} asgn_id={asgn_id} />
+                        </div>
+                      </div>
+                    );
+                }
+              })()}
             </div>
-            {(asgnData?.phase == "Grading")&&<div className="w-full flex flex-col space-y-4">
-              <ListGraded course_id={course_id} asgn_id={asgn_id} />
-              <div className='flex justify-center w-full'>
-                <GetNextToGrade course_id={course_id} asgn_id={asgn_id} />
-              </div>
-            </div>}
-          </div>
+          )}
         </div>
       </main>
       <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">

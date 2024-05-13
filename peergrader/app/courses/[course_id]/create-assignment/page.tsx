@@ -54,7 +54,7 @@ export default function CreateAssignmentPage() {
                 // Upload assignment and get the asgnId
                 var bcrypt = require('bcryptjs');
                 let asgn_id: string = await bcrypt.hash(`${new Date().toISOString()}${assignmentName}${params.courseid}${currentUser.uid}`, 5);
-                asgn_id.replace(/[^a-zA-Z0-9]/g, 'p');
+                asgn_id = asgn_id.replace(/[^a-zA-Z0-9]/g, 'p');
                 const { data: assignmentData, error: assignmentError } = await supabase
                     .from('assignments')
                     .insert([
