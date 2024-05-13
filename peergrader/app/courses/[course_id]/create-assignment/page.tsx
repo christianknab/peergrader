@@ -33,8 +33,8 @@ export default function CreateAssignmentPage() {
     useEffect(() => {
         const fetchRubric = async () => {
             try {
-                const { data, error } = await supabase.rpc('get_rubric', { asgn_id_param: 1 }); // hardcoded to 1 to get default rubric
-                console.log(data);
+                const { data, error } = await supabase.rpc('get_rubric', { asgn_id_param: "1" }); // hardcoded to 1 to get default rubric
+                console.log('data:', data);
                 if (error) {
                     throw new Error('Error fetching rubric');
                 }
@@ -46,23 +46,25 @@ export default function CreateAssignmentPage() {
         fetchRubric();
     }, []);
 
-    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date) => {
+    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, max_score: number, num_peergrades: number) => {
         if (currentUser) {
             try {
                 setIsLoading(true);
 
                 // Upload assignment and get the asgnId
+                var bcrypt = require('bcryptjs');
+                let asgn_id = await bcrypt.hash(`${new Date().toISOString()}${assignmentName}${params.courseid}${currentUser.uid}`, 5);
                 const { data: assignmentData, error: assignmentError } = await supabase
                     .from('assignments')
                     .insert([
-                        { name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading, start_date_submission: startSubmitDate, end_date_submission: endSubmitDate, start_date_grading: startGradeDate, end_date_grading: endGradeDate },
+                        { asgn_id: asgn_id, name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading, start_date_submission: startSubmitDate, end_date_submission: endSubmitDate, start_date_grading: startGradeDate, end_date_grading: endGradeDate, max_score: max_score, num_peergrades: num_peergrades },
                     ]).select();
 
                 if (assignmentError) {
                     throw new Error(`Error creating assignment: ${assignmentError.message}`);
                 }
 
-                const assignmentId = assignmentData[0].asgn_id;
+                const assignmentId: string = assignmentData[0].asgn_id;
                 const colIds = [];
                 const rowNames = [];
                 const rowPoints = [];
