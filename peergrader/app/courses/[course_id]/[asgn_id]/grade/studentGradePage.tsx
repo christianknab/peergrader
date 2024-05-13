@@ -239,14 +239,7 @@ export default function StudentGradePage() {
   if (!owner || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
   return (
     <main>
-      <div className="w-full flex justify-between items-center p-4 light-grey">
-        <button
-          className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-          onClick={() => router.back()}>
-          Return to Assignment
-        </button>
-        <span className="font-bold text-lg">PeerGrader</span>
-      </div>
+
       <div className='flex w-full'>
         {addPointSelected && <div style={{ position: 'fixed', left: `${columnWidth / 2}%`, transform: 'translate(-50%, 0)', top: 13, zIndex: 50 }}>
           <div className='bg-gray-800 rounded-full py-1 px-4'>
@@ -322,6 +315,14 @@ export default function StudentGradePage() {
 
         <div style={{ width: `${columnWidth}%` }}>
           <div className='overflow-y-auto h-screen' ref={pdfContainerRef}>
+            <div className="w-full flex justify-between items-center px-4 py-2 light-grey">
+              <button
+                className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                onClick={() => router.back()}>
+                Return to Assignment
+              </button>
+              <span className="font-bold text-lg">PeerGrader</span>
+            </div>
             <PDFView fileUrl={publicUrl}
               width={PDFWidth} onPageClick={documentClickHandler}
               annotationMarkers={selectedTab == 1 ? annotationMarkers : []}
@@ -373,10 +374,12 @@ export default function StudentGradePage() {
                           key={`comment${index}`}
                           onClick={(_) => setSelectedIndex(index)}>
                           {/* Circle */}
-                          <div className='w-14 h-14 p-3'>
-                            <button className="w-full h-full rounded-full aspect-square" style={{ backgroundColor: supportedColors[value.colorIndex] }} onClick={(_) => commentColorClickHandler(index)}>
-                              {index + 1}
-                            </button>
+                          <div className='flex flex-col'>
+                            <div className='w-14 h-14 p-3'>
+                              <button className="w-full h-full rounded-full aspect-square" style={{ backgroundColor: supportedColors[value.colorIndex] }} onClick={(_) => commentColorClickHandler(index)}>
+                                {index + 1}
+                              </button>
+                            </div>
                           </div>
                           {/* Text */}
                           <div className='w-full'>
@@ -387,7 +390,7 @@ export default function StudentGradePage() {
                               placeholder="Add a comment..."
                               value={annotationMarkers[index].text}
                               onChange={(event) => handleCommentChanged(event, index)}
-                            // onFocus={(_)=>setSelectedIndex(index)}
+                            
                             />
                             <div className='flex'>
                               <div className="w-6 h-6 p-0.5">
@@ -426,9 +429,9 @@ export default function StudentGradePage() {
           </div>
         </div>
       </div>
-      <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+      {/* <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
         <p>&copy;2024 PeerGrader</p>
-      </footer>
+      </footer> */}
     </main>
   );
 }
