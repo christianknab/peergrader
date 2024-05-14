@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Rubric } from './page';
+import { simple_description } from './AssignmentForm';
+import SettingsIcon from '@/components/icons/Settings';
+import MinusIcon from '@/components/icons/Minus';
+import PlusIcon from '@/components/icons/Plus';
 
 interface SimpleRubric {
     rubric: Rubric[];
@@ -9,6 +13,11 @@ interface SimpleRubric {
 }
 
 export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: SimpleRubric) => {
+    const [showSettings, setShowSettings] = useState(false);
+
+    const toggleSettings = () => {
+        setShowSettings(!showSettings);
+    };
 
     const handleColChange = (index: number, categoryIndex: number, value: string) => {
         const newRubric = [...rubric];
@@ -33,6 +42,22 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
         return Math.max(...colPoints.map(point => Number.isNaN(point) ? 0 : point));
     };
 
+    const addRow = () => {
+        const newRow = {
+            names: [""],
+            descriptions: [simple_description],
+            row_points: [10],
+            col_points: [10]
+        };
+        setRubric([...rubric, newRow]);
+    };
+
+    const delRow = (rowIndex: number) => {
+        const newRubric = [...rubric];
+        newRubric.splice(rowIndex, 1);
+        setRubric(newRubric);
+    };
+
     // Make this less operations!!
     function getTotal(): number {
         let total = 0;
@@ -45,6 +70,7 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
     };
 
     return (<div className="mb-3">
+        <button type="button" className="text-gray-500" onClick={toggleSettings}>{SettingsIcon()}</button>
         <table className="border-l table-auto max-w-screen-lg">
             <thead>
                 <tr>
@@ -83,10 +109,13 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
                                     ))}
                                 </ul>
                             </td>
-
                             <td className="border-l border-r border-b p-4">
                                 <input type="number" className={`border text-sm rounded-lg block w-full p-2.5 ${rowPointMismatch ? 'bg-red-200' : ''}`} placeholder="10" value={rubricItem.row_points[0]} required onChange={(e) => handleRowPointChange(index, e.target.valueAsNumber)} title={rowPointMismatch ? 'Row points do not match the highest column points!' : ''} />
                             </td>
+                            <td>{showSettings &&
+                                (<div className="flex justify-center p-2"><button type="button" className="text-red-500" role="alert" onClick={() => delRow(index)}>
+                                    {MinusIcon()}
+                                </button></div>)}</td>
                         </tr>
                     )
                 })}
@@ -95,5 +124,8 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
                 <td className="border-r border-b">Total: {getTotal()}</td>
             </tbody>
         </table>
+        {showSettings &&
+            (
+                <div className="flex justify-center p-2"><button type="button" className="text-gray-500" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
     </div>)
 });

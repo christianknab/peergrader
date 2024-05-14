@@ -22,19 +22,21 @@ function addDays(date: string | number | Date, days: number) {
     return result;
 }
 
+export const simple_description: string = `10: Excellent work.
+8-9: Good work, some minor flaws.
+6-7: Satisfactory work, missing some work.
+5-6: Does some work, in the right direction.
+3-4: Barely any work.
+1-2: Little work put in.
+0: Submission missing.`;
+
 export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: AssignmentFormProps) => {
     const [assignmentName, setAssignmentName] = useState('');
     const [anonymous, setAnonymous] = useState(anonymousGrading);
     const [rubric, setRubric] = useState<Rubric[]>(initialRubric);
     const [simple_rubric, setSimpleRubric] = useState<Rubric[]>([{
         names: ["Overall Grade"],
-        descriptions: [`10: Excellent work.
-8-9: Good work, some minor flaws.
-6-7: Satisfactory work, missing some work.
-5-6: Does some work, in the right direction.
-3-4: Barely any work.
-1-2: Little work put in.
-0: Submission missing.`],
+        descriptions: [simple_description],
         row_points: [10],
         col_points: [10]
     }]);
@@ -99,7 +101,6 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     function combineDateTime(dateString: any, timeString: any) {
         // Combine date and time string into a full ISO string format
         const dateTimeString = `${dateString.toISOString().split('T')[0]}T${timeString}:00`; // Adding seconds '00' for full format
-        console.log(dateTimeString);
         return new Date(dateTimeString);
     }
 
