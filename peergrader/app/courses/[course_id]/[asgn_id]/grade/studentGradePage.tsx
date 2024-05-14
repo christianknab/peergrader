@@ -38,19 +38,26 @@ export default function StudentGradePage() {
   // For rubric
   const [rubric, setRubric] = useState<Rubric[]>([]);
   const [selectedPoints, setSelectedPoints] = useState<number[]>([]);
+  const [pointsGiven, setPointsGiven] = useState<number[]>([]);
   const [maxPoints, setMaxPoints] = useState<number>(0);
   const [total, setTotal] = useState<number>(0);
+  const [numInput, setNumInput] = useState<boolean>(false);
+
 
   const { data } = useRubricFromAsgnQuery(params.asgn_id.toString());
 
   useEffect(() => {
     if (data) {
       setRubric(data.rubric);
+      setNumInput(data.numberInput);
       setSelectedPoints(
         data.rubric.map((rubricItem: Rubric) =>
           -1
         )
       );
+      setPointsGiven(data.rubric.map((rubricItem: Rubric) =>
+        NaN
+      ));
       setMaxPoints(data.maxScore);
     }
   }, [data]);
@@ -169,11 +176,33 @@ export default function StudentGradePage() {
 
   const handleSubmit = async () => {
     // check grades
-    if (selectedPoints.includes(-1)) {
-      // Set error
-      setSelectedTab(0);
-      setIsGradesIncomplete(true);
-      return;
+    if (!numInput) {
+      if (selectedPoints.includes(-1)) {
+        // Set error
+        setSelectedTab(0);
+        setIsGradesIncomplete(true);
+        return;
+      }
+    }
+    if (numInput) {
+      let invalid: boolean = false;
+      if (pointsGiven.includes(NaN)) {
+        invalid = true;
+      }
+      else {
+        pointsGiven.forEach((num, index) => {
+          if (num > Math.max(...rubric[index].row_points)) {
+            invalid = true;
+          }
+        }
+        );
+      }
+      if (invalid) {
+        // Set error
+        setSelectedTab(0);
+        setIsGradesIncomplete(true);
+        return;
+      }
     }
     // check comments
     for (let index = 0; index < annotationMarkers.length; index++) {
@@ -186,7 +215,7 @@ export default function StudentGradePage() {
       }
     }
 
-    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) }, { points_selected: selectedPoints, total: total });
+    const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) }, { points_selected: !numInput ? selectedPoints : null, points_given: numInput ? pointsGiven : null, total: total });
     if (error) {
       console.error("upload Error")
       return;
@@ -358,7 +387,7 @@ export default function StudentGradePage() {
               {/* Tabs */}
               {selectedTab == 0 ?
                 (<div>
-                  <StudentRubric setSelectedPoints={setSelectedPoints} selectedPoints={selectedPoints} rubric={rubric} maxPoints={maxPoints} setTotal={setTotal} total={total} />
+                  <StudentRubric setSelectedPoints={setSelectedPoints} selectedPoints={selectedPoints} setPointsGiven={setPointsGiven} pointsGiven={pointsGiven} rubric={rubric} maxPoints={maxPoints} setTotal={setTotal} total={total} numInput={numInput} />
                 </div>)
                 :
                 (<div>
@@ -390,7 +419,7 @@ export default function StudentGradePage() {
                               placeholder="Add a comment..."
                               value={annotationMarkers[index].text}
                               onChange={(event) => handleCommentChanged(event, index)}
-                            
+
                             />
                             <div className='flex'>
                               <div className="w-6 h-6 p-0.5">

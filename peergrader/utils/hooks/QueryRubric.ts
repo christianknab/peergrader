@@ -17,10 +17,10 @@ function useRubricFromAsgnQuery(asgnId: string) {
         throw new Error(`Error fetching rubric: ${rubricError.message}`);
       }
 
-      const { data: maxScoreData, error: maxScoreError, status: maxScoreStatus } =
+      const { data: assignmentData, error: maxScoreError, status: maxScoreStatus } =
         await supabase
           .from('assignments')
-          .select('max_score')
+          .select('max_score, number_input')
           .eq('asgn_id', asgnId)
           .single();
 
@@ -29,7 +29,7 @@ function useRubricFromAsgnQuery(asgnId: string) {
         throw new Error(`Error fetching max score: ${maxScoreError.message}`);
       }
 
-      return { rubric: rubricData, maxScore: maxScoreData.max_score };
+      return { rubric: rubricData, maxScore: assignmentData.max_score, numberInput: assignmentData.number_input };
     } catch (error) {
       console.error('Error in query function:', error);
       throw error;
