@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import UploadButton from './UploadButton';
+import ListGrades from './ListGrades';
 
 interface AsgnData {
   name: string;
@@ -165,6 +166,7 @@ export default function StudentAsgnPage() {
                         </div>
                         <div className="w-full flex flex-col space-y-4">
                           <ListGraded course_id={course_id} asgn_id={asgn_id} />
+                          <ListGrades course_id={course_id} asgn_id={asgn_id} />
                         </div>
                       </div>
                     );
