@@ -4,12 +4,18 @@ import { createClient } from '@/utils/supabase/client';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AssignmentForm } from './AssignmentForm';
+import Link from 'next/link';
 
 export interface Rubric {
     names: string[];
     descriptions: string[];
     row_points: number[];
     col_points: number[];
+}
+
+interface CourseData {
+    owner: string;
+    name: string;
 }
 
 export default function CreateAssignmentPage() {
@@ -44,6 +50,34 @@ export default function CreateAssignmentPage() {
         };
         fetchRubric();
     }, []);
+
+    const [courseData, setCourseData] = useState<CourseData | null>(null);
+    const course_id = params.course_id as string;
+
+    useEffect(() => {
+        async function fetchCourseData() {
+        try {
+            const { data, error } = await supabase
+            .from('courses')
+            .select('owner, name')
+            .eq('course_id', course_id)
+            .single();
+
+            if (error) {
+            console.error('Error fetching course data:', error);
+            } else {
+            setCourseData(data);
+            }
+        } catch (error) {
+            console.error('Error fetching course data:', error);
+        }
+        }
+
+        if (course_id) {
+        fetchCourseData();
+        }
+    }, [course_id]);
+
 
     const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numberInput: boolean) => {
         if (currentUser) {
@@ -133,21 +167,40 @@ export default function CreateAssignmentPage() {
             <div className="w-full flex justify-between items-center p-4 light-grey">
                 <button
                     className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                    onClick={() => router.back()}>
-                    Return to Home
+                    onClick={() => router.push('/dashboard')}>
+                    Return to Dashboard
                 </button>
                 <span className="font-bold text-lg">PeerGrader</span>
             </div>
-            <div className="px-12">
-                <AssignmentForm
-                    onSubmit={handleSubmit}
-                    initialRubric={rubric}
-                    anonymousGrading={true}
-                    startDate={defaultStartDate}
-                    endDate={defaultEndDate}
-                    startTime="00:00"
-                    endTime="23:59"
-                />
+            <div className="w-4/5 mx-auto">
+                <nav className="rounded-md w-1/5 bg-light-grey">
+                <ul className="flex justify-between px-4 py-2">
+                    <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
+                    <li className="text-black hover:text-blue-800">Students</li>
+                    <li className="text-black hover:text-blue-800">Grades</li>
+                </ul>
+                </nav>
+                <header>
+                    <h2 className="bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
+                    {courseData?.name || 'Course Page'}
+                    </h2>
+                </header>
+                <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
+                    <div className="light-blue p-5">
+                        <p className="text-2xl text-left font-semibold text-white rounded-lg">Create Assignment</p>
+                    </div>
+                    <div className="light-white flex-grow p-6">
+                        <AssignmentForm
+                            onSubmit={handleSubmit}
+                            initialRubric={rubric}
+                            anonymousGrading={true}
+                            startDate={defaultStartDate}
+                            endDate={defaultEndDate}
+                            startTime="00:00"
+                            endTime="23:59"
+                        />
+                    </div>
+                </div>
             </div>
             <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
                 <p>&copy;2024 PeerGrader</p>
