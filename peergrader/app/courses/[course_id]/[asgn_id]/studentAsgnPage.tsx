@@ -22,10 +22,7 @@ interface AsgnData {
   max_score: number;
 }
 
-interface CourseData {
-  owner: string;
-  name: string;
-}
+
 export interface SubmissionData {
   file_id: string;
   filename: string;
@@ -40,14 +37,14 @@ export default function StudentAsgnPage() {
   const course_id = params.course_id as string;
   const asgn_id = params.asgn_id as string;
   const [asgnData, setAsgnData] = useState<AsgnData | null>(null);
-
+  const [submission, setSubmission] = useState<SubmissionData | null>(null);
   const {
     data: courseData,
     isLoading: courseDataLoading,
     isError: courseDataError
   } = useCourseDataQuery(course_id);
 
-  if (courseDataLoading) { return <div>Loading...</div>; }
+
   if (courseDataError) { return <div>Error</div>; }
 
   useEffect(() => {
@@ -88,7 +85,7 @@ export default function StudentAsgnPage() {
     fetchAsgnData();
   }, [asgn_id]);
 
-
+  if (courseDataLoading) { return (<div>Loading...</div>); }
   return (
     <div className="w-full min-h-screen flex flex-col">
       <main className="flex-1 w-full">
@@ -129,7 +126,7 @@ export default function StudentAsgnPage() {
                   case 'Submit':
                     return (
                       <div className="flex flex-col items-center space-y-4">
-                        <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission}/>
+                        <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         <div className="w-full items-center">
                           <UploadButton asgn_id={asgn_id} />
                         </div>
@@ -139,7 +136,7 @@ export default function StudentAsgnPage() {
                     return (
                       <div className="flex space-x-4">
                         <div className="w-full">
-                          <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission}/>
+                          <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                         <div className="w-full flex flex-col space-y-4">
                           <ListGraded course_id={course_id} asgn_id={asgn_id} />
@@ -153,11 +150,11 @@ export default function StudentAsgnPage() {
                     return (
                       <div className="flex space-x-4">
                         <div className="w-full">
-                          <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission}/>
+                          <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                         <div className="w-full flex flex-col space-y-4">
                           <ListGraded course_id={course_id} asgn_id={asgn_id} />
-                          <ListGrades course_id={course_id} asgn_id={asgn_id} file_id={submission?.file_id} max_score={asgnData.max_score}/>
+                          <ListGrades course_id={course_id} asgn_id={asgn_id} file_id={submission?.file_id} max_score={asgnData.max_score} />
                         </div>
                       </div>
                     );
