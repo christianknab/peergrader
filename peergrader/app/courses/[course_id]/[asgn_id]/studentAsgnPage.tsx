@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { format } from 'date-fns';
 import UploadButton from './UploadButton';
 import ListGrades from './ListGrades';
+import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 
 interface AsgnData {
   name: string;
@@ -20,45 +21,22 @@ interface AsgnData {
   end_date_grading: Date;
 }
 
-interface CourseData {
-  owner: string;
-  name: string;
-}
-
 export default function StudentAsgnPage() {
   const router = useRouter();
   const supabase = createClient();
   const params = useParams();
   const course_id = params.course_id as string;
   const asgn_id = params.asgn_id as string;
-
   const [asgnData, setAsgnData] = useState<AsgnData | null>(null);
-  const [courseData, setCourseData] = useState<CourseData | null>(null);
 
-  useEffect(() => {
-    async function fetchCourseData() {
-      try {
-        const { data, error } = await supabase
-          .from('courses')
-          .select('owner, name')
-          .eq('course_id', course_id)
-          .single();
+  const {
+    data: courseData,
+    isLoading: courseDataLoading,
+    isError: courseDataError
+  } = useCourseDataQuery(course_id);
 
-        if (error) {
-          console.error('Error fetching course data:', error);
-        } else {
-          setCourseData(data);
-        }
-      } catch (error) {
-        console.error('Error fetching course data:', error);
-      }
-    }
-
-    if (course_id) {
-      fetchCourseData();
-    }
-  }, [course_id]);
-
+  if (courseDataLoading) { return <div>Loading...</div>; }
+  if (courseDataError) { return <div>Error</div>; }
 
   useEffect(() => {
     // get asgn data for asgn page
