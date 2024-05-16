@@ -18,11 +18,18 @@ interface AsgnData {
   end_date_submission: Date;
   start_date_grading: Date;
   end_date_grading: Date;
+  max_score: number;
 }
 
 interface CourseData {
   owner: string;
   name: string;
+}
+export interface SubmissionData {
+  file_id: string;
+  filename: string;
+  created_at: string;
+  view_url: string;
 }
 
 export default function StudentAsgnPage() {
@@ -34,6 +41,7 @@ export default function StudentAsgnPage() {
 
   const [asgnData, setAsgnData] = useState<AsgnData | null>(null);
   const [courseData, setCourseData] = useState<CourseData | null>(null);
+  const [submission, setSubmission] = useState<SubmissionData | null>(null);
 
   useEffect(() => {
     async function fetchCourseData() {
@@ -66,7 +74,7 @@ export default function StudentAsgnPage() {
       try {
         const { data: asgnData, error: asgnError } = await supabase
           .from('assignments')
-          .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading')
+          .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading, max_score')
           .eq('asgn_id', asgn_id)
           .single();
 
@@ -81,6 +89,7 @@ export default function StudentAsgnPage() {
           console.error('Error fetching data:', asgnError || phaseError);
         } else {
           setAsgnData({
+            max_score: asgnData.max_score,
             name: asgnData.name,
             phase: phase,
             start_date_submission: asgnData?.start_date_submission,
@@ -138,7 +147,7 @@ export default function StudentAsgnPage() {
                   case 'Submit':
                     return (
                       <div className="flex flex-col items-center space-y-4">
-                        <MySubmission asgn_id={asgn_id} />
+                        <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission}/>
                         <div className="w-full items-center">
                           <UploadButton asgn_id={asgn_id} />
                         </div>
@@ -148,7 +157,7 @@ export default function StudentAsgnPage() {
                     return (
                       <div className="flex space-x-4">
                         <div className="w-full">
-                          <MySubmission asgn_id={asgn_id} />
+                          <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission}/>
                         </div>
                         <div className="w-full flex flex-col space-y-4">
                           <ListGraded course_id={course_id} asgn_id={asgn_id} />
@@ -162,11 +171,11 @@ export default function StudentAsgnPage() {
                     return (
                       <div className="flex space-x-4">
                         <div className="w-full">
-                          <MySubmission asgn_id={asgn_id} />
+                          <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission}/>
                         </div>
                         <div className="w-full flex flex-col space-y-4">
                           <ListGraded course_id={course_id} asgn_id={asgn_id} />
-                          <ListGrades course_id={course_id} asgn_id={asgn_id} />
+                          <ListGrades course_id={course_id} asgn_id={asgn_id} file_id={submission?.file_id} max_score={asgnData.max_score}/>
                         </div>
                       </div>
                     );

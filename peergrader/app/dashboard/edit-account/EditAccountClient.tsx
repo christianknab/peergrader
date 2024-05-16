@@ -14,7 +14,7 @@ export default function EditAccountClient({ user }: { user: User }) {
     const router = useRouter();
 
     const currentUserMutation = useCurrentUserMutation();//router.push("/dashboard"); 
-    const save = async (formData: FormData) => {
+    const save = (formData: FormData) => {
         const accountType = formData.get("account_type");
         currentUserMutation.mutate({ uid: user.id, email: user.email!, is_teacher: accountType == "teacher" }, { onSuccess: () => { router.push("/dashboard"); } });
         // if (!currentUserMutation.error) { router.push("/dashboard"); }

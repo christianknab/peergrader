@@ -2,7 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { createClient } from "../supabase/client";
 
-function useOwnerFromFileQuery( fileId: string) {
+function useOwnerFromFileQuery(fileId: string, enabled: boolean) {
 
     const supabase = createClient();
     const queryKey = [fileId, "fileOwner"];
@@ -11,7 +11,7 @@ function useOwnerFromFileQuery( fileId: string) {
         const { data } = await supabase.from("submissions").select("owner").eq("file_id", fileId).limit(1);
         return data?.[0].owner;
     };
-    return useQuery({ queryKey: queryKey, queryFn, staleTime: 3 * 60 * 1000 });
+    return useQuery({ queryKey: queryKey, queryFn, enabled, staleTime: 3 * 60 * 1000 });
 }
 
 export default useOwnerFromFileQuery;

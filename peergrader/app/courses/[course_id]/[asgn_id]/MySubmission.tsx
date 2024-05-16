@@ -1,21 +1,19 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import { SubmissionData } from './studentAsgnPage';
 
 
-interface SubmissionData {
-  file_id: string;
-  filename: string;
-  created_at: string;
-  view_url: string;
-}
+
 
 interface MySubmissionProps {
   asgn_id: string;
+  submission: SubmissionData | null;
+  setSubmission: Dispatch<SetStateAction<SubmissionData | null>>;
 }
 
-export default function MySubmission({ asgn_id }: MySubmissionProps) {
+export default function MySubmission({ asgn_id, submission, setSubmission}: MySubmissionProps) {
   const supabase = createClient();
 
   const {
@@ -31,7 +29,6 @@ export default function MySubmission({ asgn_id }: MySubmissionProps) {
   if (isError || !currentUser) {
     return <div>Error</div>;
   }
-  const [submission, setSubmission] = useState<SubmissionData | null>(null);
 
   useEffect(() => {
     if (currentUser) {
