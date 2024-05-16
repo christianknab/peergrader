@@ -2,9 +2,9 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
-import ListAsgn from '@/app/courses/[course_id]/ListAsgn';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import StudentListAsgn from './StudentListAsgn';
 
 interface CourseData {
     owner: string;
@@ -94,7 +94,7 @@ export default function StudentCoursePage() {
                                 <div className="light-blue p-5"> 
                                     <p className="text-xl text-left font-semibold">Assignments</p>
                                 </div>
-                                < ListAsgn course_id={course_id} /> 
+                                < StudentListAsgn course_id={course_id} /> 
                             </div>
                         </div>
                     </div>
