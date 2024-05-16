@@ -1,13 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 
-interface CourseData {
-  name: string;
-}
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -15,33 +10,15 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const router = useRouter();
-  const { course_id } = useParams();
-  const [courseData, setCourseData] = useState<CourseData | null>(null);
-  const supabase = createClient();
+  const course_id = useParams().course_id as string;
+  const {
+    data: courseData,
+    isLoading: courseDataLoading,
+    isError: courseDataError
+  } = useCourseDataQuery(course_id);
+  if (courseDataLoading) { return <div>Loading...</div>; }
+  if (courseDataError) { return <div>Error</div>; }
 
-  useEffect(() => {
-    async function fetchCourseData() {
-      try {
-        const { data, error } = await supabase
-          .from('courses')
-          .select('name')
-          .eq('course_id', course_id)
-          .single();
-
-        if (error) {
-          console.error('Error fetching course data:', error);
-        } else {
-          setCourseData(data);
-        }
-      } catch (error) {
-        console.error('Error fetching course data:', error);
-      }
-    }
-
-    if (course_id) {
-      fetchCourseData();
-    }
-  }, [course_id]);
 
   return (
     <div className="w-full min-h-screen flex flex-col">

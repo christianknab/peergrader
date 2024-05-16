@@ -39,83 +39,25 @@ export default function StudentListAllAsgn() {
     }
 
     const courseIds = accountCourses.map((row) => row.course_id);
+    const allAsgns: AsgnData[] = []
 
-    // Fetch assignments for the user's courses
-    const { data: assignments, error: assignmentsError } = await supabase
-      .from('assignments')
-      .select('asgn_id, name, course_id, start_date_submission, end_date_submission, start_date_grading, end_date_grading')
-      .in('course_id', courseIds);
+    for (const courseId of courseIds) {
+      const { data, error } = await supabase.rpc('get_asgns_for_course_student', { course_id_param: courseId, user_id_param: currentUser?.uid });
 
-    if (assignmentsError) {
-      console.error('Error fetching user assignments:', assignmentsError);
-      return [];
+      if (error) {
+        console.error('Error fetching assignments:', error);
+        continue;
+      }
+
+      const assignmentsWithCourseId = data.map((asgnData: AsgnData) => ({
+        ...asgnData,
+        course_id: courseId,
+      }));
+
+      allAsgns.push(...assignmentsWithCourseId);
     }
 
-    const asgnDataWithGrades: AsgnData[] = await Promise.all(
-      assignments.map(async (assignment) => {
-        // get phase for each asgn
-        const { data: phase, error: phaseError } = await supabase.rpc('get_assignment_phase', {
-          start_date_submission: assignment.start_date_submission,
-          end_date_submission: assignment.end_date_submission,
-          start_date_grading: assignment.start_date_grading,
-          end_date_grading: assignment.end_date_grading
-        });
-
-        // get file id for each asgn
-        const { data: submissionData, error: submissionsError } = await supabase
-          .from('submissions')
-          .select('file_id')
-          .eq('owner', currentUser?.uid)
-          .eq('asgn_id', assignment.asgn_id)
-          .order('created_at', { ascending: false })
-          .limit(1)
-
-        // if there is a submission get the grade if the phase is closed
-        if (submissionData && submissionData.length > 0 && phase == 'Closed') {
-          const { data: average_grade, error: averageGradeError } = await supabase.rpc('calculate_average_grade', { file_id_param: submissionData[0].file_id });
-
-          if (averageGradeError) {
-            return {
-              asgn_id: assignment.asgn_id,
-              name: assignment.name,
-              average_grade: null,
-              phase: phase,
-              start_date_submission: assignment.start_date_submission,
-              end_date_submission: assignment.end_date_submission,
-              start_date_grading: assignment.start_date_grading,
-              end_date_grading: assignment.end_date_grading,
-              course_id: assignment.course_id,
-            };
-          }
-          // if no errors
-          return {
-            asgn_id: assignment.asgn_id,
-            name: assignment.name,
-            average_grade: average_grade,
-            phase: phase,
-            start_date_submission: assignment.start_date_submission,
-            end_date_submission: assignment.end_date_submission,
-            start_date_grading: assignment.start_date_grading,
-            end_date_grading: assignment.end_date_grading,
-            course_id: assignment.course_id,
-          };
-        }
-        return {
-          asgn_id: assignment.asgn_id,
-          name: assignment.name,
-          average_grade: null,
-          phase: phase,
-          start_date_submission: assignment.start_date_submission,
-          end_date_submission: assignment.end_date_submission,
-          start_date_grading: assignment.start_date_grading,
-          end_date_grading: assignment.end_date_grading,
-          course_id: assignment.course_id,
-        };
-
-      })
-    );
-
-    return asgnDataWithGrades;
+    return allAsgns;
   }
 
   return (
@@ -131,7 +73,7 @@ export default function StudentListAllAsgn() {
               <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-semibold">{assignment.name}</h3>
-                  {assignment.phase == 'Closed' ? 'Grade: ' + assignment.average_grade : 'Phase: ' + assignment.phase}
+                  {assignment.phase == 'Closed' ? (assignment.average_grade ? 'Final grade: ' + assignment.average_grade : 'Grade unavailable') : 'Phase: ' + assignment.phase}
                 </div>
               </div>
             </Link>)
