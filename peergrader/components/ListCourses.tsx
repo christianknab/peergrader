@@ -49,29 +49,12 @@ export default function ListCourses() {
             return data;
         }
         else {
-            const { data, error } = await supabase
-                .from('account_courses')
-                .select('course_id')
-                .eq('uid', userId);
-
+            const { data, error } = await supabase.rpc('get_courses_student', { user_id_param: userId });
             if (error) {
-                console.error('Error fetching user courses:', error);
-                return [];
+                console.error('Error fetching courses:', error);
+                return;
             }
-
-            const courseIds = data.map((row) => row.course_id);
-
-            const { data: coursesData, error: coursesError } = await supabase
-                .from('courses')
-                .select('course_id, name')
-                .in('course_id', courseIds);
-
-            if (coursesError) {
-                console.error('Error fetching course names:', coursesError);
-                return [];
-            }
-
-            return coursesData;
+            return data;
         }
     }
 

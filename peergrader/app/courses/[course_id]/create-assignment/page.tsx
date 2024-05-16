@@ -91,7 +91,7 @@ export default function CreateAssignmentPage() {
                 const { data: assignmentData, error: assignmentError } = await supabase
                     .from('assignments')
                     .insert([
-                        { asgn_id: asgn_id, name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading, start_date_submission: startSubmitDate, end_date_submission: endSubmitDate, start_date_grading: startGradeDate, end_date_grading: endGradeDate, max_score: maxScore, numPeergrades: numPeergrades, numberInput },
+                        { asgn_id: asgn_id, name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading, start_date_submission: startSubmitDate, end_date_submission: endSubmitDate, start_date_grading: startGradeDate, end_date_grading: endGradeDate, max_score: maxScore, num_peergrades: numPeergrades, number_input: numberInput },
                     ]).select();
 
                 if (assignmentError) {
