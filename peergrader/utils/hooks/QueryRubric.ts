@@ -16,7 +16,7 @@ function useRubricFromAsgnQuery(asgnId: string) {
         console.error("RPC Error:", rubricError.message);
         throw new Error(`Error fetching rubric: ${rubricError.message}`);
       }
-
+      // add to get_rubric later christian
       const { data: assignmentData, error: maxScoreError, status: maxScoreStatus } =
         await supabase
           .from('assignments')

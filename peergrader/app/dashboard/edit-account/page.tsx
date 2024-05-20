@@ -1,26 +1,20 @@
-
+"use client";
 import { createClient } from "@/utils/supabase/server";
-
-import { redirect } from "next/navigation";
 import EditAccountClient from "./EditAccountClient";
+import { redirect, useRouter } from "next/navigation";
 
-export default async function DashboardPage() {
-    const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        return redirect("/login");
-    }
-    
-// user={user}
-    return (<div>
-        <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-2 p-12">
-            <div className="bg-white shadow-lg rounded-md p-6 border">
-                <div className="pb-4"><h1 className="font-bold text-3xl">Edit Account</h1></div>
-                <EditAccountClient user={user}/> 
+export default function DashboardPage() {
 
+    const router = useRouter();
 
-            </div>
-
-        </div>
-    </div>);
+    return (
+        <div className="w-full"><div className="w-full flex justify-between items-center p-4 light-grey">
+            <button
+                onClick={() => router.push('/dashboard')}
+                className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
+                Return to Dashboard
+            </button>
+            <span className="font-bold text-lg">PeerGrader</span>
+        </div><EditAccountClient/> </div>
+    );
 }
