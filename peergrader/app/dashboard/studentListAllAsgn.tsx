@@ -4,6 +4,7 @@ import { createClient } from '@/utils/supabase/client';
 
 import Link from 'next/link';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import '@fortawesome/fontawesome-free/css/all.css';
 
 type AsgnData = {
   asgn_id: string;
@@ -42,7 +43,7 @@ export default function StudentListAllAsgn() {
     const allAsgns: AsgnData[] = []
 
     for (const courseId of courseIds) {
-      const { data, error } = await supabase.rpc('get_asgns_list', { course_id_param: courseId, user_id_param: currentUser?.uid });
+      const { data, error } = await supabase.rpc('get_asgns_for_course_student', { course_id_param: courseId, user_id_param: currentUser?.uid });
 
       if (error) {
         console.error('Error fetching assignments:', error);
@@ -65,18 +66,38 @@ export default function StudentListAllAsgn() {
       {asgns && asgns.length > 0 ? (
         <div className="grid grid-cols-1 gap-4">
           {asgns.map((assignment) => (
-            assignment && (<Link
-              key={assignment.asgn_id}
-              href={`/courses/${assignment.course_id}/${assignment.asgn_id}`}
-              className="block"
-            >
-              <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-lg font-semibold">{assignment.name}</h3>
-                  {assignment.phase == 'Closed' ? 'Final grade: ' + assignment.average_grade : 'Phase: ' + assignment.phase}
+            assignment && (
+              <Link
+                key={assignment.asgn_id}
+                href={`/courses/${assignment.course_id}/${assignment.asgn_id}`}
+                className="block"
+              >
+                <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <i className="fas fa-pencil-alt text-lg text-gray-700 mr-3"></i>
+                      <h3 className="text-lg font-semibold">{assignment.name}</h3>
+                    </div>
+                    <div className="text-right">
+                      <div>
+                        {assignment.phase === 'Closed' ? (
+                          assignment.average_grade ? (
+                            `Final grade: ${assignment.average_grade}`
+                          ) : (
+                            'Grade unavailable'
+                          )
+                        ) : (
+                          `Phase: ${assignment.phase}`
+                        )}
+                      </div>
+                      <div className="light-blue text-center">
+                        Due: {new Date(assignment.end_date_submission).getMonth() + 1}/{new Date(assignment.end_date_submission).getDate()}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </Link>)
+              </Link>
+            )
           ))}
         </div>
       ) : (

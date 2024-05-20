@@ -5,17 +5,13 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AssignmentForm } from './AssignmentForm';
 import Link from 'next/link';
+import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 
 export interface Rubric {
     names: string[];
     descriptions: string[];
     row_points: number[];
     col_points: number[];
-}
-
-interface CourseData {
-    owner: string;
-    name: string;
 }
 
 export default function CreateAssignmentPage() {
@@ -51,32 +47,14 @@ export default function CreateAssignmentPage() {
         fetchRubric();
     }, []);
 
-    const [courseData, setCourseData] = useState<CourseData | null>(null);
     const course_id = params.course_id as string;
-
-    useEffect(() => {
-        async function fetchCourseData() {
-        try {
-            const { data, error } = await supabase
-            .from('courses')
-            .select('owner, name')
-            .eq('course_id', course_id)
-            .single();
-
-            if (error) {
-            console.error('Error fetching course data:', error);
-            } else {
-            setCourseData(data);
-            }
-        } catch (error) {
-            console.error('Error fetching course data:', error);
-        }
-        }
-
-        if (course_id) {
-        fetchCourseData();
-        }
-    }, [course_id]);
+    const {
+        data: courseData,
+        isLoading: courseDataLoading,
+        isError: courseDataError
+    } = useCourseDataQuery(course_id);
+    if (courseDataLoading) { return <div>Loading...</div>; }
+    if (courseDataError) { return <div>Error</div>; }
 
 
     const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numberInput: boolean) => {

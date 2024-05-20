@@ -36,7 +36,7 @@ function useRubricFromAsgnQuery(asgnId: string) {
     }
   };
 
-  return useQuery({ queryKey: queryKey, queryFn, staleTime: 3_60_1000 });
+  return useQuery({ queryKey: queryKey, queryFn, staleTime: 3_60_1000, meta:{}});
 }
 
 export default useRubricFromAsgnQuery;
