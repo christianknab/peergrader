@@ -22,7 +22,6 @@ interface AsgnData {
   max_score: number;
 }
 
-
 export interface SubmissionData {
   file_id: string;
   filename: string;

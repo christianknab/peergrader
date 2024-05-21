@@ -27,20 +27,21 @@ export default function CreateCoursePage() {
     const [isLoading, setIsLoading] = useState(false);
 
     const createCourse = async () => {
-        if (!currentUser) {
-            alert('You must be logged in');
-            return;
-        }
-
         try {
             setIsLoading(true);
-            const { data, error } = await supabase.from('courses').insert([
-                { name: courseName, owner: currentUser.uid },
+
+            var bcrypt = require('bcryptjs');
+            let course_id: string = await bcrypt.hash(`${new Date().toISOString()}${courseName}${currentUser.uid}`, 5);
+            course_id = course_id.replace(/[^a-zA-Z0-9]/g, 'd');
+
+            const { error } = await supabase.from('courses').insert([
+                { course_id: course_id, name: courseName, owner: currentUser.uid },
             ]);
 
             if (error) {
                 console.error('Error creating course:', error);
             }
+            
             router.push('/courses')
         } catch (error) {
             console.error('Error creating course:', error);

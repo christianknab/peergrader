@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 
 interface AccountData {
+  uid: string;
   email: string;
+  first_name: string;
+  last_name: string;
 }
 
 export default function ListStudents({ course_id }: { course_id: string }) {
@@ -11,40 +14,23 @@ export default function ListStudents({ course_id }: { course_id: string }) {
   const [accounts, setAccounts] = useState<AccountData[]>([]);
 
   useEffect(() => {
-    fetchAccounts(course_id).then(setAccounts);
+    fetchStudents(course_id).then(setAccounts);
   }, [course_id]);
 
-  async function fetchAccounts(course_id: string) {
-    const { data: accountCourses, error: accountCoursesError } = await supabase
-      .from('account_courses')
-      .select('uid')
-      .eq('course_id', course_id);
-
-    if (accountCoursesError) {
-      console.error('Error fetching account courses:', accountCoursesError);
-      return [];
+  async function fetchStudents(course_id: string) {
+    const { data, error } = await supabase.rpc('get_students_in_course', { course_id_param: course_id });
+    if (error) {
+      console.error('Error fetching students:', error);
+      return;
     }
-
-    const uids = accountCourses?.map((ac) => ac.uid) || [];
-
-    const { data: accounts, error: accountsError } = await supabase
-      .from('accounts')
-      .select('email')
-      .in('uid', uids);
-
-    if (accountsError) {
-      console.error('Error fetching accounts:', accountsError);
-      return [];
-    }
-
-    return accounts || [];
+    return data;
   }
 
   return (
     <div>
       <ul>
         {accounts.map((account, index) => (
-          <li key={index}>{account.email}</li>
+          <li key={index}>{account.first_name} {account.last_name} - {account.email}</li>
         ))}
       </ul>
     </div>
