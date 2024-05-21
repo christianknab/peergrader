@@ -15,6 +15,6 @@ export default function DashboardPage() {
                 Return to Dashboard
             </button>
             <span className="font-bold text-lg">PeerGrader</span>
-        </div><EditAccountClient/> </div>
+        </div><EditAccountClient /> </div>
     );
 }

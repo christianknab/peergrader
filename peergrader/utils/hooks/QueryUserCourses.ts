@@ -12,7 +12,7 @@ interface CoursesData {
     course: Course[];
 }
 
-function useUserCoursesQuery( userId: string) {
+function useUserCoursesQuery( userId: string, enabled: boolean = true) {
 
     const supabase = createClient();
     const queryKey = [userId, "getCoursesStudent"];
@@ -21,7 +21,7 @@ function useUserCoursesQuery( userId: string) {
         const { data } = await supabase.rpc('get_courses_student', { user_id_param: userId });
         return { course: data };
     };
-    return useQuery<CoursesData>({ queryKey: queryKey, queryFn, staleTime: 3 * 60 * 1000 });
+    return useQuery<CoursesData>({ queryKey: queryKey, queryFn, staleTime: 3 * 60 * 1000, enabled });
 }
 
 export default useUserCoursesQuery;
