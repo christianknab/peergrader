@@ -138,7 +138,7 @@ export default function StudentAsgnPage() {
                           <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                         <div className="w-full flex flex-col space-y-4">
-                          <ListGraded course_id={course_id} asgn_id={asgn_id} />
+                          <ListGraded course_id={course_id} asgn_id={asgn_id} phase={asgnData.phase}/>
                           <div className="flex justify-center w-full">
                             <GetNextToGrade course_id={course_id} asgn_id={asgn_id} />
                           </div>
@@ -152,7 +152,7 @@ export default function StudentAsgnPage() {
                           <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                         <div className="w-full flex flex-col space-y-4">
-                          <ListGraded course_id={course_id} asgn_id={asgn_id} />
+                          <ListGraded course_id={course_id} asgn_id={asgn_id} phase={asgnData.phase}/>
                           <ListGrades course_id={course_id} asgn_id={asgn_id} file_id={submission?.file_id} max_score={asgnData.max_score} />
                         </div>
                       </div>

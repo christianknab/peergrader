@@ -30,7 +30,7 @@ export default function ListGrades({ course_id, asgn_id, file_id, max_score }: L
     }
     return (
         <div>
-            <h3>My Feedback:</h3>
+            {grades.length != 0 && (<h3>My Feedback:</h3>)}
             <ul>
                 {grades.map((item, index) => (
                     <li key={index}>

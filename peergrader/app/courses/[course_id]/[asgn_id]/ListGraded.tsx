@@ -4,13 +4,15 @@ import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import useSubmissionsGradedByUserQuery from '@/utils/hooks/QuerySubmissionsGradedByUser';
+import { Phase } from '@/utils/types/phaseEnum';
 
 interface ListGradedProps {
     course_id: string;
     asgn_id: string;
+    phase: string;
 }
 
-export default function ListGraded({ course_id, asgn_id }: ListGradedProps) {
+export default function ListGraded({ course_id, asgn_id, phase }: ListGradedProps) {
     const {
         data: currentUser,
         isLoading: isUserLoading,
@@ -44,7 +46,13 @@ export default function ListGraded({ course_id, asgn_id }: ListGradedProps) {
                             },
                         }}><div className='w-full h-10 pl-3 bg-btn-background hover:bg-btn-background-hover rounded-lg flex items-center'>
                                 <span className='text-lg'>
-                                    {`Submission ${index + 1} - ${submission.has_annotation ?'Edit Grade':'Finish Grading'}`}
+                                    {`Submission ${index + 1} - ${phase == Phase.grading ?
+                                        submission.has_annotation ?
+                                            'Edit Grade' :
+                                            'Finish Grading' :
+                                        submission.has_annotation ?
+                                            'Review Grade' :
+                                            'Grade Incomplete'}`}
                                 </span>
                             </div>
                         </Link>

@@ -21,6 +21,7 @@ import useRubricFromAsgnQuery from '@/utils/hooks/QueryRubric';
 import { useQueryClient } from '@tanstack/react-query';
 import GetPhaseFromId from '@/utils/queries/GetPhaseFromId';
 import { Phase } from '@/utils/types/phaseEnum';
+import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
@@ -41,42 +42,43 @@ export default function StudentGradePage() {
   const fileId = searchParams.get('file_id');
   const graderId = searchParams.get('grader');
   const asgnId = params.asgn_id.toString();
+  const commentSectionRef = useRef<HTMLDivElement>(null);
+  const tabs: (readonly string[]) = ["Grade", "Comment"];
+  const studentGrading: boolean = !graderId;
 
+  if (!fileId) return (<div>Error</div>);
+  const supabase = createClient();
   // For rubric
   const [selectedPoints, setSelectedPoints] = useState<number[]>([]);
   const [pointsGiven, setPointsGiven] = useState<number[]>([]);
   const [total, setTotal] = useState<number>(0);
 
-
   const { data: rubricData,
     isLoading: isRubricLoading,
     isError: isRubricError } = useRubricFromAsgnQuery(asgnId);
-  const supabase = createClient();
-
-  const commentSectionRef = useRef<HTMLDivElement>(null);
-  const tabs: (readonly string[]) = ["Grade", "Comment"];
-
-  const studentGrading: boolean = !graderId;
-  const isEditAble: boolean = studentGrading;
-  if (!fileId) return (<div>Error</div>);
-
-  const {
-    data: owner,
-    isLoading: isOwnerLoading,
-    isError: isOwnerError
-  } = useOwnerFromFileQuery(fileId, isEditAble);
   const {
     data: currentUser,
     isLoading: isUserLoading,
     isError: isCurrentUserError
   } = useCurrentUserQuery();
+  const {
+    data: phase,
+    isLoading: isPhaseLoading,
+    isError: isPhaseError
+  } = usePhaseFromIdQuery(asgnId, studentGrading);
+  const {
+    data: owner,
+    isLoading: isOwnerLoading,
+    isError: isOwnerError
+  } = useOwnerFromFileQuery(fileId, studentGrading);
+  const isEditable: boolean = studentGrading && (phase == Phase.grading);
 
-  const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${isEditAble ? owner : currentUser?.uid}/${fileId}` || '');
+  const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${studentGrading ? owner : currentUser?.uid}/${fileId}` || '');
 
   useEffect(() => {
     const fetchData = async () => {
-      if (isOwnerLoading || isUserLoading || isRubricLoading) return;
-      const { data } = await GetSubmissionGrade(supabase, isEditAble ? currentUser?.uid : graderId, fileId);
+      if (isOwnerLoading || isUserLoading || isRubricLoading || isPhaseLoading) return;
+      const { data } = await GetSubmissionGrade(supabase, studentGrading ? currentUser?.uid : graderId, fileId);
       setAnnotationMarkers(data?.annotation_data ?? []);
 
       if (data?.points_selected != null) {
@@ -95,13 +97,13 @@ export default function StudentGradePage() {
           NaN
         ));
       }
-      if(data?.total != null){
+      if (data?.total != null) {
         setTotal(data.total);
       }
 
     }
     fetchData();
-  }, [isOwnerLoading, isUserLoading, isRubricLoading]);
+  }, [isOwnerLoading, isUserLoading, isRubricLoading, isPhaseLoading]);
 
 
 
@@ -152,7 +154,7 @@ export default function StudentGradePage() {
   };
 
   const commentColorClickHandler = (index: number) => {
-    if (isEditAble) {
+    if (isEditable) {
       const newStates = [...annotationMarkers];
       if (newStates[index].colorIndex >= supportedColors.length - 1) {
         newStates[index].colorIndex = 0;
@@ -189,8 +191,8 @@ export default function StudentGradePage() {
   }
 
   const handleSubmit = async () => {
-    const {data:phase, error:phaseError} = await GetPhaseFromId(supabase, asgnId)
-    if(phaseError || phase != Phase.grading){
+    const { data: phase, error: phaseError } = await GetPhaseFromId(supabase, asgnId)
+    if (phaseError || phase != Phase.grading) {
       router.back();
       return;
     }
@@ -288,7 +290,7 @@ export default function StudentGradePage() {
   }
 
   if (isOwnerLoading || isUserLoading) return (<div>Loading</div>);
-  if ((!owner && isEditAble) || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
+  if ((!owner && isEditable) || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
   return (
     <main>
 
@@ -410,11 +412,11 @@ export default function StudentGradePage() {
               {/* Tabs */}
               {selectedTab == 0 ?
                 (<div>
-                  <StudentRubric viewOnly={!isEditAble} setSelectedPoints={setSelectedPoints} selectedPoints={selectedPoints} setPointsGiven={setPointsGiven} pointsGiven={pointsGiven} setTotal={setTotal} total={total} rubricQueryData={{ rubricData: rubricData, isRubricError: isRubricError, isRubricLoading: isRubricLoading }} />
+                  <StudentRubric viewOnly={!isEditable} setSelectedPoints={setSelectedPoints} selectedPoints={selectedPoints} setPointsGiven={setPointsGiven} pointsGiven={pointsGiven} setTotal={setTotal} total={total} rubricQueryData={{ rubricData: rubricData, isRubricError: isRubricError, isRubricLoading: isRubricLoading }} />
                 </div>)
                 :
                 (<div>
-                  {isEditAble && (<div className={`flex w-full p-2 border-b-2 justify-end ${(selectedIndex == 0) ? 'border-blue-300' : 'border-gray-100'}`}>
+                  {isEditable && (<div className={`flex w-full p-2 border-b-2 justify-end ${(selectedIndex == 0) ? 'border-blue-300' : 'border-gray-100'}`}>
                     <button className={`flex items-center rounded-md ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => handleAddCommentPressed()}>
                       <span className='text-sm pl-4 pr-2'>Add Comment</span>
                       <svg xmlns="http://www.w3.org/2000/svg" className='w-11 h-11 p-2 fill-gray-500' viewBox="0 0 45.4 45.4"><path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z" /></svg>
@@ -437,7 +439,7 @@ export default function StudentGradePage() {
                           {/* Text */}
                           <div className='w-full'>
                             <Textarea
-                              disabled={!isEditAble}
+                              disabled={!isEditable}
                               className="w-full pt-2 pr-2 text-gray-900 bg-gray-50 outline-none focus:ring-0 focus:shadow-none resize-none"
                               id="my-textarea"
                               maxLength={2000}
@@ -446,7 +448,7 @@ export default function StudentGradePage() {
                               onChange={(event) => handleCommentChanged(event, index)}
 
                             />
-                            {isEditAble && (<div className='flex'>
+                            {isEditable && (<div className='flex'>
                               <div className="w-6 h-6 p-0.5">
                                 <button className="w-full h-full p-0.5 rounded-md hover:bg-gray-400 bg-gray-50" onClick={(_) => setDeletePendingIndex(index)}>
                                   <DeleteIcon />
@@ -474,7 +476,7 @@ export default function StudentGradePage() {
                   </div>
                 </div>)}
             </div>
-            {isEditAble && (<div className='p-3 w-full border-t-2 border-gray-200 h-16'>
+            {isEditable && (<div className='p-3 w-full border-t-2 border-gray-200 h-16'>
               <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full"
                 onClick={handleSubmit}>
                 Submit Review
@@ -484,9 +486,7 @@ export default function StudentGradePage() {
           </div>
         </div>
       </div>
-      {/* <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
-        <p>&copy;2024 PeerGrader</p>
-      </footer> */}
+
     </main>
   );
 }
