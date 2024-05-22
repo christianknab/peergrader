@@ -11,16 +11,10 @@ import { format } from 'date-fns';
 import UploadButton from './UploadButton';
 import ListGrades from './ListGrades';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
+import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
+import { Phase } from '@/utils/types/phaseEnum';
 
-interface AsgnData {
-  name: string;
-  phase: string;
-  start_date_submission: Date;
-  end_date_submission: Date;
-  start_date_grading: Date;
-  end_date_grading: Date;
-  max_score: number;
-}
 
 export interface SubmissionData {
   file_id: string;
@@ -31,60 +25,33 @@ export interface SubmissionData {
 
 export default function StudentAsgnPage() {
   const router = useRouter();
-  const supabase = createClient();
   const params = useParams();
   const course_id = params.course_id as string;
   const asgn_id = params.asgn_id as string;
-  const [asgnData, setAsgnData] = useState<AsgnData | null>(null);
   const [submission, setSubmission] = useState<SubmissionData | null>(null);
+
   const {
     data: courseData,
     isLoading: courseDataLoading,
     isError: courseDataError
   } = useCourseDataQuery(course_id);
 
+  const {
+    data: asgnData,
+    isLoading: asgnDataLoading,
+    isError: asgnDataError
+  } = useAsgnDataQuery(asgn_id);
 
-  if (courseDataError) { return <div>Error</div>; }
+  const {
+    data: phase,
+    isLoading: isPhaseLoading,
+    isError: isPhaseError
+  } = usePhaseFromIdQuery(asgn_id, true); 
 
-  useEffect(() => {
-    // get asgn data for asgn page
-    async function fetchAsgnData() {
-      try {
-        const { data: asgnData, error: asgnError } = await supabase
-          .from('assignments')
-          .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading, max_score')
-          .eq('asgn_id', asgn_id)
-          .single();
+  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<div>Loading...</div>); }
+  if (courseDataError || asgnDataError || isPhaseError) { return <div>Error</div>; }
 
-        const { data: phase, error: phaseError } = await supabase.rpc('get_assignment_phase', {
-          start_date_submission: asgnData?.start_date_submission,
-          end_date_submission: asgnData?.end_date_submission,
-          start_date_grading: asgnData?.start_date_grading,
-          end_date_grading: asgnData?.end_date_grading
-        });
 
-        if (asgnError || phaseError) {
-          console.error('Error fetching data:', asgnError || phaseError);
-        } else {
-          setAsgnData({
-            max_score: asgnData.max_score,
-            name: asgnData.name,
-            phase: phase,
-            start_date_submission: asgnData?.start_date_submission,
-            end_date_submission: asgnData?.end_date_submission,
-            start_date_grading: asgnData?.start_date_grading,
-            end_date_grading: asgnData?.end_date_grading,
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchAsgnData();
-  }, [asgn_id]);
-
-  if (courseDataLoading) { return (<div>Loading...</div>); }
   return (
     <div className="w-full min-h-screen flex flex-col">
       <main className="flex-1 w-full">
@@ -113,16 +80,16 @@ export default function StudentAsgnPage() {
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment: {asgnData.name} -- Phase: {asgnData.phase}</h2>
+              <h2 className="text-xl font-semibold">Assignment: {asgnData.name} -- Phase: {phase}</h2>
             </div>
           )}
           {asgnData && (
             <div>
               {(() => {
-                switch (asgnData.phase) {
-                  case 'Early':
+                switch (phase) {
+                  case Phase.submit:
                     return <div>This assignment opens for submission {format(asgnData.start_date_submission, 'MMMM d, yyyy h:mm a')}.</div>;
-                  case 'Submit':
+                  case Phase.submit:
                     return (
                       <div className="flex flex-col items-center space-y-4">
                         <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
@@ -131,28 +98,28 @@ export default function StudentAsgnPage() {
                         </div>
                       </div>
                     );
-                  case 'Grading':
+                  case Phase.grading:
                     return (
                       <div className="flex space-x-4">
                         <div className="w-full">
                           <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                         <div className="w-full flex flex-col space-y-4">
-                          <ListGraded course_id={course_id} asgn_id={asgn_id} phase={asgnData.phase}/>
+                          <ListGraded course_id={course_id} asgn_id={asgn_id} phase={phase} />
                           <div className="flex justify-center w-full">
                             <GetNextToGrade course_id={course_id} asgn_id={asgn_id} />
                           </div>
                         </div>
                       </div>
                     );
-                  case 'Closed':
+                  case Phase.closed:
                     return (
                       <div className="flex space-x-4">
                         <div className="w-full">
                           <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                         <div className="w-full flex flex-col space-y-4">
-                          <ListGraded course_id={course_id} asgn_id={asgn_id} phase={asgnData.phase}/>
+                          <ListGraded course_id={course_id} asgn_id={asgn_id} phase={phase} />
                           <ListGrades course_id={course_id} asgn_id={asgn_id} file_id={submission?.file_id} max_score={asgnData.max_score} />
                         </div>
                       </div>
