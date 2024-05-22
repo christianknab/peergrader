@@ -10,10 +10,14 @@ import getAuthUser from "@/utils/queries/GetAuthUser";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from 'next/navigation';
+import { supabase } from "@/utils/supabase/client";
+import ProfileImage from "@/components/ProfileImage";
+import ProfileImageEdit from "./ProfileImageEdit";
 
 export default function EditAccountClient() {
     const router = useRouter();
     const [user, setUser] = useState<User | null>();
+    const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
     const [formEdited, setFormEdited] = useState(false);
 
     const {
@@ -38,7 +42,18 @@ export default function EditAccountClient() {
 
     // not sure if this is good
     useEffect(() => {
-        _getAuthUser().then(setUser)
+        async function fetchProfileImage() {
+            if (currentUser) {
+                if (currentUser.profile_image == null) {
+                    // console.log(currentUser.profile_image)
+                    setProfileImageUrl(null);
+                } else {
+                    setProfileImageUrl(currentUser.profile_image);
+                }
+            }
+        }
+        _getAuthUser().then(setUser);
+        fetchProfileImage();
     }, [currentUser]);
 
     const handleSubmitGoogleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -89,9 +104,14 @@ export default function EditAccountClient() {
     return (
         <div className="container mx-auto py-8">
             <div className="flex items-center mb-8">
-                <Image priority={true} src={'/assets/default_avatar.svg'} width={100} height={100} alt={""} />
+                <ProfileImageEdit
+                    src={profileImageUrl || '/assets/default_avatar.svg'}
+                    uid={currentUser?.uid}
+                    onUpload={(url) => setProfileImageUrl(url)}
+                />
                 <h1 className="p-5 text-4xl font-bold">{currentUser ? `${currentUser?.first_name} ${currentUser?.last_name}` : "Profile"}</h1>
             </div>
+
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <form onSubmit={currentUser ? handleSubmit : handleSubmitGoogleAuth}>
                     <div className="flex mb-4">
@@ -160,7 +180,7 @@ export default function EditAccountClient() {
 
                 </form>
                 <label className="block text-gray-700 font-bold mb-2">
-                    Courses
+                    Enrolled Courses
                 </label>
                 {userCourses?.course.length == 0 && <button
                     className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
@@ -174,7 +194,6 @@ export default function EditAccountClient() {
                                 <div className="font-semibold light-grey">
                                     {courseData.name}
                                 </div>
-                                <i className="fas fa-book text-5xl mt-8"></i>
                             </div>
                         </Link>
                     </div>
