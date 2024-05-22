@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ListStudents from './ListStudents';
 import { useRouter } from 'next/navigation';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 interface Assignments {
     asgn_id: string;
@@ -22,7 +23,7 @@ export default function TeacherCoursePage() {
         isLoading: courseDataLoading,
         isError: courseDataError
     } = useCourseDataQuery(course_id);
-    if (courseDataLoading) { return <div>Loading...</div>; }
+    if (courseDataLoading) { return <LoadingSpinner/>; }
     if (courseDataError) { return <div>Error</div>; }
 
     const [assignments, setAssignments] = useState<Assignments[]>([]);

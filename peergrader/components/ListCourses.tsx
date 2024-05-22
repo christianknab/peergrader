@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import { LoadingSpinner } from './loadingSpinner';
 
 
 interface CourseData {
@@ -20,13 +21,7 @@ export default function ListCourses() {
         isError
     } = useCurrentUserQuery();
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
-    if (isError) {
-        return <div>Error</div>;
-    }
 
     useEffect(() => {
         if (currentUser) {
@@ -57,7 +52,13 @@ export default function ListCourses() {
             return data;
         }
     }
+    if (isLoading) {
+        return <LoadingSpinner />;
+    }
 
+    if (isError) {
+        return <div>Error</div>;
+    }
     return (
         <div>
             <ul>

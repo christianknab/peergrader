@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import StudentListAsgn from './studentListAsgn';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
 export default function StudentCoursePage() {
@@ -15,7 +16,7 @@ export default function StudentCoursePage() {
         isLoading: courseDataLoading,
         isError: courseDataError
     } = useCourseDataQuery(course_id);
-    if (courseDataLoading) { return <div>Loading...</div>; }
+    if (courseDataLoading) { return <LoadingSpinner/>; }
     if (courseDataError) { return <div>Error</div>; }
 
     return (

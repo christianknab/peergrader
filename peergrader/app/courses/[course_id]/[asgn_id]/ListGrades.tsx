@@ -1,3 +1,4 @@
+import { LoadingSpinner } from "@/components/loadingSpinner";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import useSubmissionGradeForUserQuery from "@/utils/hooks/QuerySubmissionGradeForUser";
 import Link from "next/link";
@@ -22,7 +23,7 @@ export default function ListGrades({ course_id, asgn_id, file_id, max_score }: L
         isError: isGradesError
     } = useSubmissionGradeForUserQuery(currentUser?.uid, asgn_id, !!currentUser);
     if (isUserLoading || isGradesLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
     }
 
     if (isUserError || !currentUser || isGradesError || !grades) {

@@ -5,6 +5,7 @@ import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import Image from 'next/image';
 import useUserCoursesQuery from "@/utils/hooks/QueryUserCourses";
 import Link from "next/link";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default function EditAccountClient() {
     const {
@@ -37,7 +38,7 @@ export default function EditAccountClient() {
     };
 
     if (isUserLoading || isUserCourseLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
     }
 
     if (isUserError || !currentUser || isUserCourseError || !userCourses) {

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
 export default function TeacherAsgnPage() {
@@ -32,7 +33,7 @@ export default function TeacherAsgnPage() {
     isError: isPhaseError
   } = usePhaseFromIdQuery(asgn_id, true);
 
-  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<div>Loading...</div>); }
+  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<LoadingSpinner/>); }
   if (courseDataError || asgnDataError || isPhaseError) { return <div>Error</div>; }
 
 

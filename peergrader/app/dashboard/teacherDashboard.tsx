@@ -7,6 +7,7 @@ import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { useRouter } from 'next/navigation';
 import TeacherListAllAsgn from "./teacherListAllAsgn";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 interface CourseData {
     course_id: string;
@@ -24,13 +25,7 @@ export default function ListCourses() {
         isError
     } = useCurrentUserQuery();
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (isError) {
-        return <div>Error</div>;
-    }
+    
 
     useEffect(() => {
         if (currentUser) {
@@ -51,7 +46,13 @@ export default function ListCourses() {
 
         return data;
     }
+    if (isLoading) {
+        return <LoadingSpinner/>;
+    }
 
+    if (isError) {
+        return <div>Error</div>;
+    }
     return (
         <div className="flex flex-col min-h-screen w-full bg-white">
             <header className="w-full py-3">

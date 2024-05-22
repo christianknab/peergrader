@@ -14,6 +14,7 @@ import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 import { Phase } from '@/utils/types/phaseEnum';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
 export interface SubmissionData {
@@ -48,7 +49,7 @@ export default function StudentAsgnPage() {
     isError: isPhaseError
   } = usePhaseFromIdQuery(asgn_id, true); 
 
-  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<div>Loading...</div>); }
+  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<LoadingSpinner/>); }
   if (courseDataError || asgnDataError || isPhaseError) { return <div>Error</div>; }
 
 
