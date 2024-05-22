@@ -1,7 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
 import MySubmission from './MySubmission';
 import ListGraded from './ListGraded';
 import GetNextToGrade from './GetNextToGrade';
@@ -47,9 +46,9 @@ export default function StudentAsgnPage() {
     data: phase,
     isLoading: isPhaseLoading,
     isError: isPhaseError
-  } = usePhaseFromIdQuery(asgn_id, true); 
+  } = usePhaseFromIdQuery(asgn_id, true);
 
-  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<LoadingSpinner/>); }
+  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<LoadingSpinner />); }
   if (courseDataError || asgnDataError || isPhaseError) { return <div>Error</div>; }
 
 
@@ -68,9 +67,7 @@ export default function StudentAsgnPage() {
           <div className="w-4/5 mx-auto">
             <nav className="rounded-md w-1/5 bg-light-grey">
               <ul className="flex justify-between px-4 py-2">
-                <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
-                <li className="text-black hover:text-blue-800">Students</li>
-                <li className="text-black hover:text-blue-800">Grades</li>
+                <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Back to course page</Link></li>
               </ul>
             </nav>
             <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
@@ -88,7 +85,7 @@ export default function StudentAsgnPage() {
             <div>
               {(() => {
                 switch (phase) {
-                  case Phase.submit:
+                  case Phase.early:
                     return <div>This assignment opens for submission {format(asgnData.start_date_submission, 'MMMM d, yyyy h:mm a')}.</div>;
                   case Phase.submit:
                     return (
