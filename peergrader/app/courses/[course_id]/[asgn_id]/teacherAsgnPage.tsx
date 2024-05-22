@@ -1,27 +1,19 @@
 'use client';
-import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { createClient } from '@/utils/supabase/client';
 import ListSubmissions from './ListSubmissions';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
+import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 
-interface AsgnData {
-  asgn_id: string;
-  name: string;
-  course_id: string;
-}
 
 export default function TeacherAsgnPage() {
   const router = useRouter();
-  const supabase = createClient();
   const params = useParams();
   const course_id = params.course_id as string;
   const asgn_id = params.asgn_id as string;
-
-  const [asgnData, setAsgnData] = useState<AsgnData | null>(null);
 
   const {
     data: courseData,
@@ -29,32 +21,21 @@ export default function TeacherAsgnPage() {
     isError: courseDataError
   } = useCourseDataQuery(course_id);
 
+  const {
+    data: asgnData,
+    isLoading: asgnDataLoading,
+    isError: asgnDataError
+  } = useAsgnDataQuery(asgn_id);
 
-  useEffect(() => {
-    async function fetchAsgnData() {
-      try {
-        const { data, error } = await supabase
-          .from('assignments')
-          .select('*')
-          .eq('asgn_id', asgn_id)
-          .single();
+  const {
+    data: phase,
+    isLoading: isPhaseLoading,
+    isError: isPhaseError
+  } = usePhaseFromIdQuery(asgn_id, true);
 
-        if (error) {
-          console.error('Error fetching asgn data:', error);
-        } else {
-          setAsgnData(data);
-        }
-      } catch (error) {
-        console.error('Error fetching asgn data:', error);
-      }
-    }
+  if (courseDataLoading || asgnDataLoading || isPhaseLoading) { return (<LoadingSpinner/>); }
+  if (courseDataError || asgnDataError || isPhaseError) { return <div>Error</div>; }
 
-    if (asgn_id) {
-      fetchAsgnData();
-    }
-  }, [asgn_id]);
-  if (courseDataLoading) { return <LoadingSpinner/>; }
-  if (courseDataError) { return <div>Error</div>; }
 
   return (
     <div className="w-full min-h-screen flex flex-col">
@@ -84,7 +65,7 @@ export default function TeacherAsgnPage() {
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment: {asgnData.name}</h2>
+              <h2 className="text-xl font-semibold">Assignment: {asgnData.name}  -  Phase: {phase}</h2>
             </div>
           )}
           <div className="flex flex-col space-y-4">

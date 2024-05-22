@@ -9,7 +9,7 @@ import ProfileLink from "./ProfileLink";
 
 export default async function DashboardPage() {
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser(); // should this me querycurrentuser
+  const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
     return redirect("/login");
