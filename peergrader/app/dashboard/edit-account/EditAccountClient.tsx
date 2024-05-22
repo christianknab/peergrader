@@ -5,17 +5,21 @@ import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import Image from 'next/image';
 import useUserCoursesQuery from "@/utils/hooks/QueryUserCourses";
 import Link from "next/link";
+import { redirect } from "next/dist/server/api-utils";
 
 export default function EditAccountClient() {
     const {
         data: currentUser,
         isLoading: isUserLoading,
-        isError: isUserError
-    } = useCurrentUserQuery();
+        isError: isUserError,
+        error: userError
+    } = useCurrentUserQuery(false);
+
     const {
         data: userCourses,
         isLoading: isUserCourseLoading,
         isError: isUserCourseError,
+        error: userCourseError,
     } = useUserCoursesQuery(currentUser?.uid, !!currentUser);
 
     const currentUserMutation = useCurrentUserMutation();
@@ -26,29 +30,34 @@ export default function EditAccountClient() {
         const firstName = formData.get("firstName") as string;
         const lastName = formData.get("lastName") as string;
         const accountType = formData.get("account_type") as "student" | "teacher";
-
         await currentUserMutation.mutateAsync({
             uid: currentUser?.uid,
             email: currentUser?.email!,
             first_name: firstName,
             last_name: lastName,
             is_teacher: accountType === "teacher"
-        });
+        }
+        );
+
     };
 
     if (isUserLoading || isUserCourseLoading) {
         return <div>Loading...</div>;
     }
 
-    if (isUserError || !currentUser || isUserCourseError || !userCourses) {
-        return <div>Error</div>;
+    if (currentUser && (isUserCourseError || !userCourses)) {
+        return <div>bing bong</div>;
+    }
+
+    if (userError?.message != "redirectAccount") {
+        return <div>User Error</div>;
     }
 
     return (
         <div className="container mx-auto py-8">
             <div className="flex items-center mb-8">
                 <Image priority={true} src={'/assets/default_avatar.svg'} width={100} height={100} alt={""} />
-                <h1 className="p-5 text-4xl font-bold">{currentUser?.first_name} {currentUser?.last_name}</h1>
+                <h1 className="p-5 text-4xl font-bold">{currentUser ? `${currentUser?.first_name} ${currentUser?.last_name}` : "Profile"}</h1>
             </div>
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <form onSubmit={handleSubmit}>
@@ -62,7 +71,7 @@ export default function EditAccountClient() {
                                 type="text"
                                 placeholder="First"
                                 name="firstName"
-                                defaultValue={currentUser?.first_name}
+                                defaultValue={currentUser ? currentUser.first_name : ""}
                             />
                         </div>
                         <div className="pr-3">
@@ -74,7 +83,7 @@ export default function EditAccountClient() {
                                 type="text"
                                 placeholder="Last"
                                 name="lastName"
-                                defaultValue={currentUser?.last_name}
+                                defaultValue={currentUser ? currentUser.last_name : ""}
                             />
                         </div>
                         <div className="pr-3">
@@ -86,26 +95,28 @@ export default function EditAccountClient() {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="email"
                                 placeholder="Email"
-                                value={currentUser?.email}
+                                value={currentUser ? currentUser.email : ""}
                             />
                         </div>
-                        {currentUser.is_teacher == null && <div className="mb-4">
+                        {currentUser?.is_teacher == null && <div className="mb-4">
                             <label className="block text-gray-700 font-bold mb-2">
                                 Account Type
                             </label>
-                            <select name="account_type" defaultValue={currentUser.is_teacher ? "teacher" : "student"} className="rounded-lg block w-full p-2.5">
+                            <select name="account_type" defaultValue={currentUser?.is_teacher ? "teacher" : "student"} className="rounded-lg block w-full p-2.5">
                                 <option value="student">Student</option>
                                 <option value="teacher">Teacher</option>
                             </select>
                         </div>}
                     </div>
-                    <div className="mb-4">
+
+                    <div className="flex mb-4 items-center">
                         <button
                             type="submit"
                             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
                             Save
                         </button>
+                        {currentUser && <div className="pl-2 text-red-500">You must choose an account type</div>}
                     </div>
                 </form>
                 <label className="block text-gray-700 font-bold mb-2">

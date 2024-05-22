@@ -4,7 +4,7 @@ import { createClient } from "../supabase/client";
 import GetUserById from "../queries/GetUser";
 import { useRouter } from "next/navigation";
 
-function useCurrentUserQuery() {
+function useCurrentUserQuery(redirect: boolean = true) {
     const router = useRouter();
 
     const supabase = createClient();
@@ -15,16 +15,35 @@ function useCurrentUserQuery() {
         if (!user) throw "No User";
         const { data, error } = await GetUserById(supabase, user.id);
         if (error) {
-            if (error.code == "PGRST116") {
-                router.push('/dashboard/edit-account');
+            if (redirect) {
+                if (error.code == "PGRST116") {
+                    router.push('/dashboard/edit-account');
+                }
+                throw error;
             }
-            throw error;
+            else {
+                if (error.code == "PGRST116") {
+                    throw new Error("redirectAccount");
+                }
+                else {
+                    throw error;
+                }
+            }
         }
         return data
 
     };
 
-    return useQuery({ queryKey, queryFn, staleTime: 3 * (60 * 1000) }); //2 min
+    return useQuery({ queryKey, queryFn, staleTime: 3 * (60 * 1000), retry: (failureCount, error) => {
+        if (error.message === "redirectAccount" && !redirect) {
+          // redirect is false, don't retry
+          return false;
+        } else {
+          //nuse the default retry behavior
+          return failureCount < 3;
+        }
+      }
+     }); //2 min
 }
 
 export default useCurrentUserQuery;
