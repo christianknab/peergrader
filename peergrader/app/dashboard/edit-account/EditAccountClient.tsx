@@ -6,9 +6,15 @@ import Image from 'next/image';
 import useUserCoursesQuery from "@/utils/hooks/QueryUserCourses";
 import Link from "next/link";
 import { LoadingSpinner } from "@/components/loadingSpinner";
-import { redirect } from "next/dist/server/api-utils";
+import getAuthUser from "@/utils/queries/GetAuthUser";
+import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
+import { useRouter } from 'next/navigation';
 
 export default function EditAccountClient() {
+    const router = useRouter();
+    const [user, setUser] = useState<User | null>();
+
     const {
         data: currentUser,
         isLoading: isUserLoading,
@@ -25,33 +31,57 @@ export default function EditAccountClient() {
 
     const currentUserMutation = useCurrentUserMutation();
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    async function _getAuthUser() {
+        return await getAuthUser();
+    }
+
+    // not sure if this is good
+    useEffect(() => {
+        _getAuthUser().then(setUser)
+    }, [currentUser]);
+
+    const handleSubmitGoogleAuth = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+
         const formData = new FormData(e.currentTarget);
         const firstName = formData.get("firstName") as string;
         const lastName = formData.get("lastName") as string;
         const accountType = formData.get("account_type") as "student" | "teacher";
+
+        let user = await getAuthUser();
+
         await currentUserMutation.mutateAsync({
-            uid: currentUser?.uid,
-            email: currentUser?.email!,
+            uid: user?.id ?? "",
+            email: user?.email ?? "",
             first_name: firstName,
             last_name: lastName,
-            is_teacher: accountType === "teacher"
-        }
-        );
+            is_teacher: accountType === "teacher",
+        });
+    }
 
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.currentTarget);
+        const firstName = formData.get("firstName") as string;
+        const lastName = formData.get("lastName") as string;
+        const accountType = formData.get("account_type") as "student" | "teacher";
+
+        await currentUserMutation.mutateAsync({
+            uid: currentUser?.uid,
+            email: currentUser?.email,
+            first_name: firstName,
+            last_name: lastName,
+            is_teacher: accountType === "teacher",
+        });
     };
 
     if (isUserLoading || isUserCourseLoading) {
-        return <LoadingSpinner/>;
+        return <LoadingSpinner />;
     }
 
     if (currentUser && (isUserCourseError || !userCourses)) {
-        return <div>bing bong</div>;
-    }
-
-    if (userError?.message != "redirectAccount") {
-        return <div>User Error</div>;
+        return <div>Error</div>;
     }
 
     return (
@@ -61,7 +91,7 @@ export default function EditAccountClient() {
                 <h1 className="p-5 text-4xl font-bold">{currentUser ? `${currentUser?.first_name} ${currentUser?.last_name}` : "Profile"}</h1>
             </div>
             <div className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={currentUser ? handleSubmit : handleSubmitGoogleAuth}>
                     <div className="flex mb-4">
                         <div className="pr-3">
                             <label className="block text-gray-700 font-bold mb-2">
@@ -72,7 +102,7 @@ export default function EditAccountClient() {
                                 type="text"
                                 placeholder="First"
                                 name="firstName"
-                                defaultValue={currentUser ? currentUser.first_name : ""}
+                                defaultValue={currentUser ? currentUser.first_name : user?.user_metadata.full_name?.split(' ')[0]}
                             />
                         </div>
                         <div className="pr-3">
@@ -84,7 +114,7 @@ export default function EditAccountClient() {
                                 type="text"
                                 placeholder="Last"
                                 name="lastName"
-                                defaultValue={currentUser ? currentUser.last_name : ""}
+                                defaultValue={currentUser ? currentUser.last_name : user?.user_metadata.full_name?.split(' ')[1]}
                             />
                         </div>
                         <div className="pr-3">
@@ -96,7 +126,7 @@ export default function EditAccountClient() {
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 type="email"
                                 placeholder="Email"
-                                value={currentUser ? currentUser.email : ""}
+                                value={currentUser ? currentUser.email : user?.email}
                             />
                         </div>
                         {currentUser?.is_teacher == null && <div className="mb-4">
@@ -113,16 +143,20 @@ export default function EditAccountClient() {
                     <div className="flex mb-4 items-center">
                         <button
                             type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                             Save
                         </button>
-                        {currentUser && <div className="pl-2 text-red-500">You must choose an account type</div>}
+                        {!currentUser && <div className="pl-2 text-red-500">You must choose an account type</div>}
                     </div>
                 </form>
                 <label className="block text-gray-700 font-bold mb-2">
                     Courses
                 </label>
+                {userCourses?.course.length == 0 && <button
+                    className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
+                    onClick={() => router.push('/courses')}>
+                    + Add Course
+                </button>}
                 <div>{userCourses?.course.map((courseData) => (
                     <div key={courseData.course_id} className="rounded-lg border p-6 bg-white">
                         <Link href={`/courses/${courseData.course_id}`}>
