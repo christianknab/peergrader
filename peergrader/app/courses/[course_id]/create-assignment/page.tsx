@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { AssignmentForm } from './AssignmentForm';
 import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
-import {LoadingSpinner} from '@/components/loadingSpinner';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 export interface Rubric {
     names: string[];
@@ -54,10 +54,10 @@ export default function CreateAssignmentPage() {
         isLoading: courseDataLoading,
         isError: courseDataError
     } = useCourseDataQuery(course_id);
-    
 
 
-    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numberInput: boolean) => {
+
+    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numAnnotations: number, numberInput: boolean) => {
         if (currentUser) {
             try {
                 setIsLoading(true);
@@ -69,7 +69,21 @@ export default function CreateAssignmentPage() {
                 const { data: assignmentData, error: assignmentError } = await supabase
                     .from('assignments')
                     .insert([
-                        { asgn_id: asgn_id, name: assignmentName, owner: currentUser.uid, course_id: params.course_id, anonymous_grading: anonymousGrading, start_date_submission: startSubmitDate, end_date_submission: endSubmitDate, start_date_grading: startGradeDate, end_date_grading: endGradeDate, max_score: maxScore, num_peergrades: numPeergrades, number_input: numberInput },
+                        {
+                            asgn_id: asgn_id,
+                            name: assignmentName,
+                            owner: currentUser.uid,
+                            course_id: params.course_id,
+                            anonymous_grading: anonymousGrading,
+                            start_date_submission: startSubmitDate,
+                            end_date_submission: endSubmitDate,
+                            start_date_grading: startGradeDate,
+                            end_date_grading: endGradeDate,
+                            max_score: maxScore,
+                            num_peergrades: numPeergrades,
+                            num_annotations: numAnnotations,
+                            number_input: numberInput
+                        },
                     ]).select();
 
                 if (assignmentError) {
@@ -132,7 +146,7 @@ export default function CreateAssignmentPage() {
     };
 
     if (isUserLoading || courseDataLoading) {
-        return <LoadingSpinner/>;
+        return <LoadingSpinner />;
     }
 
     if (isError || !currentUser || courseDataError) {
@@ -151,15 +165,15 @@ export default function CreateAssignmentPage() {
             </div>
             <div className="w-4/5 mx-auto">
                 <nav className="rounded-md w-1/5 bg-light-grey">
-                <ul className="flex justify-between px-4 py-2">
-                    <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
-                    <li className="text-black hover:text-blue-800">Students</li>
-                    <li className="text-black hover:text-blue-800">Grades</li>
-                </ul>
+                    <ul className="flex justify-between px-4 py-2">
+                        <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
+                        <li className="text-black hover:text-blue-800">Students</li>
+                        <li className="text-black hover:text-blue-800">Grades</li>
+                    </ul>
                 </nav>
                 <header>
                     <h2 className="bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
-                    {courseData?.name || 'Course Page'}
+                        {courseData?.name || 'Course Page'}
                     </h2>
                 </header>
                 <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
