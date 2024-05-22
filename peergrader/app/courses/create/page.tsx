@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Link from 'next/link';
 import ListCourses from '@/components/ListCourses';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
 export default function CreateCoursePage() {
@@ -15,13 +16,7 @@ export default function CreateCoursePage() {
         isError 
       } = useCurrentUserQuery();
      
-      if (isUserLoading) {
-        return <div>Loading...</div>;
-      }
-     
-      if (isError || !currentUser) {
-        return <div>Error</div>;
-      }
+      
     const router = useRouter()
     const [courseName, setCourseName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -29,13 +24,12 @@ export default function CreateCoursePage() {
     const createCourse = async () => {
         try {
             setIsLoading(true);
-
             var bcrypt = require('bcryptjs');
-            let course_id: string = await bcrypt.hash(`${new Date().toISOString()}${courseName}${currentUser.uid}`, 5);
+            let course_id: string = await bcrypt.hash(`${new Date().toISOString()}${courseName}${currentUser?.uid}`, 5);
             course_id = course_id.replace(/[^a-zA-Z0-9]/g, 'd');
 
             const { error } = await supabase.from('courses').insert([
-                { course_id: course_id, name: courseName, owner: currentUser.uid },
+                { course_id: course_id, name: courseName, owner: currentUser?.uid },
             ]);
 
             if (error) {
@@ -49,6 +43,13 @@ export default function CreateCoursePage() {
             setIsLoading(false);
         }
     };
+    if (isUserLoading) {
+        return <LoadingSpinner/>;
+      }
+     
+      if (isError || !currentUser) {
+        return <div>Error</div>;
+      }
 
     return (
         <div className="flex flex-col min-h-screen w-full bg-white">

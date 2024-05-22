@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import UploadButton from './UploadButton';
 import ListGrades from './ListGrades';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 interface AsgnData {
   name: string;
@@ -84,7 +85,7 @@ export default function StudentAsgnPage() {
     fetchAsgnData();
   }, [asgn_id]);
 
-  if (courseDataLoading) { return (<div>Loading...</div>); }
+  if (courseDataLoading) { return (<LoadingSpinner/>); }
   return (
     <div className="w-full min-h-screen flex flex-col">
       <main className="flex-1 w-full">

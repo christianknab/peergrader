@@ -5,6 +5,7 @@ import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import StudentListAllAsgn from "@/app/dashboard/studentListAllAsgn";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 
 export default function StudentDashboardPage() {
@@ -16,8 +17,6 @@ export default function StudentDashboardPage() {
   const supabase = createClient();
   const [userCourses, setUserCourses] = useState<CourseData[]>([]);
   const { data: currentUser, isLoading, isError } = useCurrentUserQuery();
-  if (isLoading) { return <div>Loading...</div>; }
-  if (isError) { return <div>Error</div>; }
 
   useEffect(() => {
     fetchUserCourses(currentUser?.uid).then(setUserCourses);
@@ -31,6 +30,8 @@ export default function StudentDashboardPage() {
     }
     return data;
   }
+  if (isLoading) { return <LoadingSpinner/>; }
+  if (isError) { return <div>Error</div>; }
 
   return (
     <div className="flex flex-col min-h-screen w-full bg-white">

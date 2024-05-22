@@ -6,6 +6,7 @@ import ListSubmissions from './ListSubmissions';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 interface AsgnData {
   asgn_id: string;
@@ -27,8 +28,7 @@ export default function TeacherAsgnPage() {
     isLoading: courseDataLoading,
     isError: courseDataError
   } = useCourseDataQuery(course_id);
-  if (courseDataLoading) { return <div>Loading...</div>; }
-  if (courseDataError) { return <div>Error</div>; }
+
 
   useEffect(() => {
     async function fetchAsgnData() {
@@ -53,7 +53,8 @@ export default function TeacherAsgnPage() {
       fetchAsgnData();
     }
   }, [asgn_id]);
-
+  if (courseDataLoading) { return <LoadingSpinner/>; }
+  if (courseDataError) { return <div>Error</div>; }
 
   return (
     <div className="w-full min-h-screen flex flex-col">

@@ -3,6 +3,7 @@
 import TeacherCoursePage from "./teacherCoursePage";
 import StudentCoursePage from "./studentCoursePage";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default function CoursePage() {
     const { 
@@ -12,7 +13,7 @@ export default function CoursePage() {
       } = useCurrentUserQuery();
      
       if (isUserLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
       }
      
       if (isError || !currentUser) {

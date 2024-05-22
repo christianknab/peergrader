@@ -2,6 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
 interface LayoutProps {
@@ -16,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     isLoading: courseDataLoading,
     isError: courseDataError
   } = useCourseDataQuery(course_id);
-  if (courseDataLoading) { return <div>Loading...</div>; }
+  if (courseDataLoading) { return <LoadingSpinner/>; }
   if (courseDataError) { return <div>Error</div>; }
 
 

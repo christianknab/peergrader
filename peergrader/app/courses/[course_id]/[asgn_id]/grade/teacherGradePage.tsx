@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import ListGrades from '@/components/ListGrades';
 import { useRouter } from 'next/navigation';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 export default function TeacherGradePage() {
     const {
@@ -14,13 +15,7 @@ export default function TeacherGradePage() {
         isError
     } = useCurrentUserQuery();
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (isError) {
-        return <div>Error</div>;
-    }
+   
 
     const router = useRouter();
     const supabase = createClient();
@@ -84,7 +79,13 @@ export default function TeacherGradePage() {
             setLoading(false);
         }
     };
+    if (isLoading) {
+        return <LoadingSpinner/>;
+    }
 
+    if (isError) {
+        return <div>Error</div>;
+    }
     return (
         <main>
             <div className="w-full flex justify-between items-center p-4 light-grey">

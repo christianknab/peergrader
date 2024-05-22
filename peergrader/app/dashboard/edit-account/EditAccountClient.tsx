@@ -12,6 +12,7 @@ import { useState } from "react";
 import Image from 'next/image';
 import useUserCoursesQuery from "@/utils/hooks/QueryUserCourses";
 import Link from "next/link";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default function EditAccountClient() {
     const { data: currentUser, isLoading, isError } = useCurrentUserQuery();
@@ -20,7 +21,7 @@ export default function EditAccountClient() {
         isLoading: isUserCourseLoading,
         isError: isUserCourseError,
     } = useUserCoursesQuery(currentUser?.uid);
-    if (isLoading) { return <div>Loading...</div>; }
+    if (isLoading) { return <LoadingSpinner/>; }
     if (isError) { return <div>Error</div>; }
 
     return (

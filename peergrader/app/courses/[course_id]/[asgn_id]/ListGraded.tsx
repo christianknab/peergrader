@@ -5,6 +5,7 @@ import Link from 'next/link';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import useSubmissionsGradedByUserQuery from '@/utils/hooks/QuerySubmissionsGradedByUser';
 import { Phase } from '@/utils/types/phaseEnum';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 interface ListGradedProps {
     course_id: string;
@@ -25,7 +26,7 @@ export default function ListGraded({ course_id, asgn_id, phase }: ListGradedProp
     } = useSubmissionsGradedByUserQuery(currentUser?.uid, asgn_id, !!currentUser);
 
     if (isUserLoading || isGradedSubmissionsLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
     }
 
     if (isUserError || !currentUser || isGradedSubmissionsError || !gradedSubmissions) {

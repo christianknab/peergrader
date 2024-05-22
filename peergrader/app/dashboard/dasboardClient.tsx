@@ -6,6 +6,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useQuery } from "@tanstack/react-query";
 import GetUserById from "@/utils/queries/GetUser";
 import { SupabaseClient } from "@supabase/supabase-js";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 export default function DashboardClientPage() {
     
@@ -16,7 +17,7 @@ export default function DashboardClientPage() {
       } = useCurrentUserQuery();
      
       if (isLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
       }
      
       if (isError ) {

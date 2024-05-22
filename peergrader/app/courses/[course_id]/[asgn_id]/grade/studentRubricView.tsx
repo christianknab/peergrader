@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Rubric } from "../../create-assignment/page";
+import { LoadingSpinner } from "@/components/loadingSpinner";
 
 interface StudentRubricProps {
     setSelectedPoints: (points: number[]) => void;
@@ -56,7 +57,7 @@ export const StudentRubric = ({ setSelectedPoints, selectedPoints, setPointsGive
     if (rubricQueryData.isRubricError) {
         return (<div>Error</div>);
     } else if (rubricQueryData.isRubricLoading || !rubricQueryData.rubricData) {
-        return (<div>Loading</div>);
+        return (<LoadingSpinner/>);
     }
 
     return (
