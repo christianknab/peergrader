@@ -14,6 +14,7 @@ import { useRouter } from 'next/navigation';
 export default function EditAccountClient() {
     const router = useRouter();
     const [user, setUser] = useState<User | null>();
+    const [formEdited, setFormEdited] = useState(false);
 
     const {
         data: currentUser,
@@ -74,6 +75,7 @@ export default function EditAccountClient() {
             last_name: lastName,
             is_teacher: accountType === "teacher",
         });
+        setFormEdited(false);
     };
 
     if (isUserLoading || isUserCourseLoading) {
@@ -103,6 +105,7 @@ export default function EditAccountClient() {
                                 placeholder="First"
                                 name="firstName"
                                 defaultValue={currentUser ? currentUser.first_name : user?.user_metadata.full_name?.split(' ')[0]}
+                                onChange={() => setFormEdited(true)}
                             />
                         </div>
                         <div className="pr-3">
@@ -115,6 +118,7 @@ export default function EditAccountClient() {
                                 placeholder="Last"
                                 name="lastName"
                                 defaultValue={currentUser ? currentUser.last_name : user?.user_metadata.full_name?.split(' ')[1]}
+                                onChange={() => setFormEdited(true)}
                             />
                         </div>
                         <div className="pr-3">
@@ -127,13 +131,14 @@ export default function EditAccountClient() {
                                 type="email"
                                 placeholder="Email"
                                 value={currentUser ? currentUser.email : user?.email}
+                                onChange={() => setFormEdited(true)}
                             />
                         </div>
                         {currentUser?.is_teacher == null && <div className="mb-4">
                             <label className="block text-gray-700 font-bold mb-2">
                                 Account Type
                             </label>
-                            <select name="account_type" defaultValue={currentUser?.is_teacher ? "teacher" : "student"} className="rounded-lg block w-full p-2.5">
+                            <select name="account_type" defaultValue={currentUser?.is_teacher ? "teacher" : "student"} className="rounded-lg block w-full p-2.5" onChange={() => setFormEdited(true)}>
                                 <option value="student">Student</option>
                                 <option value="teacher">Teacher</option>
                             </select>
@@ -141,13 +146,18 @@ export default function EditAccountClient() {
                     </div>
 
                     <div className="flex mb-4 items-center">
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                            Save
-                        </button>
+                        {formEdited ? (
+                            <button
+                                type="submit"
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                                Save
+                            </button>
+                        ) : (
+                            <div className="py-5"></div>
+                        )}
                         {!currentUser && <div className="pl-2 text-red-500">You must choose an account type</div>}
                     </div>
+
                 </form>
                 <label className="block text-gray-700 font-bold mb-2">
                     Courses
