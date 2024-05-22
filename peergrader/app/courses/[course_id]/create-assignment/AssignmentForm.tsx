@@ -7,7 +7,18 @@ import { RubricMaker } from './RubricMaker';
 import { SimpleRubric } from './SimpleRubric';
 
 interface AssignmentFormProps {
-    onSubmit: (assignmentName: string, rubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, max_score: number, num_peergrades: number, numberInput: boolean) => void;
+    onSubmit: (assignmentName: string,
+        rubric: Rubric[],
+        anonymousGrading: boolean,
+        startSubmitDate: Date,
+        endSubmitDate: Date,
+        startGradeDate: Date,
+        endGradeDate: Date,
+        max_score: number,
+        num_peergrades: number,
+        num_annotations: number,
+        numberInput: boolean,
+    ) => void;
     initialRubric: Rubric[];
     anonymousGrading: boolean;
     startDate: Date | null;
@@ -52,6 +63,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     const [dateError, setDateError] = useState('');
     const [max_score, setMaxScore] = useState(0);
     const [num_peergrades, setNumPeergrades] = useState(5);
+    const [numAnnotations, setNumAnnotations] = useState(1);
     const [customizeRubric, setCustomizeRubric] = useState(true);
 
     function validateDates(): boolean {
@@ -161,7 +173,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, !customizeRubric);
+        onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric);
     };
 
     const isFormValid = () => {
@@ -193,7 +205,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                 <span>Anonymous Grading: </span>
                 <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label> */}
-            <div className='flex'>Number of Peergrades: <input type="number" className={`border text-sm rounded-lg block w-sm p-2.5`} placeholder="10" value={num_peergrades} required onChange={(e) => setNumPeergrades(e.target.valueAsNumber)} /></div>
+
             <div>Accepting Submissions:
 
                 <div className="flex items-center">
@@ -255,6 +267,15 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                 </div>
             </div>
             <div className="text-red-500">{dateError}</div>
+
+            {/* <div>
+                Number of Peergrades:
+                <input type="number" className={`border text-sm rounded-lg block w-sm p-2.5`} placeholder="10" value={num_peergrades} required onChange={(e) => setNumPeergrades(e.target.valueAsNumber)} />
+            </div> */}
+            {/* <div>
+                Number of required comments:
+                <input type="number" className={`border text-sm rounded-lg block w-sm p-2.5`} placeholder="10" value={numAnnotations} required onChange={(e) => setNumAnnotations(e.target.valueAsNumber)} />
+            </div> */}
 
             <div className="flex">Rubric:</div>
             <div className='py-2'><div className='flex'><div><button onClick={toggleCustomizeRubric} className={`btn py-2 px-4 ${customizeRubric ? `font-bold bg-blue-200` : `bg-btn-background hover:bg-btn-background-hover`} rounded-md no-underline`} disabled={customizeRubric}>Custom</button></div>
