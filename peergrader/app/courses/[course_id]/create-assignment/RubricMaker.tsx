@@ -136,14 +136,18 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                             </td>
                             <td>{showSettings &&
                                 (<div className="flex justify-center p-2"><button type="button" className="text-red-500" role="alert" onClick={() => delRow(index)}>
-                                    {MinusIcon()}
-                                </button></div>)}</td>
+                                    <MinusIcon/>
+                                </button></div>)}
+                            </td>
                         </tr>
                     )
                 })}
-                <td className="border-l border-b"></td>
-                <td className="border-b"></td>
-                <td className="border-r border-b">Total: {getTotal()}</td>
+                {/* BAD */}
+                <tr>
+                    <td className="border-l border-b"></td>
+                    <td className="border-b"></td>
+                    <td className="border-r border-b">Total: {getTotal()}</td> 
+                </tr>
             </tbody>
         </table>
         {showSettings &&

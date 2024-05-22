@@ -44,13 +44,12 @@ export default function UploadButton({ asgn_id }: { asgn_id: string }) {
         try {
             const { success } = await uploadFile(selectedFile, currentUser.uid, asgn_id);
             if (!success) {
-                alert('Error uploading file.');
+                alert('Error uploading file. Make sure you are uploading a PDF.');
                 return;
             }
             setSelectedFile(null);
             window.location.reload();
         } catch (error) {
-            console.error("Error uploading file: ", error);
             alert('Error uploading file.');
         } finally {
             setIsLoading(false);
@@ -59,7 +58,7 @@ export default function UploadButton({ asgn_id }: { asgn_id: string }) {
 
     return (
         <div
-            className={`flex flex-col items-center justify-center p-4 rounded-md ${selectedFile ? '' : 'border-2 border-dashed border-gray-400'}`}
+            className={`flex flex-col items-center justify-center p-4 rounded-md h-52 ${selectedFile ? '' : 'border-2 border-dashed border-gray-400'}`}
             onDragOver={onDragOver}
             onDrop={onDropFile}
         >

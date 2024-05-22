@@ -25,7 +25,7 @@ export default function ListCourses() {
         isError
     } = useCurrentUserQuery();
 
-    
+
 
     useEffect(() => {
         if (currentUser) {
@@ -47,26 +47,38 @@ export default function ListCourses() {
         return data;
     }
     if (isLoading) {
-        return <LoadingSpinner/>;
+        return <LoadingSpinner />;
     }
 
     if (isError) {
         return <div>Error</div>;
     }
+
     return (
         <div className="flex flex-col min-h-screen w-full bg-white">
+
             <header className="w-full py-3">
                 <h1 className="text-5xl font-bold text-left pl-4 write-blue">Teacher Dashboard</h1>
-                <hr className="my-2 border-t-2"></hr>
+                <hr className="my-1 border-t-2"></hr>
             </header>
 
             <main className="flex-1 w-full">
-                <div className="p-8 flex gap-8">
+                <div className="px-4 py-0 flex gap-8">
+
+                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
+                        <div className="light-blue p-5">
+                            <p className="text-xl text-left font-semibold write-grey">Assignments</p>
+                        </div>
+                        <div className="light-white flex-grow p-6">
+                            <TeacherListAllAsgn />
+                        </div>
+                    </div>
+
                     <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
                         <div className="flex justify-between items-center light-blue p-5">
                             <Link
                                 href="/courses"
-                                className="text-xl text-left font-semibold write-blue"
+                                className="text-xl text-left font-semibold write-grey"
                             >
                                 Active Courses
                             </Link>
@@ -92,23 +104,6 @@ export default function ListCourses() {
                                     </div>
                                 ))}
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col flex-grow gap-4">
-                        <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
-                            <div className="light-blue p-5">
-                                <p className="text-xl text-left write-blue font-semibold">Assignments</p>
-                            </div>
-                            <div className="light-white flex-grow p-6">
-                                <TeacherListAllAsgn />
-                            </div>
-                        </div>
-                        <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
-                            <div className="light-blue p-5">
-                                <p className="text-xl text-left write-blue font-semibold">Analytics</p>
-                            </div>
-                            <div className="light-white flex-grow p-6"></div>
                         </div>
                     </div>
                 </div>
