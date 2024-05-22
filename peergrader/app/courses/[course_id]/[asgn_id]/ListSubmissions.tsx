@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
-import Link from 'next/link';
 
 interface SubmissionData {
   uid: string;
@@ -33,8 +32,16 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
     return data;
   }
 
+  let totalPeople = submissions.length;
+  let submitted = submissions.filter(submission => submission.file_id).length;
+  let progress = totalPeople > 0 ? submitted / totalPeople : 0;
+
   return (
     <div>
+      <div className="flex space-x-2 items-center">
+        <progress value={progress} max="1" />
+        <span>{submitted}/{totalPeople} submissions</span>
+      </div>
       <ul>
         {submissions.map((submission, index) => (
           <li key={index}>

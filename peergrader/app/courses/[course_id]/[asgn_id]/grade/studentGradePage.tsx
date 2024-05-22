@@ -22,6 +22,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import GetPhaseFromId from '@/utils/queries/GetPhaseFromId';
 import { Phase } from '@/utils/types/phaseEnum';
 import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
@@ -289,7 +290,7 @@ export default function StudentGradePage() {
 
   }
 
-  if (isOwnerLoading || isUserLoading) return (<div>Loading</div>);
+  if (isOwnerLoading || isUserLoading) return (<LoadingSpinner/>);
   if ((!owner && isEditable) || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
   return (
     <main>

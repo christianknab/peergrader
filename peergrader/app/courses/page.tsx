@@ -6,6 +6,7 @@ import JoinCourse from './JoinCourse';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import { useRouter } from 'next/navigation';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 export default function CoursesPage() {
     const router = useRouter();
@@ -17,7 +18,7 @@ export default function CoursesPage() {
       } = useCurrentUserQuery();
      
       if (isUserLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
       }
      
       if (isError || !currentUser) {

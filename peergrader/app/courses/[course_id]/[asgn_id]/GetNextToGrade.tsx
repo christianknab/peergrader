@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { useQueryClient } from '@tanstack/react-query';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 interface GetNextToGradeProps {
     course_id: string;
@@ -16,7 +17,7 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
     const queryClient = useQueryClient();
 
     if (isUserLoading) {
-        return <div>Loading...</div>;
+        return <LoadingSpinner/>;
     }   
 
     if (isError || !currentUser) {

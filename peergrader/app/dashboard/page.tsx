@@ -28,9 +28,7 @@ export default async function DashboardPage() {
       </div>
     </div>
   );
-  // if (!userContext) {
-  //   return <div>Loading...</div>;
-  // }
+
   // const { currentUser, updateUser } = userContext;
 
 

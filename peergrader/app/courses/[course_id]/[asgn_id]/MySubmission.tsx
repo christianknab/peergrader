@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { SubmissionData } from './studentAsgnPage';
+import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
 
@@ -23,7 +24,7 @@ export default function MySubmission({ asgn_id, submission, setSubmission}: MySu
   } = useCurrentUserQuery();
 
   if (isUserLoading) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner/>;
   }
 
   if (isError || !currentUser) {

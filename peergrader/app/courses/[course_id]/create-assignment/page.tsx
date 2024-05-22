@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { AssignmentForm } from './AssignmentForm';
 import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import {LoadingSpinner} from '@/components/loadingSpinner';
 
 export interface Rubric {
     names: string[];
@@ -53,8 +54,7 @@ export default function CreateAssignmentPage() {
         isLoading: courseDataLoading,
         isError: courseDataError
     } = useCourseDataQuery(course_id);
-    if (courseDataLoading) { return <div>Loading...</div>; }
-    if (courseDataError) { return <div>Error</div>; }
+    
 
 
     const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numberInput: boolean) => {
@@ -131,12 +131,11 @@ export default function CreateAssignmentPage() {
         }
     };
 
-
-    if (isUserLoading) {
-        return <div>Loading...</div>;
+    if (isUserLoading || courseDataLoading) {
+        return <LoadingSpinner/>;
     }
 
-    if (isError || !currentUser) {
+    if (isError || !currentUser || courseDataError) {
         return <div>Error</div>;
     }
 
