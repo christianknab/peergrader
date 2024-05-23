@@ -16,18 +16,8 @@ function useSubmissionDataQuery(user_id: string, asgn_id: string, enabled: boole
             .eq('asgn_id', asgn_id)
             .order('created_at', { ascending: false })
             .limit(1);
-        if (data && data?.length > 0) {
-            const view_url = supabase.storage.from('files').getPublicUrl(`${user_id}/${data[0].file_id}` || '');
 
-            return {
-                file_id: data[0].file_id,
-                filename: data[0].filename,
-                created_at: data[0].created_at,
-                view_url: view_url.data.publicUrl,
-            };
-        }
-
-        return null;
+        return data;
     };
     return useQuery({ queryKey: queryKey, queryFn, enabled, staleTime: 0 });
 }
