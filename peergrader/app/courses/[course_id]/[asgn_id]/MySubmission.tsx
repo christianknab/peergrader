@@ -6,8 +6,6 @@ import { SubmissionData } from './studentAsgnPage';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 
 
-
-
 interface MySubmissionProps {
   asgn_id: string;
   submission: SubmissionData | null;
@@ -88,7 +86,6 @@ export default function MySubmission({ asgn_id, submission, setSubmission}: MySu
         </div>
       ) : (
         <div>
-          No submission
         </div>
       )}
     </div>

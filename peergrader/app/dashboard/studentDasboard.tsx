@@ -36,7 +36,7 @@ export default function StudentDashboardPage() {
   return (
     <div className="flex flex-col min-h-screen w-full bg-white">
 
-      <header className="w-full py-8">
+      <header className="w-full py-3">
         <h1 className="text-5xl font-bold text-left pl-4 write-blue">Student Dashboard</h1>
         <hr className="my-1 border-t-2"></hr>
       </header>

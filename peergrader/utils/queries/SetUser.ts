@@ -24,7 +24,7 @@ export default async function SetUser(client: SupabaseClient, user: AppUser) {
         first_name: user.first_name,
         last_name: user.last_name,
         is_teacher: user.is_teacher,
-        profile_image: null, // add profile image support
+        // profile_image: null, // add profile image support
       },
     ])
     .select()

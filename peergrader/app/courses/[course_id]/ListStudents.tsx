@@ -27,12 +27,21 @@ export default function ListStudents({ course_id }: { course_id: string }) {
   }
 
   return (
-    <div>
-      <ul>
-        {accounts.map((account, index) => (
-          <li key={index}>{account.first_name} {account.last_name} - {account.email}</li>
-        ))}
-      </ul>
+    <div className="flex flex-col w-full gap-6 h-full">
+      <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
+        <div className="light-blue p-5">
+          <p className="text-xl text-left font-semibold">Students</p>
+        </div>
+        <div className="light-grey flex-grow p-6">
+          <div>
+            <ul>
+              {accounts.map((account, index) => (
+                <li key={index}>{account.first_name} {account.last_name} - {account.email}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -32,13 +32,13 @@ export default function StudentCoursePage() {
                 </div>
                 <header>
                     <div className="w-4/5 mx-auto">
-                        <nav className="rounded-md w-1/5 bg-light-grey">
+                        {/* <nav className="rounded-md w-1/5 bg-light-grey">
                             <ul className="flex justify-between px-4 py-2">
                                 <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
                                 <li className="text-black hover:text-blue-800">Students</li>
                                 <li className="text-black hover:text-blue-800">Grades</li>
                             </ul>
-                        </nav>
+                        </nav> */}
                         <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
@@ -46,26 +46,6 @@ export default function StudentCoursePage() {
                 </header>
                 <div className="w-4/5 mx-auto">
                     <div className="flex gap-8">
-                        {/* <div className="flex flex-col w-1/3 rounded-lg overflow-hidden gap-6">
-                            <div className="flex flex-col rounded-lg overflow-hidden"> 
-                                <div className="light-blue p-5">
-                                    <p className="text-xl text-left font-semibold">Students</p>
-                                </div>
-                                <div className="light-grey flex-grow p-6"> 
-                                    <ListStudents course_id={course_id} />
-                                </div>
-                            </div>
-
-                            <div className="flex flex-col rounded-lg overflow-hidden"> 
-                                <div className="light-blue p-5">
-                                    <p className="text-xl text-left font-semibold">Grades</p>
-                                </div>
-                                <div className="light-grey flex-grow p-6"> 
-                                    Grades
-                                </div>
-                            </div>
-                        </div> */}
-
                         <div className="flex flex-col w-full gap-6 h-full">
                             <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
                                 <div className="light-blue p-5">
