@@ -45,6 +45,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     const [assignmentName, setAssignmentName] = useState('');
     const [anonymous, setAnonymous] = useState(anonymousGrading);
     const [rubric, setRubric] = useState<Rubric[]>(initialRubric);
+    const regex = new RegExp("^[0-9]*");
     const [simple_rubric, setSimpleRubric] = useState<Rubric[]>([{
         names: ["Overall Grade"],
         descriptions: [simple_description],
@@ -268,14 +269,26 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
             </div>
             <div className="text-red-500">{dateError}</div>
 
-            {/* <div>
+            <div>
                 Number of Peergrades:
-                <input type="number" className={`border text-sm rounded-lg block w-sm p-2.5`} placeholder="10" value={num_peergrades} required onChange={(e) => setNumPeergrades(e.target.valueAsNumber)} />
-            </div> */}
-            {/* <div>
+                <input
+                    type="text"
+                    inputMode='numeric'
+                    className={`border text-sm rounded-lg block w-sm p-2.5 ${num_peergrades ? 0:0 <= 0 ? 'bg-red-200' : ''}`}
+                    value={Number.isNaN(num_peergrades) ? "" : num_peergrades}
+                    required
+                    onChange={(e) => setNumPeergrades(parseInt(regex.exec(e.target.value)?.at(0) ?? ""))} />
+            </div>
+            <div>
                 Number of required comments:
-                <input type="number" className={`border text-sm rounded-lg block w-sm p-2.5`} placeholder="10" value={numAnnotations} required onChange={(e) => setNumAnnotations(e.target.valueAsNumber)} />
-            </div> */}
+                <input
+                    type="text"
+                    inputMode='numeric'
+                    className={`border text-sm rounded-lg block w-sm p-2.5 ${numAnnotations ? 0:0 <= 0 ? 'bg-red-200' : ''}`} 
+                    value={Number.isNaN(numAnnotations) ? "" : numAnnotations}
+                    required
+                    onChange={(e) => setNumAnnotations(parseInt(regex.exec(e.target.value)?.at(0) ?? ""))} />
+            </div>
 
             <div className="flex">Rubric:</div>
             <div className='py-2'><div className='flex'><div><button onClick={toggleCustomizeRubric} className={`btn py-2 px-4 ${customizeRubric ? `font-bold bg-blue-200` : `bg-btn-background hover:bg-btn-background-hover`} rounded-md no-underline`} disabled={customizeRubric}>Custom</button></div>
