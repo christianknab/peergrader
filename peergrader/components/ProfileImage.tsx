@@ -2,7 +2,7 @@ import Image, { StaticImageData } from 'next/image';
 import React from 'react';
 
 interface ProfileImageProps {
-  src: string | StaticImageData;
+  src: string;
   width: number;
   height: number;
   alt?: string;
@@ -10,14 +10,10 @@ interface ProfileImageProps {
 
 const ProfileImage: React.FC<ProfileImageProps> = ({ src, width, height, alt }) => {
   return (
-    <div className="relative rounded-full overflow-hidden" style={{ width, height }}>
-      <Image
-        src={src}
-        alt={alt || ''}
-        fill
-        style={{ objectFit: 'cover' }}
-      />
-    </div>
+    <img
+      src={src}
+      alt={alt || ''}
+      style={{ width: `${width}px`, height: `${height}px`, borderRadius: '50%', border: '2px solid #d1d5db' }}    />
   );
 };
 

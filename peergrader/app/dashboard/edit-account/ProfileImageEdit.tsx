@@ -1,54 +1,47 @@
-import React, { useRef, useState } from 'react';
-import ReactCrop, { Crop } from 'react-image-crop';
+// Credit to https://github.com/OneLightWebDev/react-image-cropper/tree/main
+
+import React, { useState } from 'react';
 import 'react-image-crop/dist/ReactCrop.css';
-import { supabase } from '@/utils/supabase/client';
-import ImageCropper from './ImageCropper';
 import CropperModal from './CropperModal';
 import Pencil from '@/components/icons/Pencil';
+import ProfileImage from "@/components/ProfileImage";
+
 
 interface ProfileImageEditProps {
     src: string;
     uid: string;
-    onUpload: (url: string) => void;
+    setProfileImageUrl: (profileImageUrl: string) => void;
 }
 
-const ProfileImageEdit: React.FC<ProfileImageEditProps> = ({ src, uid, onUpload }) => {
-    const [uploading, setUploading] = useState(false);
-    const [upImg, setUpImg] = useState<HTMLImageElement | null>(null);
-    const [crop, setCrop] = useState<Crop>({ unit: '%', x: 0, y: 0, width: 100, height: 100 });
-    const [imgFormat, setImgFormat] = useState<string>('image/jpeg');
-
-    const avatarUrl = useRef(
-        src
-    );
+const ProfileImageEdit: React.FC<ProfileImageEditProps> = ({ src, uid, setProfileImageUrl }) => {
+    const [avatarUrl, setAvatarUrl] = useState(src);
     const [modalOpen, setModalOpen] = useState(false);
+    const [triggerRerender, setTriggerRerender] = useState(false);
 
     const updateAvatar = (imgSrc: string) => {
-        avatarUrl.current = imgSrc;
+        setAvatarUrl(imgSrc);
+        setProfileImageUrl(imgSrc);
+        setTriggerRerender((prev) => !prev); // triggers ProfileImage rebuild
     };
 
     return (
         <div className="relative">
             <div className="relative">
-            <img
-                src={avatarUrl.current}
-                alt="Avatar"
-                className="w-[150px] h-[150px] rounded-full border-2 border-gray-400"
-            />
-            <button
-          className="absolute -bottom-3 left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-300 hover:bg-gray-700 border border-gray-600"
-          title="Change photo"
-          onClick={() => setModalOpen(true)}
-        >
-          <Pencil />
-        </button>
-            {modalOpen && (
-                <CropperModal
-                    updateAvatar={updateAvatar}
-                    closeModal={() => setModalOpen(false)}
-                    uid={uid}
-                />
-            )}</div>
+                <ProfileImage src={`${avatarUrl}?${new Date().getTime()}`} width={150} height={150} />
+                <button
+                    className="absolute -bottom-3 left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-300 hover:bg-gray-700 border border-gray-600"
+                    title="Change photo"
+                    onClick={() => setModalOpen(true)}
+                >
+                    <Pencil />
+                </button>
+                {modalOpen && (
+                    <CropperModal
+                        updateAvatar={updateAvatar}
+                        closeModal={() => setModalOpen(false)}
+                        uid={uid}
+                    />
+                )}</div>
         </div>
     );
 };
