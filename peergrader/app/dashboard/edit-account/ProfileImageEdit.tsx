@@ -27,7 +27,7 @@ const ProfileImageEdit: React.FC<ProfileImageEditProps> = ({ src, uid, setProfil
     return (
         <div className="relative">
             <div className="relative">
-                <ProfileImage src={`${avatarUrl}?${new Date().getTime()}`} width={150} height={150} />
+                <ProfileImage src={`${avatarUrl}?${new Date().getTime()}`} width={150} height={150} border={true} />
                 <button
                     className="absolute -bottom-3 left-0 right-0 m-auto w-fit p-[.35rem] rounded-full bg-gray-300 hover:bg-gray-700 border border-gray-600"
                     title="Change photo"
