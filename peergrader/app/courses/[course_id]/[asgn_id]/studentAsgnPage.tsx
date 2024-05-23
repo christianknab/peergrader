@@ -92,7 +92,7 @@ export default function StudentAsgnPage() {
                       <div className="flex flex-col items-center space-y-4">
                         <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         <div className="w-full items-center">
-                          <UploadButton asgn_id={asgn_id} />
+                          <UploadButton asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                       </div>
                     );

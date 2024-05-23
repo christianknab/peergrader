@@ -1,7 +1,7 @@
 import { supabase } from './supabase/client';
 
 
-export async function uploadFile(file: File, uid: string, asgn_id?: string) {
+export async function uploadFile(file: File, uid: string, asgn_id: string) {
     // store file with timestamp as name, in users folder
     const timestamp = Date.now();
     const file_path = `${uid}/${timestamp}`;
