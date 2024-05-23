@@ -26,6 +26,7 @@
     "react-dom": "^18.2.0",
     "react-expanding-textarea": "^2.3.6",
     "react-icons": "^5.0.1",
+    "react-image-crop": "^11.0.5",
     "react-otp-input": "^3.1.1",
     "react-pdf": "^8.0.2",
     "react-tailwindcss-datepicker": "^1.6.6",

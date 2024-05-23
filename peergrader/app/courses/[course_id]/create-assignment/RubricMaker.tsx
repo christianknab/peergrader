@@ -13,7 +13,7 @@ interface RubricMaker {
 
 export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: RubricMaker) => {
     const [showSettings, setShowSettings] = useState(false);
-
+    const regex = new RegExp("^[0-9]*");
     const toggleSettings = () => {
         setShowSettings(!showSettings);
     };
@@ -34,6 +34,7 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
         const newRubric = [...rubric];
         newRubric[index].row_points[0] = value;
         setRubric(newRubric);
+        setTotal();
     };
 
     const handleNameChange = (index: number, value: string) => {
@@ -59,12 +60,14 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
     const addRow = () => {
         const newRow = { names: [''], descriptions: [''], row_points: [NaN], col_points: [NaN] };
         setRubric([...rubric, newRow]);
+        setTotal();
     };
 
     const delRow = (rowIndex: number) => {
         const newRubric = [...rubric];
         newRubric.splice(rowIndex, 1);
         setRubric(newRubric);
+        setTotal();
     };
 
     const getHighestColPoints = (colPoints: number[]) => {
@@ -72,14 +75,15 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
     };
 
     // Make this less operations!!
-    function getTotal(): number {
+    function setTotal() {
         let total = 0;
         for (let i = 0; i < rubric.length; i++) {
-            total += rubric[i].row_points[0]
+            if (!Number.isNaN(rubric[i].row_points[0])) {
+                total += rubric[i].row_points[0];
+            }
         }
         // rubric[0].row_points.forEach((el) => total += el)
         setMaxScore(total);
-        return total;
     };
 
     return (<div className="mb-3">
@@ -112,7 +116,16 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                                     {rubricItem.descriptions.map((description, descIndex) => (
                                         <li key={descIndex} className="inline-block p-2 w-full">
                                             <div className="flex justify-between items-center space-x-2">
-                                                <input type="number" value={rubricItem.col_points[descIndex]} className={`border text-sm rounded-lg p-2.5 w-1/6 ${Number.isNaN(rubricItem.col_points[descIndex]) ? 'bg-red-200' : ''}`} placeholder="10" required onChange={(e) => handleColPointChange(index, descIndex, e.target.valueAsNumber)} title={Number.isNaN(rubricItem.col_points[descIndex]) ? 'Please enter a number' : ''} />
+                                                <input type="text"
+                                                    inputMode='numeric'
+                                                    value={Number.isNaN(rubricItem.col_points[descIndex]) ? "" : rubricItem.col_points[descIndex]}
+                                                    className={`border text-sm rounded-lg p-2.5 w-1/6 ${Number.isNaN(rubricItem.col_points[descIndex]) ? 'bg-red-200' : ''}`}
+                                                    placeholder="10" 
+                                                    required 
+                                                    onChange={(e) => {
+                                                        handleColPointChange(index, descIndex, parseInt(regex.exec(e.target.value)?.at(0) ?? ""));
+                                                    }}
+                                                    title={Number.isNaN(rubricItem.col_points[descIndex]) ? 'Please enter a number' : ''} />
                                                 <textarea
                                                     className={`resize-none h-20 rounded-md p-1 flex-grow ${rubricItem.descriptions[descIndex] == '' ? 'bg-red-200' : ''}`}
                                                     value={description}
@@ -132,21 +145,31 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                                 </ul>
                             </td>
                             <td className="border-l border-r border-b p-4">
-                                <input type="number" className={`border text-sm rounded-lg block w-full p-2.5 ${rowPointMismatch ? 'bg-red-200' : ''}`} placeholder="10" value={rubricItem.row_points[0]} required onChange={(e) => handleRowPointChange(index, e.target.valueAsNumber)} title={rowPointMismatch ? 'Row points do not match the highest column points!' : ''} />
+                                <input
+                                    type='text'
+                                    inputMode='numeric'
+
+                                    className={`border text-sm rounded-lg block w-full p-2.5 ${rowPointMismatch ? 'bg-red-200' : ''}`}
+                                    // placeholder="10" 
+                                    value={Number.isNaN(rubricItem.row_points[0]) ? "" : rubricItem.row_points[0]}
+                                    required
+                                    onChange={(e) => {
+                                        handleRowPointChange(index, parseInt(regex.exec(e.target.value)?.at(0) ?? ""));
+                                    }}
+                                    title={rowPointMismatch ? 'Row points do not match the highest column points!' : ''} />
                             </td>
                             <td>{showSettings &&
                                 (<div className="flex justify-center p-2"><button type="button" className="text-red-500" role="alert" onClick={() => delRow(index)}>
-                                    <MinusIcon/>
+                                    <MinusIcon />
                                 </button></div>)}
                             </td>
                         </tr>
                     )
                 })}
-                {/* BAD */}
                 <tr>
                     <td className="border-l border-b"></td>
                     <td className="border-b"></td>
-                    <td className="border-r border-b">Total: {getTotal()}</td> 
+                    <td className="border-r border-b">Total: {maxScore}</td>
                 </tr>
             </tbody>
         </table>
