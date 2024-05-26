@@ -1,31 +1,30 @@
-import ListAllAsgn from "@/app/dashboard/studentListAllAsgn";
-import '@fortawesome/fontawesome-free/css/all.css';
+"use client";
+import React, { useState, useEffect } from 'react';
 import Link from "next/link";
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
-import { useRouter } from 'next/navigation';
+import '@fortawesome/fontawesome-free/css/all.css';
 import TeacherListAllAsgn from "./teacherListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
+import CreateCourseForm from '../courses/create/page'; 
 
 interface CourseData {
     course_id: string;
     name: string;
 }
 
-export default function ListCourses() {
+const TeacherDashboard: React.FC = () => {
     const router = useRouter();
     const supabase = createClient();
     const [userCourses, setUserCourses] = useState<CourseData[]>([]);
+    const [showModal, setShowModal] = useState(false);
 
     const {
         data: currentUser,
-        isLoading,
+        isLoading: isUserLoading,
         isError
     } = useCurrentUserQuery();
-
-
 
     useEffect(() => {
         if (currentUser) {
@@ -37,7 +36,7 @@ export default function ListCourses() {
         const { data, error } = await supabase
             .from('courses')
             .select('course_id, name')
-            .eq('owner', userId)
+            .eq('owner', userId);
 
         if (error) {
             console.error('Error fetching course names:', error);
@@ -46,17 +45,24 @@ export default function ListCourses() {
 
         return data;
     }
-    if (isLoading) {
+
+    const refreshCourses = async () => {
+        if (currentUser) {
+            const updatedCourses = await fetchUserCourses(currentUser.uid);
+            setUserCourses(updatedCourses);
+        }
+    };
+
+    if (isUserLoading) {
         return <LoadingSpinner />;
     }
 
-    if (isError) {
+    if (isError || !currentUser) {
         return <div>Error</div>;
     }
 
     return (
         <div className="flex flex-col min-h-screen w-full bg-white">
-
             <header className="w-full py-3">
                 <h1 className="text-5xl font-bold text-left pl-4 write-blue">Teacher Dashboard</h1>
                 <hr className="my-1 border-t-2"></hr>
@@ -64,7 +70,6 @@ export default function ListCourses() {
 
             <main className="flex-1 w-full">
                 <div className="px-4 py-0 flex gap-8">
-
                     <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
                         <div className="light-blue p-5">
                             <p className="text-xl text-left font-semibold write-grey">Assignments</p>
@@ -84,7 +89,7 @@ export default function ListCourses() {
                             </Link>
                             <button
                                 className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
-                                onClick={() => router.push('/courses/create')}>
+                                onClick={() => setShowModal(true)}>
                                 + Add Course
                             </button>
                         </div>
@@ -112,6 +117,14 @@ export default function ListCourses() {
             <footer className="w-full font-bold light-grey p-4 bg-white text-center">
                 <p>&copy;2024 PeerGrader</p>
             </footer>
+
+            <CreateCourseForm 
+                showModal={showModal} 
+                onClose={() => setShowModal(false)} 
+                refreshCourses={refreshCourses} 
+            />
         </div>
     );
 }
+
+export default TeacherDashboard;
