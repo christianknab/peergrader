@@ -2,13 +2,12 @@
 import { useParams } from 'next/navigation';
 import ListSubmissions from './ListSubmissions';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import NavBar from '@/components/NavBar';
-import { assignIn } from 'lodash';
+import PhaseProgressBar from './PhaseProgressBar';
 
 
 export default function TeacherAsgnPage() {
@@ -55,10 +54,11 @@ export default function TeacherAsgnPage() {
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment: {asgnData.name}  -  Phase: {phase}</h2>
+              <h2 className="text-xl font-semibold">{asgnData.name}</h2>
             </div>
           )}
           <div className="flex flex-col space-y-4">
+            <PhaseProgressBar asgn_id={asgn_id} />
             <ListSubmissions course_id={course_id} asgn_id={asgn_id} />
           </div>
         </div>

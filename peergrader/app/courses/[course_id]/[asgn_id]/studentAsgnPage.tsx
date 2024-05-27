@@ -15,6 +15,7 @@ import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 import { Phase } from '@/utils/types/phaseEnum';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import NavBar from '@/components/NavBar';
+import PhaseProgressBar from './PhaseProgressBar';
 
 
 export interface SubmissionData {
@@ -56,7 +57,7 @@ export default function StudentAsgnPage() {
   return (
     <div className="w-full min-h-screen flex flex-col">
       <main className="flex-1 w-full">
-      <NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
+        <NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
         <header>
           <div className="w-4/5 mx-auto">
             <nav className="rounded-md w-1/5 bg-light-grey">
@@ -69,9 +70,10 @@ export default function StudentAsgnPage() {
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment: {asgnData.name} -- Phase: {phase}</h2>
+              <h2 className="text-xl font-semibold">{asgnData.name}</h2>
             </div>
           )}
+          <PhaseProgressBar asgn_id={asgn_id} />
           {asgnData && (
             <div>
               {(() => {

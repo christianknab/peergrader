@@ -81,7 +81,7 @@ const TeacherDashboard: React.FC = () => {
         <div className="px-4 py-0 flex gap-8 mb-10">
           <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
             <div className="white-blue-gradient p-5">
-              <p className="text-xl text-left text-white font-semibold text-white">Assignments</p>
+              <p className="text-xl text-left font-semibold text-white">Assignments</p>
             </div>
             <div className="light-white flex-grow p-6">
               <div className="max-w-7xl mx-auto">
@@ -92,7 +92,7 @@ const TeacherDashboard: React.FC = () => {
 
           <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
             <div className="flex justify-between items-center white-blue-gradient p-5">
-              <p className="text-xl text-left text-white font-semibold text-white">Active Courses</p>
+              <p className="text-xl text-left font-semibold text-white">Active Courses</p>
               <button
                 className="light-grey text-black font-semibold py-1 px-4 rounded hover:bg-btn-background-hover"
                 onClick={() => setShowModal(true)}>
