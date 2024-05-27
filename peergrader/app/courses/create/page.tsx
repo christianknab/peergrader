@@ -71,3 +71,14 @@
 // };
 
 // export default CreateCourse;
+
+
+"use client";
+
+export default function CreateCourse() {
+
+    return (
+        <div>
+        </div>
+    );
+}
