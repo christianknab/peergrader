@@ -19,7 +19,12 @@ interface SubmissionData {
   file_id: string | null;
 }
 
-export default function TeacherListAllAsgn() {
+interface TeacherListAllAsgnProps {
+  setCourseAssignmentsCount: (counts: { [course_id: string]: number }) => void;
+}
+
+
+export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: TeacherListAllAsgnProps) {
   const supabase = createClient();
   const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
   const [userAssignments, setUserAssignments] = useState<AsgnData[]>([]);
@@ -27,7 +32,10 @@ export default function TeacherListAllAsgn() {
 
   useEffect(() => {
     if (currentUser) {
-      fetchUserAssignments(currentUser.uid).then(setUserAssignments);
+      fetchUserAssignments(currentUser.uid).then(assignments => {
+        setUserAssignments(assignments);
+        calculateAssignmentsCount(assignments);
+      });
     }
   }, [currentUser]);
 
@@ -69,6 +77,18 @@ export default function TeacherListAllAsgn() {
     }
     return data;
   }
+  function calculateAssignmentsCount(assignments: AsgnData[]) {
+    const courseAssignmentsCount: { [key: string]: number } = {};
+
+    assignments.forEach((assignment) => {
+      if (!courseAssignmentsCount[assignment.course_id]) {
+        courseAssignmentsCount[assignment.course_id] = 0;
+      }
+      courseAssignmentsCount[assignment.course_id]++;
+    });
+
+    setCourseAssignmentsCount(courseAssignmentsCount);
+  }
 
   useEffect(() => {
     userAssignments.forEach((assignment) => {
@@ -105,7 +125,7 @@ export default function TeacherListAllAsgn() {
                     <div className="flex space-x-2 items-center">
                       <div className="relative w-full h-4 bg-gray-200 rounded">
                         <div
-                          className="absolute top-0 left-0 h-4 white-blue-gradient rounded"
+                          className="absolute top-0 left-0 h-4 progress-gradient rounded"
                           style={{ width: `${progress * 100}%` }}
                         ></div>
                       </div>

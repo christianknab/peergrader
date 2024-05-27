@@ -85,3 +85,7 @@
 .white-blue-gradient {
   background: linear-gradient(to right, #76acde, #aedff3)
 }
+
+.progress-gradient {
+  background: linear-gradient(to right, #c8e0f5, #427fdc)
+}
