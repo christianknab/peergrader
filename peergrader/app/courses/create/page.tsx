@@ -3,13 +3,13 @@ import React, { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 
-interface createCourseProps {
+interface CreateCourseProps {
     showModal: boolean;
     onClose: () => void;
     refreshCourses: () => void;
 }
 
-const createCourse: React.FC<createCourseProps> = ({ showModal, onClose, refreshCourses }) => {
+const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refreshCourses }) => {
     const [courseName, setCourseName] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const supabase = createClient();
@@ -70,4 +70,4 @@ const createCourse: React.FC<createCourseProps> = ({ showModal, onClose, refresh
     );
 };
 
-export default createCourse;
+export default CreateCourse;

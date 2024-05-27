@@ -7,7 +7,7 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import TeacherListAllAsgn from "./teacherListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
-import CreateCourseForm from '../courses/create/page'; 
+import CreateCourse from '../courses/create/page';
 
 interface CourseData {
     course_id: string;
@@ -74,9 +74,9 @@ const TeacherDashboard: React.FC = () => {
                             <p className="text-xl text-left text-white font-semibold text-white">Assignments</p>
                         </div>
                         <div className="light-white flex-grow p-6">
-                        <div className="max-w-7xl mx-auto">
-                            <TeacherListAllAsgn />
-                        </div>
+                            <div className="max-w-7xl mx-auto">
+                                <TeacherListAllAsgn />
+                            </div>
                         </div>
                     </div>
 
@@ -114,10 +114,10 @@ const TeacherDashboard: React.FC = () => {
                 <p>&copy;2024 PeerGrader</p>
             </footer>
 
-            <CreateCourseForm 
-                showModal={showModal} 
-                onClose={() => setShowModal(false)} 
-                refreshCourses={refreshCourses} 
+            <CreateCourse
+                showModal={showModal}
+                onClose={() => setShowModal(false)}
+                refreshCourses={refreshCourses}
             />
         </div>
     );
