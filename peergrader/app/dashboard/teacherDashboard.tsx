@@ -7,7 +7,7 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import TeacherListAllAsgn from "./teacherListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
-import CreateCourse from '../courses/create/page';
+import CreateCourse from '../courses/CreateCourse';
 
 interface CourseData {
     course_id: string;
