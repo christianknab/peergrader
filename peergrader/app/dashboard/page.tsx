@@ -17,7 +17,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="w-full flex justify-between items-center p-4">
+      <div className="w-full shadow flex justify-between items-center p-2">
         <span className="font-bold text-lg">PeerGrader</span>
         <div className="flex"><div className="pr-2"><ProfileLink /></div>
           <LogoutButton /></div>

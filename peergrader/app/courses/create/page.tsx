@@ -44,21 +44,21 @@ const createCourse: React.FC<createCourseProps> = ({ showModal, onClose, refresh
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-lg p-4 relative">
+            <div className="white-blue-gradient rounded-lg p-4 relative">
                 <button className="absolute top-0 right-0 m-2 text-gray-700" onClick={onClose}>X</button>
-                <div className="flex flex-col space-y-3 p-5 bg-white rounded-lg overflow-hidden">
+                <div className="white-blue-gradient flex flex-col space-y-4 p-5 rounded-lg overflow-hidden">
                     <div className="flex items-center space-x-3">
-                        <label htmlFor="courseName" className="font-bold">Course Name:</label>
+                        <label htmlFor="courseName" className="font-semibold">Course Name:</label>
                         <input
                             type="text"
                             placeholder="Enter course name"
                             value={courseName}
                             onChange={(e) => setCourseName(e.target.value)}
-                            className="py-2 px-4 rounded-md shadow-lg"
+                            className="py-2 px-4 rounded-md light-grey shadow-lg"
                         />
                     </div>
                     <button
-                        className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                        className="py-2 px-4 rounded-md font-semibold no-underline bg-btn-background hover:bg-btn-background-hover"
                         onClick={createCourse}
                         disabled={isLoading}
                     >

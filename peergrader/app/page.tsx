@@ -12,7 +12,7 @@ const Navbar = () => (
 
 const Header = () => (
   <header className="flex flex-col items-center justify-center text-center w-full py-32 bg-gradient-to-r from-teal-400 to-blue-600">
-    <h1 className="font-bold text-white mb-20" style={{ fontSize: '10rem' }}>PeerGrader</h1>
+    <h1 className="font-semibold text-white mb-20" style={{ fontSize: '10rem' }}>PeerGrader</h1>
     <p className="mb-24 text-2xl font-semibold text-white">Revolutionize Grading with PeerGrader: A Modern Platform for Streamlined Feedback</p>
     <div className="flex items-center justify-center">
       <ActionButton />

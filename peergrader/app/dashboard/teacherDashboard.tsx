@@ -62,33 +62,29 @@ const TeacherDashboard: React.FC = () => {
     }
 
     return (
-        <div className="flex flex-col min-h-screen w-full bg-white">
-            <header className="w-full py-3">
-                <h1 className="text-5xl font-bold text-left pl-4 write-blue">Teacher Dashboard</h1>
-                <hr className="my-1 border-t-2"></hr>
+        <div className="flex flex-col min-h-screen w-full">
+            <header className="w-full py-8">
+                <h1 className="text-6xl font-bold text-left pl-4 write-blue">Teacher Dashboard</h1>
             </header>
 
             <main className="flex-1 w-full">
-                <div className="px-4 py-0 flex gap-8">
-                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
-                        <div className="light-blue p-5">
-                            <p className="text-xl text-left font-semibold write-grey">Assignments</p>
+                <div className="px-4 py-0 flex gap-8 mb-10">
+                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
+                        <div className="white-blue-gradient p-5">
+                            <p className="text-xl text-left text-white font-semibold text-white">Assignments</p>
                         </div>
                         <div className="light-white flex-grow p-6">
+                        <div className="max-w-7xl mx-auto">
                             <TeacherListAllAsgn />
+                        </div>
                         </div>
                     </div>
 
-                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
-                        <div className="flex justify-between items-center light-blue p-5">
-                            <Link
-                                href="/courses"
-                                className="text-xl text-left font-semibold write-grey"
-                            >
-                                Active Courses
-                            </Link>
+                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
+                        <div className="flex justify-between items-center white-blue-gradient p-5">
+                            <p className="text-xl text-left text-white font-semibold text-white">Active Courses</p>
                             <button
-                                className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
+                                className="light-grey text-black font-semibold py-1 px-4 rounded hover:bg-btn-background-hover"
                                 onClick={() => setShowModal(true)}>
                                 + Add Course
                             </button>
@@ -114,7 +110,7 @@ const TeacherDashboard: React.FC = () => {
                 </div>
             </main>
 
-            <footer className="w-full font-bold light-grey p-4 bg-white text-center">
+            <footer className="shadow w-full font-bold p-4 bg-white text-center">
                 <p>&copy;2024 PeerGrader</p>
             </footer>
 
