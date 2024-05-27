@@ -4,6 +4,7 @@ import DashboardClientPage from "./dasboardClient";
 import LogoutButton from "./LogoutButton";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import ProfileLink from "./ProfileLink";
+import NavBar from "@/components/NavBar";
 
 
 
@@ -17,12 +18,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="w-full h-screen flex flex-col">
-      <div className="w-full shadow flex justify-between items-center p-2">
-        <span className="font-bold text-lg">PeerGrader</span>
-        <div className="flex"><div className="pr-2"><ProfileLink /></div>
-          <LogoutButton /></div>
-
-      </div>
+      <NavBar />
       <div className="flex-1 w-full">
         <DashboardClientPage />
       </div>

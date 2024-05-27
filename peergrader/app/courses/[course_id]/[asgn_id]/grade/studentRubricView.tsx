@@ -21,7 +21,7 @@ interface StudentRubricProps {
     };
 }
 
-export const StudentRubric = ({ setSelectedPoints, selectedPoints, setPointsGiven, pointsGiven, rubricQueryData, setTotal, total, viewOnly}: StudentRubricProps) => {
+export const StudentRubric = ({ setSelectedPoints, selectedPoints, setPointsGiven, pointsGiven, rubricQueryData, setTotal, total, viewOnly }: StudentRubricProps) => {
 
     const computeTotal = (selectedPoints: number[]) => {
         let tmp: number = 0;
@@ -54,10 +54,11 @@ export const StudentRubric = ({ setSelectedPoints, selectedPoints, setPointsGive
         setPointsGiven(newPointsGiven);
         computeTotalGiven(newPointsGiven);
     }
+
     if (rubricQueryData.isRubricError) {
         return (<div>Error</div>);
     } else if (rubricQueryData.isRubricLoading || !rubricQueryData.rubricData) {
-        return (<LoadingSpinner/>);
+        return (<LoadingSpinner />);
     }
 
     return (

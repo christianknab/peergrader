@@ -38,7 +38,7 @@ export default function Login({
 
   return (
     <div className="flex-1 flex flex-col w-full px-8 sm:max-w-md justify-center gap-3 p-12">
-      
+
       <div className="bg-white shadow-lg rounded-md p-6 border">
         <div className="pb-4"><h1 className="font-bold text-3xl">Log in</h1></div>
         <form className="animate-in flex flex-col justify-center gap-2 text-foreground">
@@ -60,12 +60,12 @@ export default function Login({
           <div className="flex-grow border-t border-gray-400"></div>
         </div>
         <div className="flex justify-center">
-          <GoogleSignInButton nextUrl="/dashboard" text="Sign in with Google"/>
+          <GoogleSignInButton nextUrl="/dashboard" text="Sign in with Google" />
         </div>
       </div>
       <div className="flex justify-center">
         <span>New to PeerGrader? <Link href='/signup' className="text-blue-700 hover:underline">Sign up</Link></span>
-        </div>
+      </div>
     </div>
   );
 }
