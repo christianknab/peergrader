@@ -3,7 +3,7 @@ import AuthButton from "../components/AuthButton";
 import ActionButton from "./ActionButton";
 
 const Navbar = () => (
-  <nav className="lbg-white flex justify-between items-center h-16 px-4">
+  <nav className="bg-white flex justify-between items-center h-16 px-4">
     <div className="flex-none ml-auto">
       <AuthButton />
     </div>

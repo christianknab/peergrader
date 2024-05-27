@@ -1,18 +1,30 @@
 "use client";
-import ProfileLink from "@/app/dashboard/ProfileLink";
-import LogoutButton from "@/app/dashboard/ProfileLink";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import ProfileLink from "@/app/dashboard/ProfileLink";
+import { createClient } from '@/utils/supabase/client';
 
 export default function NavBar({ courseName, courseId, assignmentName, assignmentId }: { courseName?: string, courseId?: string, assignmentName?: string, assignmentId?: string }) {
     const router = useRouter();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+    const supabase = createClient();
 
     const handleNavigation = (path: string) => {
         router.push(path);
     };
 
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
+    const signOut = async () => {
+        await supabase.auth.signOut();
+        router.push("/");
+    };
+
     return (
         <div className="w-full">
-            <div className="w-full flex justify-between items-center p-4 light-grey">
+            <div className="w-full flex justify-between items-center p-4 light-grey relative">
                 <span className="font-bold text-lg">
                     <button
                         onClick={() => handleNavigation('/dashboard')}
@@ -40,8 +52,25 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
                         </>
                     )}
                 </span>
-                <div className="pr-2"><ProfileLink /></div>
-
+                <div className="relative pr-2">
+                    <button onClick={toggleDropdown} className="focus:outline-none">
+                        <ProfileLink />
+                    </button>
+                    {dropdownOpen && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                            <button
+                                onClick={() => handleNavigation("/dashboard/edit-account")}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                Profile
+                            </button>
+                            <button
+                                onClick={signOut}
+                                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left">
+                                Logout
+                            </button>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );
