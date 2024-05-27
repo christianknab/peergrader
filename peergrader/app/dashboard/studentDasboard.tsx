@@ -19,12 +19,12 @@ const Modal: React.FC<ModalProps> = ({ show, onClose, children }) => {
   if (!show) return null;
 
   return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-4 relative">
-              <button className="absolute top-0 right-0 m-2 text-gray-700" onClick={onClose}>X</button>
-              {children}
-          </div>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-60">
+      <div className="white-blue-gradient rounded-lg p-8 relative">
+        <button className="absolute top-0 right-0 m-2 font-bold text-gray-700" onClick={onClose}>X</button>
+        {children}
       </div>
+    </div>
   );
 };
 
@@ -33,6 +33,7 @@ export default function StudentDashboardPage() {
   interface CourseData {
     course_id: string;
     name: string;
+    assignmentsCount?: number;
   }
   const supabase = createClient();
   const [userCourses, setUserCourses] = useState<CourseData[]>([]);
@@ -40,19 +41,36 @@ export default function StudentDashboardPage() {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    fetchUserCourses(currentUser?.uid).then(setUserCourses);
+    if (currentUser) {
+      fetchUserCourses(currentUser.uid).then(setUserCourses);
+    }
   }, [currentUser]);
 
   async function fetchUserCourses(userId: string) {
     const { data, error } = await supabase.rpc('get_courses_student', { user_id_param: userId });
     if (error) {
       console.error('Error fetching courses:', error);
-      return;
+      return [];
     }
     return data;
   }
-  if (isLoading) { return <LoadingSpinner/>; }
-  if (isError) { return <div>Error</div>; }
+
+  const setCourseAssignmentsCount = (counts: { [courseId: string]: number }) => {
+    setUserCourses(prevCourses =>
+      prevCourses.map(course => ({
+        ...course,
+        assignmentsCount: counts[course.course_id] || 0,
+      }))
+    );
+  };
+
+  if (isLoading) {
+    return <LoadingSpinner />;
+  }
+
+  if (isError) {
+    return <div>Error</div>;
+  }
 
   return (
     <div className="flex flex-col min-h-screen w-full">
@@ -64,10 +82,10 @@ export default function StudentDashboardPage() {
         <div className="px-4 py-0 flex gap-8 mb-10">
           <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
             <div className="white-blue-gradient p-5">
-              <p className="text-xl text-left text-white font-semibold text-white">To-Do Assignments</p>
+              <p className="text-xl text-left text-white font-semibold">To-Do Assignments</p>
             </div>
             <div className="light-white flex-grow p-6">
-              <StudentListAllAsgn />
+              <StudentListAllAsgn setCourseAssignmentsCount={setCourseAssignmentsCount} />
             </div>
           </div>
 
@@ -75,7 +93,7 @@ export default function StudentDashboardPage() {
             <div className="flex justify-between items-center white-blue-gradient p-5">
               <Link
                 href="/courses"
-                className="text-xl text-left text-white font-semibold text-white"
+                className="text-xl text-left text-white font-semibold"
               >
                 Courses Enrolled
               </Link>
@@ -89,13 +107,15 @@ export default function StudentDashboardPage() {
             <div className="min-h-[500px] light-white flex-grow p-6">
               <div className="grid grid-cols-3 gap-8 flex-grow">
                 {userCourses.map((courseData) => (
-                  <div key={courseData.course_id} className="rounded-lg border p-6 bg-white">
-                    <Link href={`/courses/${courseData.course_id}`}>
-                      <div className="text-center">
-                        <div className="font-semibold light-grey">
-                          {courseData.name}
-                        </div>
-                        <i className="fas fa-book text-5xl mt-8"></i>
+                  <div key={courseData.course_id} className="rounded-lg overflow-hidden shadow-lg border">
+                    <Link href={`/courses/${courseData.course_id}`} className="block">
+                      <div className="p-4">
+                        <div className="text-lg font-bold truncate">{courseData.name}</div>
+                        <hr className="my-1 border-t-2"></hr>
+                        <div className="text-md text-gray-600 truncate mt-4">Description here</div>
+                      </div>
+                      <div className="white-blue-gradient text-white p-1 text-left">
+                        <span className="px-3 text-sm font-bold">{courseData.assignmentsCount} assignments</span>
                       </div>
                     </Link>
                   </div>

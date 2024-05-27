@@ -70,7 +70,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     }
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
             <input
                 type="text"
                 placeholder="Enter class code"
@@ -78,14 +78,16 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
                 onChange={(e) => setJoinCode(e.target.value)}
                 className="py-2 px-4 rounded-md"
             />
-            <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                onClick={joinCourse}
-                disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Join Class'}
-            </button>
-            <button onClick={onClose} className="py-2 px-4 rounded-md font-bold no-underline bg-red-500 hover:bg-red-600 text-white">
-                Cancel
-            </button>
+            <div className="flex items-center space-x-1">
+                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                    onClick={joinCourse}
+                    disabled={isLoading}>
+                    {isLoading ? 'Loading...' : 'Join Class'}
+                </button>
+                <button onClick={onClose} className="py-2 px-4 rounded-md font-bold no-underline bg-red-500 hover:bg-red-600 text-white">
+                    Cancel
+                </button>
+            </div>
         </div>
     );
 }

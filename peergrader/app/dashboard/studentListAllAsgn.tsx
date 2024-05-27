@@ -14,7 +14,7 @@ interface AsgnData {
   asgn_id: string;
   name: string;
   course_id: string;
-  course_name: string;  // Add course_name property
+  course_name: string;
   average_grade: number;
   phase: string;
   start_date_submission: Date;
@@ -23,16 +23,36 @@ interface AsgnData {
   end_date_grading: Date;
 }
 
-export default function StudentListAllAsgn() {
+interface StudentListAllAsgnProps {
+  setCourseAssignmentsCount: (counts: { [course_id: string]: number }) => void;
+}
+
+export default function StudentListAllAsgn({ setCourseAssignmentsCount }: StudentListAllAsgnProps) {
   const supabase = createClient();
   const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
   const [asgns, setUserAssignments] = useState<AsgnData[]>([]);
 
   useEffect(() => {
     if (currentUser) {
-      fetchUserAssignments(currentUser.uid).then(setUserAssignments);
+      fetchUserAssignments(currentUser.uid).then(assignments => {
+        setUserAssignments(assignments);
+        calculateAssignmentsCount(assignments);
+      });
     }
   }, [currentUser]);
+
+  function calculateAssignmentsCount(assignments: AsgnData[]) {
+    const courseAssignmentsCount: { [key: string]: number } = {};
+
+    assignments.forEach((assignment) => {
+      if (!courseAssignmentsCount[assignment.course_id]) {
+        courseAssignmentsCount[assignment.course_id] = 0;
+      }
+      courseAssignmentsCount[assignment.course_id]++;
+    });
+
+    setCourseAssignmentsCount(courseAssignmentsCount);
+  }
 
   async function fetchUserAssignments(userId: string) {
     const { data: accountCourses, error: accountCoursesError } = await supabase
@@ -46,7 +66,7 @@ export default function StudentListAllAsgn() {
     }
 
     const courseIds = accountCourses.map((row) => row.course_id);
-    const allAsgns: AsgnData[] = []
+    const allAsgns: AsgnData[] = [];
 
     for (const courseId of courseIds) {
       const { data: courseData, error: courseError } = await supabase
@@ -60,7 +80,7 @@ export default function StudentListAllAsgn() {
         continue;
       }
 
-      const { data, error } = await supabase.rpc('get_asgns_for_course_student', { course_id_param: courseId, user_id_param: currentUser?.uid });
+      const { data, error } = await supabase.rpc('get_asgns_for_course_student', { course_id_param: courseId, user_id_param: userId });
 
       if (error) {
         console.error('Error fetching assignments:', error);
@@ -70,7 +90,7 @@ export default function StudentListAllAsgn() {
       const assignmentsWithCourseId = data.map((asgnData: AsgnData) => ({
         ...asgnData,
         course_id: courseId,
-        course_name: courseData.name, 
+        course_name: courseData.name,
       }));
 
       allAsgns.push(...assignmentsWithCourseId);
@@ -98,7 +118,6 @@ export default function StudentListAllAsgn() {
                     <hr className="my-1 border-t-2"></hr>
                     <div className="flex justify-between items-center">
                       <div className="flex items-center">
-                        <i className="fas fa-pencil-alt text-lg text-gray-700 mr-3"></i>
                         <h3 className="text-lg font-semibold">{assignment.name}</h3>
                       </div>
                       <div className="text-right">

@@ -45,7 +45,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="white-blue-gradient rounded-lg p-4 relative">
-                <button className="absolute top-0 right-0 m-2 text-gray-700" onClick={onClose}>X</button>
+                <button className="absolute top-0 right-0 m-2 font-bold text-gray-700" onClick={onClose}>X</button>
                 <div className="white-blue-gradient flex flex-col space-y-4 p-5 rounded-lg overflow-hidden">
                     <div className="flex items-center space-x-3">
                         <label htmlFor="courseName" className="font-semibold">Course Name:</label>
