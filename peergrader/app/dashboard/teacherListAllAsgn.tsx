@@ -98,8 +98,9 @@ export default function TeacherListAllAsgn() {
                 className="block"
               >
                 <div className="rounded-lg border p-4 bg-white shadow-md hover:shadow-lg transition-shadow">
-                  <div className="flex flex-col space-y-2">
+                  <div className="flex flex-col space-y-">
                     <h4 className="text-md font-semibold text-gray-600">{asgnData.course_name}</h4>
+                    <hr className="my-1 border-t-2"></hr>
                     <h3 className="text-lg font-semibold text-gray-800">{asgnData.name}</h3>
                     <div className="flex space-x-2 items-center">
                       <div className="relative w-full h-4 bg-gray-200 rounded">

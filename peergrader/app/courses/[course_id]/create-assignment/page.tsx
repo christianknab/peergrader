@@ -171,7 +171,7 @@ export default function CreateAssignmentPage() {
                     </h2>
                 </header>
                 <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
-                    <div className="p-5" style={{ backgroundColor: '#FAD2D2' }}>
+                    <div className="light-blue p-5">
                         <p className="text-3xl text-center font-semibold text-white rounded-lg">Create Assignment</p>
                     </div>
                     <div className="light-white flex-grow p-6">
