@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { useRouter } from 'next/navigation';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface CreateCourseProps {
     showModal: boolean;
@@ -17,6 +18,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
     const supabase = createClient();
     const router = useRouter();
     const { data: currentUser } = useCurrentUserQuery();
+    const queryClient = useQueryClient();
 
     const createCourse = async () => {
         try {
@@ -34,6 +36,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
             } else {
                 setCourseName('');
                 setCourseNumber('');
+                queryClient.invalidateQueries({queryKey: ['getCourses']});
                 // refreshCourses();
                 router.push(`/courses/${course_id}`)
                 // onClose();

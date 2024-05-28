@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from 'next/navigation';
 import ProfileImageEdit from "./ProfileImageEdit";
+import CourseCard from "@/components/CourseCard";
 
 export default function EditAccountClient() {
     const router = useRouter();
@@ -29,7 +30,7 @@ export default function EditAccountClient() {
         isLoading: isUserCourseLoading,
         isError: isUserCourseError,
         error: userCourseError,
-    } = useUserCoursesQuery(currentUser?.uid, !!currentUser);
+    } = useUserCoursesQuery(currentUser?.uid, currentUser?.is_teacher, !!currentUser);
 
     const currentUserMutation = useCurrentUserMutation();
 
@@ -178,24 +179,20 @@ export default function EditAccountClient() {
 
                 </form>
                 <label className="block text-gray-700 font-bold mb-2">
-                    Enrolled Courses
+                    {currentUser?.is_teacher ? `Your Courses` : `Enrolled Courses`}
                 </label>
                 {userCourses?.course.length == 0 && <button
                     className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
                     onClick={() => router.push('/courses')}>
                     + Add Course
                 </button>}
-                <div>{userCourses?.course.map((courseData) => (
-                    <div key={courseData.course_id} className="rounded-lg border p-6 bg-white">
-                        <Link href={`/courses/${courseData.course_id}`}>
-                            <div className="text-center">
-                                <div className="font-semibold light-grey">
-                                    {courseData.name}
-                                </div>
-                            </div>
-                        </Link>
+                <div className="flex-grow p-6">
+                    <div className="grid grid-cols-3 gap-8 flex-grow">
+                        {userCourses?.course.map((courseData) => (
+                            <CourseCard key={courseData.course_id} courseData={courseData} />
+                        ))}
                     </div>
-                ))}</div>
+                </div>
             </div>
         </div>
     );
