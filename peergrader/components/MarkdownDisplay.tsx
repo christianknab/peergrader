@@ -1,6 +1,7 @@
 import React from "react";
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
+import emoji from 'emoji-dictionary';
 
 interface MarkdownProps {
     className?: string
@@ -8,6 +9,7 @@ interface MarkdownProps {
 }
 
 export default function Markdown({ className, children }: MarkdownProps) {
+    const emojiSupport = (text: string) => text.replace(/:(\w+):/g, name => emoji.getUnicode(name));
     return (<ReactMarkdown className={className} remarkPlugins={[remarkGfm]} components={{
         h1: ({ node, ...props }) => { return (<h1 {...props} style={{ fontWeight: 500, lineHeight: 1, fontSize: 21 }} />) },
         h2: ({ node, ...props }) => { return (<h2 {...props} style={{ fontWeight: 500, lineHeight: 1.067, fontSize: 20 }} />) },
@@ -33,6 +35,6 @@ export default function Markdown({ className, children }: MarkdownProps) {
         th: ({ node, ...props }) => <th {...props} className="px-4 py-2 border" />,
         td: ({ node, ...props }) => <td {...props} className="border px-4 py-2" />,
     }}>
-        {children}
+        {emojiSupport(children ?? "")}
     </ReactMarkdown>);
 }
