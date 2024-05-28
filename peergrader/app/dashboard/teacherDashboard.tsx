@@ -1,18 +1,20 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import TeacherListAllAsgn from "./teacherListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
 import CreateCourse from '../courses/CreateCourse';
+import CourseCard from '@/components/CourseCard';
 
 interface CourseData {
   course_id: string;
   name: string;
   assignmentsCount?: number;
+  number: string;
 }
 
 const TeacherDashboard: React.FC = () => {
@@ -36,7 +38,7 @@ const TeacherDashboard: React.FC = () => {
   async function fetchUserCourses(userId: string) {
     const { data, error } = await supabase
       .from('courses')
-      .select('course_id, name')
+      .select('course_id, name, number')
       .eq('owner', userId);
 
     if (error) {
@@ -103,21 +105,11 @@ const TeacherDashboard: React.FC = () => {
             <div className="min-h-[500px] light-white flex-grow p-6">
               <div className="grid grid-cols-3 gap-8 flex-grow">
                 {userCourses.map((courseData) => (
-                  <div key={courseData.course_id} className="rounded-lg overflow-hidden shadow-lg border">
-                    <Link href={`/courses/${courseData.course_id}`} className="block">
-                      <div className="p-4">
-                        <div className="text-lg font-bold truncate">{courseData.name}</div>
-                        <hr className="my-1 border-t-2"></hr>
-                        <div className="text-md text-gray-600 truncate mt-4">Description here</div>
-                      </div>
-                      <div className="white-blue-gradient text-white p-1 text-left">
-                        <span className="px-3 text-sm font-bold">{courseData.assignmentsCount} assignments</span>
-                      </div>
-                    </Link>
-                  </div>
+                  <CourseCard key={courseData.course_id} courseData={courseData} />
                 ))}
               </div>
             </div>
+
           </div>
         </div>
       </main>

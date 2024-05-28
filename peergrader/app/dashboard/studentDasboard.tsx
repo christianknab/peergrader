@@ -8,6 +8,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 import StudentListAllAsgn from "@/app/dashboard/studentListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
 import JoinCourse from '@/app/courses/JoinCourse';
+import CourseCard from "@/components/CourseCard";
 
 interface ModalProps {
   show: boolean;
@@ -34,6 +35,7 @@ export default function StudentDashboardPage() {
     course_id: string;
     name: string;
     assignmentsCount?: number;
+    number: string;
   }
   const supabase = createClient();
   const [userCourses, setUserCourses] = useState<CourseData[]>([]);
@@ -107,18 +109,7 @@ export default function StudentDashboardPage() {
             <div className="min-h-[500px] light-white flex-grow p-6">
               <div className="grid grid-cols-3 gap-8 flex-grow">
                 {userCourses.map((courseData) => (
-                  <div key={courseData.course_id} className="rounded-lg overflow-hidden shadow-lg border">
-                    <Link href={`/courses/${courseData.course_id}`} className="block">
-                      <div className="p-4">
-                        <div className="text-lg font-bold truncate">{courseData.name}</div>
-                        <hr className="my-1 border-t-2"></hr>
-                        <div className="text-md text-gray-600 truncate mt-4">Description here</div>
-                      </div>
-                      <div className="white-blue-gradient text-white p-1 text-left">
-                        <span className="px-3 text-sm font-bold">{courseData.assignmentsCount} assignments</span>
-                      </div>
-                    </Link>
-                  </div>
+                  <CourseCard courseData={courseData} />
                 ))}
               </div>
             </div>

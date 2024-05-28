@@ -8,6 +8,7 @@ import '@fortawesome/fontawesome-free/css/all.css';
 interface CourseData {
   course_id: string;
   name: string;
+  number: string;
 }
 
 interface AsgnData {
@@ -71,7 +72,7 @@ export default function StudentListAllAsgn({ setCourseAssignmentsCount }: Studen
     for (const courseId of courseIds) {
       const { data: courseData, error: courseError } = await supabase
         .from('courses')
-        .select('name')
+        .select('name, number')
         .eq('course_id', courseId)
         .single();
 
