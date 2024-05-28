@@ -7,6 +7,8 @@ import { SimpleRubric } from './SimpleRubric';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
+import { markdownComponents } from '@/utils/constants';
+
 interface AssignmentFormProps {
     onSubmit: (assignmentName: string,
         rubric: Rubric[],
@@ -19,6 +21,7 @@ interface AssignmentFormProps {
         num_peergrades: number,
         num_annotations: number,
         numberInput: boolean,
+        description: string,
     ) => void;
     initialRubric: Rubric[];
     anonymousGrading: boolean;
@@ -155,6 +158,8 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
         setCustomizeRubric(!customizeRubric);
     }
 
+
+
     useEffect(() => {
         validateDates();
     }, [
@@ -176,7 +181,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric);
+        onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric, assignmentDesc);
     };
     const handleKeyDown = (event: any) => {
         if (event.key === 'Tab') {
@@ -237,22 +242,11 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     {!isPreview ? <textarea
                         className='block w-full max-w-3xl h-52 p-2.5 outline-none focus:ring-0 focus:shadow-none border-t border-gray-300 rounded-b-md'
                         value={assignmentDesc}
+                        maxLength={2000}
                         required
                         onKeyDown={handleKeyDown}
                         onChange={(e) => setAssignmentDesc(e.target.value)} /> :
-                        <ReactMarkdown className="block w-full max-w-3xl h-52 p-2.5 overflow-y-auto resize-y bg-white rounded-b-md border-t border-gray-300" remarkPlugins={[remarkGfm]} components={{
-                            h1: ({ node, ...props }) => { return (<h1 {...props} style={{ fontWeight: "bold", lineHeight: 1, fontSize: 34 }} />) },
-                            h2: ({ node, ...props }) => { return (<h2 {...props} style={{ fontWeight: "bold", lineHeight: 1.067, fontSize: 30 }} />) },
-                            h3: ({ node, ...props }) => { return (<h3 {...props} style={{ fontWeight: "bold", lineHeight: 1.083, fontSize: 24 }} />) },
-                            h4: ({ node, ...props }) => { return (<h4 {...props} style={{ fontWeight: "bold", lineHeight: 1.1, fontSize: 20 }} />) },
-                            h5: ({ node, ...props }) => { return (<h5 {...props} style={{ fontWeight: "bold", lineHeight: 1.111, fontSize: 18 }} />) },
-                            h6: ({ node, ...props }) => { return (<h6 {...props} style={{ fontWeight: "bold", lineHeight: 1.125, fontSize: 16 }} />) },
-                            p: ({ node, ...props }) => { return (<p {...props} style={{ lineHeight: 1.5, fontSize: 16 }} />) },
-                            a: ({ node, ...props }) => { return (<a {...props} style={{ lineHeight: 1.5, fontSize: 16, color: "blue" }} />) },
-                            ul: ({ node, ...props }) => <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }} {...props} />,
-                            ol: ({ node, ...props }) => <ol style={{ listStyleType: 'decimal', paddingLeft: '20px' }} {...props} />,
-                            li: ({ node, ...props }) => <li style={{ marginBottom: '3px' }} {...props} />,
-                        }}>
+                        <ReactMarkdown className="block w-full max-w-3xl h-52 p-2.5 overflow-y-auto resize-y bg-white rounded-b-md border-t border-gray-300" remarkPlugins={[remarkGfm]} components={markdownComponents}>
                             {assignmentDesc}
                         </ReactMarkdown>}</div>
 

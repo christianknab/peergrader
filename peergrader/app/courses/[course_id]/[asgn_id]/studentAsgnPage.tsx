@@ -16,6 +16,12 @@ import { Phase } from '@/utils/types/phaseEnum';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import NavBar from '@/components/NavBar';
 import PhaseProgressBar from './PhaseProgressBar';
+import ReactMarkdown from 'react-markdown';
+import { markdownComponents } from '@/utils/constants';
+import remarkGfm from 'remark-gfm';
+import DownArrow from '@/components/icons/DownArrow';
+import CollapseIndicator from '@/components/icons/CollapseIndicator';
+import Description from './Description';
 
 
 export interface SubmissionData {
@@ -59,19 +65,17 @@ export default function StudentAsgnPage() {
       <main className="flex-1 w-full">
         <NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
         <header>
-          <div className="w-4/5 mx-auto">
+          <div className="w-4/5 mx-auto pt-5">
             <nav className="rounded-md w-1/5 bg-light-grey">
             </nav>
-            <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
-              {courseData?.name || 'Course Page'}
+            <h2 className="bold-blue rounded-lg text-5xl font-bold text-left p-14 text-white">
+              {asgnData?.name ?? 'Unnamed assignment'}
             </h2>
           </div>
         </header>
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
-            <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">{asgnData.name}</h2>
-            </div>
+            <Description asgnData={asgnData} />
           )}
           <PhaseProgressBar asgn_id={asgn_id} />
           {asgnData && (
