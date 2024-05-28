@@ -6,7 +6,8 @@ import { AsgnData } from '@/utils/types/asgnData';
 import CollapseIndicator from '@/components/icons/CollapseIndicator';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { markdownComponents } from '@/utils/constants';
+import Markdown from '@/components/MarkdownDisplay';
+
 
 export default function Description({ asgnData }: { asgnData: AsgnData }) {
     const [isDetailsVisible, setIsDetailsVisible] = useState(true);
@@ -18,7 +19,7 @@ export default function Description({ asgnData }: { asgnData: AsgnData }) {
                 Details
 
             </button>
-            {isDetailsVisible && <ReactMarkdown className="pl-7" remarkPlugins={[remarkGfm]} components={markdownComponents}>{asgnData.description}</ReactMarkdown>}
+            {isDetailsVisible && <Markdown className="pl-7">{asgnData.description}</Markdown>}
         </div>
     );
 }

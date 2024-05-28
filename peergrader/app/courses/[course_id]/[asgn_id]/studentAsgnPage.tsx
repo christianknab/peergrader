@@ -16,11 +16,6 @@ import { Phase } from '@/utils/types/phaseEnum';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import NavBar from '@/components/NavBar';
 import PhaseProgressBar from './PhaseProgressBar';
-import ReactMarkdown from 'react-markdown';
-import { markdownComponents } from '@/utils/constants';
-import remarkGfm from 'remark-gfm';
-import DownArrow from '@/components/icons/DownArrow';
-import CollapseIndicator from '@/components/icons/CollapseIndicator';
 import Description from './Description';
 
 

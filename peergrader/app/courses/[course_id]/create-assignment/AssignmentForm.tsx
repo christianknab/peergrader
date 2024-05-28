@@ -4,10 +4,7 @@ import { useEffect } from 'react';
 import { Rubric } from './page';
 import { RubricMaker } from './RubricMaker';
 import { SimpleRubric } from './SimpleRubric';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-
-import { markdownComponents } from '@/utils/constants';
+import Markdown from '@/components/MarkdownDisplay';
 
 interface AssignmentFormProps {
     onSubmit: (assignmentName: string,
@@ -246,9 +243,9 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                         required
                         onKeyDown={handleKeyDown}
                         onChange={(e) => setAssignmentDesc(e.target.value)} /> :
-                        <ReactMarkdown className="block w-full max-w-3xl h-52 p-2.5 overflow-y-auto resize-y bg-white rounded-b-md border-t border-gray-300" remarkPlugins={[remarkGfm]} components={markdownComponents}>
+                        <Markdown className="block w-full max-w-3xl h-52 p-2.5 overflow-y-auto resize-y bg-white rounded-b-md border-t border-gray-300">
                             {assignmentDesc}
-                        </ReactMarkdown>}</div>
+                        </Markdown>}</div>
 
 
             </div>
