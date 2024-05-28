@@ -93,12 +93,13 @@ export default function StudentDashboardPage() {
 
           <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
             <div className="flex justify-between items-center white-blue-gradient p-5">
-              <Link
+              {/* <Link
                 href="/courses"
                 className="text-xl text-left text-white font-semibold"
               >
                 Courses Enrolled
-              </Link>
+              </Link> */}
+              <p className="text-xl text-left text-white font-semibold">Courses Enrolled</p>
               <button
                 className="light-grey text-black font-semibold py-1 px-4 rounded hover:bg-btn-background-hover"
                 onClick={() => setShowModal(true)}>
@@ -109,7 +110,7 @@ export default function StudentDashboardPage() {
             <div className="min-h-[500px] light-white flex-grow p-6">
               <div className="grid grid-cols-3 gap-8 flex-grow">
                 {userCourses.map((courseData) => (
-                  <CourseCard courseData={courseData} />
+                  <CourseCard key={courseData.course_id} courseData={courseData} />
                 ))}
               </div>
             </div>
