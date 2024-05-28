@@ -9,8 +9,9 @@ export default function DashboardPage() {
     const router = useRouter();
 
     return (
-        <div className="w-full"><div className="w-full flex justify-between items-center p-4 light-grey">
+        <div className="w-full">
             <NavBar />
-        </div><EditAccountClient /> </div>
+            <EditAccountClient />
+        </div>
     );
 }

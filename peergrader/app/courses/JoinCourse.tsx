@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface JoinCourseProps {
-  onClose: () => void;
+    onClose: () => void;
 }
 
 const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
@@ -15,6 +16,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const [autoJoin, setAutoJoin] = useState(false);
+    const queryClient = useQueryClient();
 
     useEffect(() => {
         const code = searchParams.get("code");
@@ -28,6 +30,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
         if (joinCode !== '') {
             joinCourse();
         }
+        queryClient.invalidateQueries({ queryKey: ['getCourses'] });
     }, [autoJoin]);
 
     async function joinCourse() {
