@@ -1,10 +1,11 @@
 'use client';
-
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Rubric } from './page';
 import { RubricMaker } from './RubricMaker';
 import { SimpleRubric } from './SimpleRubric';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface AssignmentFormProps {
     onSubmit: (assignmentName: string,
@@ -43,6 +44,7 @@ export const simple_description: string = `10: Excellent work.
 
 export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: AssignmentFormProps) => {
     const [assignmentName, setAssignmentName] = useState('');
+    const [assignmentDesc, setAssignmentDesc] = useState('');
     const [anonymous, setAnonymous] = useState(anonymousGrading);
     const [rubric, setRubric] = useState<Rubric[]>(initialRubric);
     const regex = new RegExp("^[0-9]*");
@@ -66,7 +68,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     const [num_peergrades, setNumPeergrades] = useState(5);
     const [numAnnotations, setNumAnnotations] = useState(1);
     const [customizeRubric, setCustomizeRubric] = useState(true);
-
+    const [isPreview, setIsPreview] = useState(false);
     function validateDates(): boolean {
         const submitStartDateAdjusted = combineDateTime(startSubmitDate, startSubmitTime);
         const sumbitEndDateAdjusted = combineDateTime(endSubmitDate, endSubmitTime);
@@ -176,7 +178,21 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
         e.preventDefault();
         onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric);
     };
+    const handleKeyDown = (event: any) => {
+        if (event.key === 'Tab') {
+            event.preventDefault();
+            const start = event.target.selectionStart;
+            const end = event.target.selectionEnd;
 
+            // set textarea value to: text before caret + tab + text after caret
+            event.target.value = event.target.value.substring(0, start)
+                + "\t"
+                + event.target.value.substring(end);
+
+            // put caret at right position again (add one for the tab)
+            event.target.selectionStart = event.target.selectionEnd = start + 1;
+        }
+    }
     const isFormValid = () => {
         return rubric.every((item) => {
             return item.names.every(name => name !== '') &&
@@ -187,19 +203,67 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
     return (
         <form onSubmit={handleSubmit} className="container">
-            <div className="mb-3">
-                <label htmlFor="assignmentName" className="form-label">
-                    Assignment Name:
-                </label>
+            {/* <div className="mb-3">
+                Assignment Name:
                 <input
                     type="text"
                     id="assignmentName"
-                    className={`form-control rounded-md p-2 ${assignmentName == '' ? 'bg-red-200' : ''}`}
+                    className={`form-control block rounded-md p-2 ${assignmentName == '' ? 'bg-red-200' : ''}`}
                     value={assignmentName}
                     onChange={(e) => setAssignmentName(e.target.value)}
                     title={assignmentName == '' ? 'Please enter a name' : ''}
                 />
+            </div> */}
+            <div>
+                Assignment Name:
+                <input
+                    type="text"
+                    className={`border text-sm rounded-lg block w-sm p-2.5 ${num_peergrades ? 0 : 0 <= 0 ? 'bg-red-200' : ''}`}
+                    value={assignmentName}
+                    required
+                    onChange={(e) => setAssignmentName(e.target.value)} />
             </div>
+            <div>
+                Assignment Description:
+                <div className='outline outline-gray-300 outline-1 rounded-md w-full max-w-3xl'>
+                    <div className='flex flex-row'>
+                        <div className='py-2 pl-2'><button className={`rounded-md py-1 px-3 ${!isPreview && "bg-blue-300"}`} onClick={(e)=>{e.preventDefault(); setIsPreview(false);}}>
+                            Edit
+                        </button></div>
+                        <div className='py-2 pl-1'><button className={`px-3 py-1 rounded-md ${isPreview && "bg-blue-300"}`} onClick={(e)=>{e.preventDefault(); setIsPreview(true)}}>
+                            Preview
+                        </button></div>
+                    </div>
+                    {!isPreview ? <textarea
+                        className='block w-full max-w-3xl h-52 p-2.5 outline-none focus:ring-0 focus:shadow-none border-t border-gray-300 rounded-b-md'
+                        value={assignmentDesc}
+                        required
+                        onKeyDown={handleKeyDown}
+                        onChange={(e) => setAssignmentDesc(e.target.value)} /> :
+                        <ReactMarkdown className="block w-full max-w-3xl h-52 p-2.5 overflow-y-auto resize-y bg-white rounded-b-md border-t border-gray-300" remarkPlugins={[remarkGfm]} components={{
+                            h1: ({ node, ...props }) => { return (<h1 {...props} style={{ fontWeight: "bold", lineHeight: 1, fontSize: 34 }} />) },
+                            h2: ({ node, ...props }) => { return (<h2 {...props} style={{ fontWeight: "bold", lineHeight: 1.067, fontSize: 30 }} />) },
+                            h3: ({ node, ...props }) => { return (<h3 {...props} style={{ fontWeight: "bold", lineHeight: 1.083, fontSize: 24 }} />) },
+                            h4: ({ node, ...props }) => { return (<h4 {...props} style={{ fontWeight: "bold", lineHeight: 1.1, fontSize: 20 }} />) },
+                            h5: ({ node, ...props }) => { return (<h5 {...props} style={{ fontWeight: "bold", lineHeight: 1.111, fontSize: 18 }} />) },
+                            h6: ({ node, ...props }) => { return (<h6 {...props} style={{ fontWeight: "bold", lineHeight: 1.125, fontSize: 16 }} />) },
+                            p: ({ node, ...props }) => { return (<p {...props} style={{ lineHeight: 1.5, fontSize: 16 }} />) },
+                            a: ({ node, ...props }) => { return (<a {...props} style={{ lineHeight: 1.5, fontSize: 16, color: "blue" }} />) },
+                            ul: ({ node, ...props }) => <ul style={{ listStyleType: 'disc', paddingLeft: '20px' }} {...props} />,
+                            ol: ({ node, ...props }) => <ol style={{ listStyleType: 'decimal', paddingLeft: '20px' }} {...props} />,
+                            li: ({ node, ...props }) => <li style={{ marginBottom: '3px' }} {...props} />,
+                        }}>
+                            {assignmentDesc}
+                        </ReactMarkdown>}</div>
+
+
+            </div>
+
+
+
+
+
+
             {/* For now not enabling anonymous TODO LATER*/}
             {/* <label className="inline-flex items-center cursor-pointer">
                 <input type="checkbox" checked={anonymousGrading} className="sr-only peer" onChange={() => setAnonymous(!anonymousGrading)} />
@@ -274,7 +338,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                 <input
                     type="text"
                     inputMode='numeric'
-                    className={`border text-sm rounded-lg block w-sm p-2.5 ${num_peergrades ? 0:0 <= 0 ? 'bg-red-200' : ''}`}
+                    className={`border text-sm rounded-lg block w-sm p-2.5 ${num_peergrades ? 0 : 0 <= 0 ? 'bg-red-200' : ''}`}
                     value={Number.isNaN(num_peergrades) ? "" : num_peergrades}
                     required
                     onChange={(e) => setNumPeergrades(parseInt(regex.exec(e.target.value)?.at(0) ?? ""))} />
@@ -284,7 +348,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                 <input
                     type="text"
                     inputMode='numeric'
-                    className={`border text-sm rounded-lg block w-sm p-2.5 ${numAnnotations ? 0:0 <= 0 ? 'bg-red-200' : ''}`} 
+                    className={`border text-sm rounded-lg block w-sm p-2.5 ${numAnnotations ? 0 : 0 <= 0 ? 'bg-red-200' : ''}`}
                     value={Number.isNaN(numAnnotations) ? "" : numAnnotations}
                     required
                     onChange={(e) => setNumAnnotations(parseInt(regex.exec(e.target.value)?.at(0) ?? ""))} />
