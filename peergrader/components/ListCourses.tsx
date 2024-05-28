@@ -9,6 +9,7 @@ import { LoadingSpinner } from './loadingSpinner';
 interface CourseData {
     course_id: string;
     name: string;
+    number: string;
 }
 
 export default function ListCourses() {

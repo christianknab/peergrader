@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import TeacherListAsgn from './teacherListAsgn';
+import NavBar from '@/components/NavBar';
 
 
 export default function TeacherCoursePage() {
@@ -90,15 +91,7 @@ export default function TeacherCoursePage() {
     return (
         <div className="w-full min-h-screen flex flex-col">
             <main className="flex-1 w-full">
-                <div className="w-full flex justify-between items-center p-4 light-grey">
-                    <button
-                        className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                        onClick={() => router.push('/dashboard')}>
-                        Return to Dashboard
-                    </button>
-                    <span className="font-bold text-lg">PeerGrader</span>
-                </div>
-
+                <NavBar courseName={courseData?.name} courseId={course_id} />
                 <header>
                     <div className="w-4/5 mx-auto">
                         <TabBar />

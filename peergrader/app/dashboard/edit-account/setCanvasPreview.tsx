@@ -1,3 +1,5 @@
+// Credit to https://github.com/OneLightWebDev/react-image-cropper/tree/main
+
 const setCanvasPreview = (
     image: { naturalWidth: number; width: number; naturalHeight: number; height: number; }, // HTMLImageElement
     canvas: { getContext: (arg0: string) => any; width: number; height: number; }, // HTMLCanvasElement

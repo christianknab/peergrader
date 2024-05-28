@@ -7,6 +7,7 @@ import { AssignmentForm } from './AssignmentForm';
 import Link from 'next/link';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import { LoadingSpinner } from '@/components/loadingSpinner';
+import NavBar from '@/components/NavBar';
 
 export interface Rubric {
     names: string[];
@@ -155,14 +156,7 @@ export default function CreateAssignmentPage() {
 
     return (
         <main>
-            <div className="w-full flex justify-between items-center p-4 light-grey">
-                <button
-                    className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                    onClick={() => router.push('/dashboard')}>
-                    Return to Dashboard
-                </button>
-                <span className="font-bold text-lg">PeerGrader</span>
-            </div>
+            <NavBar />
             <div className="w-4/5 mx-auto">
                 <nav className="rounded-md w-1/5 bg-light-grey">
                     <ul className="flex justify-between px-4 py-2">
@@ -178,7 +172,7 @@ export default function CreateAssignmentPage() {
                 </header>
                 <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
                     <div className="light-blue p-5">
-                        <p className="text-2xl text-left font-semibold text-white rounded-lg">Create Assignment</p>
+                        <p className="text-3xl text-center font-semibold text-white rounded-lg">Create Assignment</p>
                     </div>
                     <div className="light-white flex-grow p-6">
                         <AssignmentForm

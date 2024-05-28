@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 type AsgnData = {
     asgn_id: string;
@@ -17,7 +18,8 @@ type AsgnData = {
 
 export default function TeacherListAsgn({ course_id }: { course_id: string }) {
     const supabase = createClient();
-    const [asgns, setAsgns] = useState<AsgnData[]>([]); 1
+    const [asgns, setAsgns] = useState<AsgnData[]>([]);
+    const router = useRouter();
 
     useEffect(() => {
         fetchAsgns(course_id).then(setAsgns);
@@ -32,20 +34,30 @@ export default function TeacherListAsgn({ course_id }: { course_id: string }) {
         return data;
     }
 
+    // const goToAsgn = (assignment: { asgn_id: any; name?: string; phase?: string; start_date_submission?: Date; end_date_submission?: Date; start_date_grading?: Date; end_date_grading?: Date; }) => {
+    //     router.push(`/courses/${course_id}/${assignment.asgn_id}`);
+    // }
+
 
     return (
         <div className="flex flex-col w-full gap-6 h-full">
             <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
-                <div className="light-blue p-5">
+                <div className="light-blue p-5 flex justify-between items-center">
                     <p className="text-xl text-left font-semibold">Assignments</p>
+                    <Link href={`/courses/${course_id}/create-assignment`}>
+                        <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
+                        Add assignment
+                        </button>
+                    </Link>
                 </div>
                 <div className="light-grey flex-grow p-6">
                     {asgns && asgns.length > 0 ? (
                         <div className="grid grid-cols-1 gap-4">
                             {asgns.map((assignment) => (
-                                assignment && (<Link
+                                assignment && (<button
                                     key={assignment.asgn_id}
-                                    href={`/courses/${course_id}/${assignment.asgn_id}`}
+                                    onClick={() => router.push(`/courses/${course_id}/${assignment.asgn_id}`)}
+                                    // href={`/courses/${course_id}/${assignment.asgn_id}`}
                                     className="block"
                                 >
                                     <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
@@ -54,7 +66,7 @@ export default function TeacherListAsgn({ course_id }: { course_id: string }) {
                                             {'Phase: ' + assignment.phase}
                                         </div>
                                     </div>
-                                </Link>)
+                                </button>)
                             ))}
                         </div>
                     ) : (

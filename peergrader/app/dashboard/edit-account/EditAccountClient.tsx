@@ -2,7 +2,6 @@
 
 import useCurrentUserMutation from "@/utils/hooks/MutateCurrentUser";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
-import Image from 'next/image';
 import useUserCoursesQuery from "@/utils/hooks/QueryUserCourses";
 import Link from "next/link";
 import { LoadingSpinner } from "@/components/loadingSpinner";
@@ -10,8 +9,6 @@ import getAuthUser from "@/utils/queries/GetAuthUser";
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
 import { useRouter } from 'next/navigation';
-import { supabase } from "@/utils/supabase/client";
-import ProfileImage from "@/components/ProfileImage";
 import ProfileImageEdit from "./ProfileImageEdit";
 
 export default function EditAccountClient() {
@@ -45,7 +42,6 @@ export default function EditAccountClient() {
         async function fetchProfileImage() {
             if (currentUser) {
                 if (currentUser.profile_image == null) {
-                    // console.log(currentUser.profile_image)
                     setProfileImageUrl(null);
                 } else {
                     setProfileImageUrl(currentUser.profile_image);
@@ -72,6 +68,7 @@ export default function EditAccountClient() {
             first_name: firstName,
             last_name: lastName,
             is_teacher: accountType === "teacher",
+            profile_image: profileImageUrl,
         });
     }
 
@@ -89,6 +86,7 @@ export default function EditAccountClient() {
             first_name: firstName,
             last_name: lastName,
             is_teacher: accountType === "teacher",
+            profile_image: profileImageUrl,
         });
         setFormEdited(false);
     };
@@ -105,9 +103,9 @@ export default function EditAccountClient() {
         <div className="container mx-auto py-8">
             <div className="flex items-center mb-8">
                 <ProfileImageEdit
-                    src={profileImageUrl || '/assets/default_avatar.svg'}
+                    src={currentUser?.profile_image || '/assets/default_avatar.svg'}
                     uid={currentUser?.uid}
-                    onUpload={(url) => setProfileImageUrl(url)}
+                    setProfileImageUrl={setProfileImageUrl}
                 />
                 <h1 className="p-5 text-4xl font-bold">{currentUser ? `${currentUser?.first_name} ${currentUser?.last_name}` : "Profile"}</h1>
             </div>

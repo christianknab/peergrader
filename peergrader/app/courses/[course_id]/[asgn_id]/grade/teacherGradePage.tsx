@@ -1,21 +1,23 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { createClient } from '@/utils/supabase/client';
 import { useEffect, useState } from 'react';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import ListGrades from '@/components/ListGrades';
 import { useRouter } from 'next/navigation';
 import { LoadingSpinner } from '@/components/loadingSpinner';
+import NavBar from '@/components/NavBar';
+import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 
 export default function TeacherGradePage() {
+
     const {
         data: currentUser,
         isLoading,
         isError
     } = useCurrentUserQuery();
-
-   
 
     const router = useRouter();
     const supabase = createClient();
@@ -80,7 +82,7 @@ export default function TeacherGradePage() {
         }
     };
     if (isLoading) {
-        return <LoadingSpinner/>;
+        return <LoadingSpinner />;
     }
 
     if (isError) {
@@ -88,14 +90,6 @@ export default function TeacherGradePage() {
     }
     return (
         <main>
-            <div className="w-full flex justify-between items-center p-4 light-grey">
-                <button
-                    className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                    onClick={() => router.back()}>
-                    Return to Assignment
-                </button>
-                <span className="font-bold text-lg">PeerGrader</span>
-            </div>
             <div style={{ display: 'flex', flexDirection: 'row', height: '100vh' }}>
                 <div style={{ width: '70%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {filename ? (
@@ -119,9 +113,9 @@ export default function TeacherGradePage() {
                         )}
                         <div className="flex items-center space-x-4">
                             <input type="text" id="gradeInput" className="py-2 px-3 rounded-md" value={grade} onChange={(e) => setGrade(e.target.value)} />
-                            <button 
-                            onClick={handleSaveGrade} disabled={loading}
-                            className="py-2 px-3 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
+                            <button
+                                onClick={handleSaveGrade} disabled={loading}
+                                className="py-2 px-3 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
                                 {loading ? 'Saving...' : 'update final grade'}
                             </button>
                         </div>

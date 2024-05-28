@@ -45,6 +45,10 @@
   background-color: rgb(198, 214, 240);
 }
 
+.lighter-blue {
+  background-color: #e2f6fd;
+}
+
 .bold-blue {
   background-color: rgb(124, 162, 208);
 }
@@ -58,7 +62,7 @@
 }
 
 .write-blue {
-  color: rgb(67, 84, 134);
+  color: rgb(100, 128, 169);
 }
 
 .write-grey {
@@ -72,4 +76,16 @@
 
 .roboto {
   font-family: 'Roboto', sans-serif;
+}
+
+.blue-teal-gradient {
+  background: linear-gradient(to right, #38b2ac, #3182ce)
+}
+
+.white-blue-gradient {
+  background: linear-gradient(to right, #76acde, #aedff3)
+}
+
+.progress-gradient {
+  background: linear-gradient(to right, #c8e0f5, #427fdc)
 }

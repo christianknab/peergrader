@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { MouseEventHandler, MutableRefObject, useRef, useState } from "react";
 import ReactCrop, {
     Crop,
     centerCrop,
@@ -8,13 +8,18 @@ import ReactCrop, {
 import setCanvasPreview from "./setCanvasPreview";
 import { supabase } from '@/utils/supabase/client';
 
+interface ImageCropperProps {
+    updateAvatar: (url: string) => void;
+    closeModal: () => void;
+    uid: any;
+}
 
 const ASPECT_RATIO = 1;
 const MIN_DIMENSION = 150;
 
-const ImageCropper = ({ closeModal, updateAvatar, uid }) => {
-    const imgRef = useRef(null);
-    const previewCanvasRef = useRef(null);
+const ImageCropper: React.FC<ImageCropperProps> = ({ updateAvatar, closeModal, uid }) => {
+    const imgRef = useRef<HTMLImageElement | null>(null);
+    const previewCanvasRef = useRef<HTMLCanvasElement | null>(null);
     const [imgFormat, setImgFormat] = useState("image/jpeg");
     const [imgSrc, setImgSrc] = useState("");
     const [crop, setCrop] = useState<Crop>({ unit: '%', x: 0, y: 0, width: 100, height: 100 });
@@ -33,7 +38,8 @@ const ImageCropper = ({ closeModal, updateAvatar, uid }) => {
 
             imageElement.addEventListener("load", (e) => {
                 if (error) setError("");
-                const { naturalWidth, naturalHeight } = e.currentTarget;
+                const target = e.currentTarget as HTMLImageElement;
+                const { naturalWidth, naturalHeight } = target;
                 if (naturalWidth < MIN_DIMENSION || naturalHeight < MIN_DIMENSION) {
                     setError("Image must be at least 150 x 150 pixels.");
                     return setImgSrc("");
@@ -44,7 +50,7 @@ const ImageCropper = ({ closeModal, updateAvatar, uid }) => {
         reader.readAsDataURL(file);
     };
 
-    const onImageLoad = (e) => {
+    const onImageLoad = (e: { currentTarget: { width: any; height: any; }; }) => {
         const { width, height } = e.currentTarget;
         const cropWidthInPercent = (MIN_DIMENSION / width) * 100;
 
@@ -61,13 +67,20 @@ const ImageCropper = ({ closeModal, updateAvatar, uid }) => {
         setCrop(centeredCrop);
     };
 
-    const uploadAvatar = async (previewCanvasRef) => {
-        previewCanvasRef.current.toBlob(async (blob) => {
+    const uploadAvatar = async (previewCanvasRef: MutableRefObject<HTMLCanvasElement | null>) => {
+        const canvas = previewCanvasRef.current;
+        if (!canvas) {
+            console.error('Canvas element is not available');
+            return;
+        }
+
+        canvas.toBlob(async (blob) => {
             if (blob) {
                 const { data: url, error } = await supabase.storage
                     .from('profile_image')
                     .upload(`${uid}.${imgFormat.split('/')[1]}`, blob, {
-                        contentType: imgFormat
+                        contentType: imgFormat,
+                        upsert: true,
                     });
 
                 if (error) {
@@ -76,7 +89,7 @@ const ImageCropper = ({ closeModal, updateAvatar, uid }) => {
                     const { data: { publicUrl } } = supabase.storage.from('profile_image').getPublicUrl(`${uid}.${imgFormat.split('/')[1]}`);
                     const { data, error } = await supabase
                         .from('accounts')
-                        .update({profile_image: publicUrl }).eq('uid', uid);
+                        .update({ profile_image: publicUrl }).eq('uid', uid);
                     updateAvatar(publicUrl);
                 }
             }
@@ -115,17 +128,17 @@ const ImageCropper = ({ closeModal, updateAvatar, uid }) => {
                     </ReactCrop>
                     <button
                         className="text-white font-mono text-xs py-2 px-4 rounded-2xl mt-4 bg-sky-500 hover:bg-sky-600"
-                        onClick={() => {
+                        onClick={async () => {
                             setCanvasPreview(
-                                imgRef.current!, // HTMLImageElement
-                                previewCanvasRef.current!, // HTMLCanvasElement
+                                imgRef.current!,
+                                previewCanvasRef.current!,
                                 convertToPixelCrop(
                                     crop!,
-                                    imgRef.current.width,
-                                    imgRef.current.height
+                                    imgRef.current!.width,
+                                    imgRef.current!.height
                                 )
                             );
-                            uploadAvatar(previewCanvasRef);
+                            await uploadAvatar(previewCanvasRef);
                             closeModal();
                         }}
                     >

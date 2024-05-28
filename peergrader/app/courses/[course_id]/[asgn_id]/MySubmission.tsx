@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { SubmissionData } from './studentAsgnPage';
@@ -12,7 +12,7 @@ interface MySubmissionProps {
   setSubmission: Dispatch<SetStateAction<SubmissionData | null>>;
 }
 
-export default function MySubmission({ asgn_id, submission, setSubmission}: MySubmissionProps) {
+export default function MySubmission({ asgn_id, submission, setSubmission }: MySubmissionProps) {
   const supabase = createClient();
 
   const {
@@ -22,7 +22,7 @@ export default function MySubmission({ asgn_id, submission, setSubmission}: MySu
   } = useCurrentUserQuery();
 
   if (isUserLoading) {
-    return <LoadingSpinner/>;
+    return <LoadingSpinner />;
   }
 
   if (isError || !currentUser) {
@@ -69,7 +69,6 @@ export default function MySubmission({ asgn_id, submission, setSubmission}: MySu
     <div>
       {submission ? (
         <div>
-          <h1>{submission.filename}</h1>
           <div style={{ height: '90vh', width: '70vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <iframe
               src={submission.view_url}

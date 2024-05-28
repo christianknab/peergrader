@@ -14,6 +14,8 @@ import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 import { Phase } from '@/utils/types/phaseEnum';
 import { LoadingSpinner } from '@/components/loadingSpinner';
+import NavBar from '@/components/NavBar';
+import PhaseProgressBar from './PhaseProgressBar';
 
 
 export interface SubmissionData {
@@ -55,20 +57,10 @@ export default function StudentAsgnPage() {
   return (
     <div className="w-full min-h-screen flex flex-col">
       <main className="flex-1 w-full">
-        <div className="w-full flex justify-between items-center p-4 light-grey">
-          <button
-            className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-            onClick={() => router.push('/dashboard')}>
-            Return to Dashboard
-          </button>
-          <span className="font-bold text-lg">PeerGrader</span>
-        </div>
+        <NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
         <header>
           <div className="w-4/5 mx-auto">
             <nav className="rounded-md w-1/5 bg-light-grey">
-              <ul className="flex justify-between px-4 py-2">
-                <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Back to course page</Link></li>
-              </ul>
             </nav>
             <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
               {courseData?.name || 'Course Page'}
@@ -78,9 +70,10 @@ export default function StudentAsgnPage() {
         <div className="w-4/5 mx-auto bg-white shadow-lg rounded-lg p-8 mt-12 mb-12">
           {asgnData && (
             <div className="mb-4 p-4 bg-blue-100 rounded-md">
-              <h2 className="text-xl font-semibold">Assignment: {asgnData.name} -- Phase: {phase}</h2>
+              <h2 className="text-xl font-semibold">{asgnData.name}</h2>
             </div>
           )}
+          <PhaseProgressBar asgn_id={asgn_id} />
           {asgnData && (
             <div>
               {(() => {
@@ -92,7 +85,7 @@ export default function StudentAsgnPage() {
                       <div className="flex flex-col items-center space-y-4">
                         <MySubmission asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         <div className="w-full items-center">
-                          <UploadButton asgn_id={asgn_id} />
+                          <UploadButton asgn_id={asgn_id} setSubmission={setSubmission} submission={submission} />
                         </div>
                       </div>
                     );

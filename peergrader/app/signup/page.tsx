@@ -38,7 +38,8 @@ export default function Login({
         await SetUser(supabase, {
           uid: data.user.id, email: data.user.email!, is_teacher: false,
           first_name: "",
-          last_name: ""
+          last_name: "",
+          profile_image: null
         });
       } catch {
         //handle error

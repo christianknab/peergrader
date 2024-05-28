@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
+import ProfileImage from '@/components/ProfileImage';
 
 interface AccountData {
   uid: string;
   email: string;
   first_name: string;
   last_name: string;
+  profile_image: string | null;
 }
 
 export default function ListStudents({ course_id }: { course_id: string }) {
@@ -36,7 +38,10 @@ export default function ListStudents({ course_id }: { course_id: string }) {
           <div>
             <ul>
               {accounts.map((account, index) => (
-                <li key={index}>{account.first_name} {account.last_name} - {account.email}</li>
+                <div key={index} className='flex items-center'>
+                  <ProfileImage src={account.profile_image} width={30} height={30} />
+                  <li className="pl-2" key={index}>{account.first_name} {account.last_name} - {account.email}</li></div>
+
               ))}
             </ul>
           </div>

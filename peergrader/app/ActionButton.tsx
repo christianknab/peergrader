@@ -8,22 +8,24 @@ export default async function ActionButton() {
         data: { user },
     } = await supabase.auth.getUser();
 
-    return (<div className="flex gap-4 mb12">
-        <Link
-            href={!user ? "/signup" : "/dashboard"}
-            className="light-blue bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded"
-        >
-            {!user ? "Sign Up" : "Dashboard"}
-        </Link>
-        {!user && <Link
-            href="/login"
-            className="font-bold py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-        >
-            Login
-        </Link>}
-    </div>);
-
-
+    return (
+        <div className="flex gap-4 mb-12">
+            <Link
+                href={!user ? "/signup" : "/dashboard"}
+                className="light-blue bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded flex justify-center items-center min-w-[120px]"
+            >
+                {!user ? "Sign Up" : "Dashboard"}
+            </Link>
+            {!user && (
+                <Link
+                    href="/login"
+                    className="font-bold bg-btn-background hover:bg-btn-background-hover text-foreground font-bold py-2 px-8 rounded flex justify-center items-center min-w-[120px]"
+                >
+                    Login
+                </Link>
+            )}
+        </div>
+    );
 }
 
 

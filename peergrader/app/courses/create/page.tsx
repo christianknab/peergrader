@@ -1,120 +1,84 @@
-'use client';
-import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
-import { createClient } from '@/utils/supabase/client';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import Link from 'next/link';
-import ListCourses from '@/components/ListCourses';
-import { LoadingSpinner } from '@/components/loadingSpinner';
+// "use client";
+// import React, { useState } from 'react';
+// import { createClient } from '@/utils/supabase/client';
+// import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+
+// interface CreateCourseProps {
+//     showModal: boolean;
+//     onClose: () => void;
+//     refreshCourses: () => void;
+// }
+
+// const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refreshCourses }) => {
+//     const [courseName, setCourseName] = useState('');
+//     const [isLoading, setIsLoading] = useState(false);
+//     const supabase = createClient();
+//     const { data: currentUser } = useCurrentUserQuery();
+
+//     const createCourse = async () => {
+//         try {
+//             setIsLoading(true);
+//             var bcrypt = require('bcryptjs');
+//             let course_id: string = await bcrypt.hash(`${new Date().toISOString()}${courseName}${currentUser?.uid}`, 5);
+//             course_id = course_id.replace(/[^a-zA-Z0-9]/g, 'd');
+
+//             const { error } = await supabase.from('courses').insert([
+//                 { course_id: course_id, name: courseName, owner: currentUser?.uid },
+//             ]);
+
+//             if (error) {
+//                 console.error('Error creating course:', error);
+//             } else {
+//                 setCourseName('');
+//                 refreshCourses();
+//                 onClose();
+//             }
+//         } catch (error) {
+//             console.error('Error creating course:', error);
+//         } finally {
+//             setIsLoading(false);
+//         }
+//     };
+
+//     if (!showModal) return null;
+
+//     return (
+//         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+//             <div className="white-blue-gradient rounded-lg p-4 relative">
+//                 <button className="absolute top-0 right-0 m-2 text-gray-700" onClick={onClose}>X</button>
+//                 <div className="white-blue-gradient flex flex-col space-y-4 p-5 rounded-lg overflow-hidden">
+//                     <div className="flex items-center space-x-3">
+//                         <label htmlFor="courseName" className="font-semibold">Course Name:</label>
+//                         <input
+//                             type="text"
+//                             placeholder="Enter course name"
+//                             value={courseName}
+//                             onChange={(e) => setCourseName(e.target.value)}
+//                             className="py-2 px-4 rounded-md light-grey shadow-lg"
+//                         />
+//                     </div>
+//                     <button
+//                         className="py-2 px-4 rounded-md font-semibold no-underline bg-btn-background hover:bg-btn-background-hover"
+//                         onClick={createCourse}
+//                         disabled={isLoading}
+//                     >
+//                         {isLoading ? 'Loading...' : 'Create Course'}
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+//     );
+// };
+
+// export default CreateCourse;
 
 
-export default function CreateCoursePage() {
-    const supabase = createClient();
-    const { 
-        data: currentUser, 
-        isLoading: isUserLoading, 
-        isError 
-      } = useCurrentUserQuery();
-     
-      
-    const router = useRouter()
-    const [courseName, setCourseName] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+"use client";
 
-    const createCourse = async () => {
-        try {
-            setIsLoading(true);
-            var bcrypt = require('bcryptjs');
-            let course_id: string = await bcrypt.hash(`${new Date().toISOString()}${courseName}${currentUser?.uid}`, 5);
-            course_id = course_id.replace(/[^a-zA-Z0-9]/g, 'd');
-
-            const { error } = await supabase.from('courses').insert([
-                { course_id: course_id, name: courseName, owner: currentUser?.uid },
-            ]);
-
-            if (error) {
-                console.error('Error creating course:', error);
-            }
-            
-            router.push('/courses')
-        } catch (error) {
-            console.error('Error creating course:', error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-    if (isUserLoading) {
-        return <LoadingSpinner/>;
-      }
-     
-      if (isError || !currentUser) {
-        return <div>Error</div>;
-      }
+export default function CreateCourse() {
 
     return (
-        <div className="flex flex-col min-h-screen w-full bg-white">
-            <div className="w-full flex justify-between items-center p-4 light-grey">
-                <button 
-                    className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                    onClick={() => router.push('/dashboard')}>
-                    Return to Dashboard
-                </button>
-                <span className="font-bold text-lg">PeerGrader</span>
-            </div>
-
-            <header className="w-full py-8">
-                <h1 className="text-5xl font-bold text-left pl-4 write-blue">Teacher Dashboard</h1>
-                <hr className="my-1 border-t-2"></hr>
-            </header>
-
-            <main className="flex-1 w-full mb-10 px-12">
-                <div className="px-4 py-0 flex justify-center">
-                    <div className="flex flex-col flex-grow rounded-lg overflow-hidden w-3/4">
-                        <div className="flex justify-between items-center light-blue p-5">
-                            <Link
-                                href="/courses"
-                                className="text-2xl text-left font-semibold write-grey"
-                            >
-                                Create a Course
-                            </Link>
-                            <Link
-                                href={{
-                                    pathname: '/courses/create',
-                                }}
-                                >{<button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
-                                    Create new course</button>}
-                                    </Link>
-
-                        </div>
-                        <div className="min-h-[500px] light-white flex-grow p-6 items-center">
-                            <div className="my-18">
-                                <ListCourses /> 
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col flex-grow space-y-3 ml-10 p-5 bg-white rounded-lg overflow-hidden">
-                        <div className="flex items-center space-x-3">
-                            <label htmlFor="courseName" className='font-bold'>Course Name:</label>
-                            <input
-                                type="text"
-                                placeholder="Enter course name"
-                                value={courseName}
-                                onChange={(e) => setCourseName(e.target.value)}
-                                className="py-2 px-4 rounded-md shadow-lg"
-                            />
-                        </div>
-                        <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                                onClick={createCourse} disabled={isLoading}>
-                                {isLoading ? 'Loading...' : 'Create Course'}
-                            </button>
-                    </div>
-                </div>
-            </main>
-
-            <footer className="w-full font-bold light-grey p-4 bg-white text-center">
-                <p>&copy;2024 PeerGrader</p>
-            </footer>
+        <div>
         </div>
     );
 }

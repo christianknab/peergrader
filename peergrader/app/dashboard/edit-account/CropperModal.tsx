@@ -1,7 +1,15 @@
+// Credit to https://github.com/OneLightWebDev/react-image-cropper/tree/main
+
 import CloseIcon from "@/components/icons/CloseIcon";
 import ImageCropper from "./ImageCropper";
 
-const CropperModal = ({ updateAvatar, closeModal, uid }) => {
+interface CropperModalProps {
+    updateAvatar: (url: string) => void;
+    closeModal: () => void;
+    uid: any;
+}
+
+const CropperModal: React.FC<CropperModalProps> = ({ updateAvatar, closeModal, uid }) => {
     return (
         <div
             className="relative z-10"

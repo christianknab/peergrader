@@ -104,7 +104,11 @@ export default function CoursesPage() {
                             >
                                 Join a Course
                             </Link>
-                            <JoinCourse />
+                        {/* REMOVING? */}
+                            {/* <JoiƒnCourse onClose={function (): void {
+                                    throw new Error('Function not implemented.');
+                                } } /> */}
+
                         </div>
 
                         <div className="min-h-[500px] light-white flex-grow p-6 items-center">

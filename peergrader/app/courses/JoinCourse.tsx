@@ -1,11 +1,13 @@
-"use client";
+import { useState, useEffect } from "react";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
-
 import { createClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
 
-export default function JoinCourse() {
+interface JoinCourseProps {
+  onClose: () => void;
+}
+
+const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     const router = useRouter();
     const supabase = createClient();
     const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
@@ -23,7 +25,7 @@ export default function JoinCourse() {
     }, [searchParams]);
 
     useEffect(() => {
-        if (joinCode != '') {
+        if (joinCode !== '') {
             joinCourse();
         }
     }, [autoJoin]);
@@ -32,7 +34,6 @@ export default function JoinCourse() {
         try {
             setIsLoading(true);
 
-            // Check if the course exists
             const { data, error } = await supabase
                 .from('courses')
                 .select('course_id, name')
@@ -49,7 +50,6 @@ export default function JoinCourse() {
                 return;
             }
 
-            // Add the user to the course
             const { error: insertError } = await supabase.from('account_courses').insert({
                 course_id: data.course_id,
                 uid: currentUser?.uid,
@@ -70,7 +70,7 @@ export default function JoinCourse() {
     }
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-3">
             <input
                 type="text"
                 placeholder="Enter class code"
@@ -78,11 +78,18 @@ export default function JoinCourse() {
                 onChange={(e) => setJoinCode(e.target.value)}
                 className="py-2 px-4 rounded-md"
             />
-            <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-                onClick={joinCourse}
-                disabled={isLoading}>
-                {isLoading ? 'Loading...' : 'Join Class'}
-            </button>
+            <div className="flex items-center space-x-1">
+                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                    onClick={joinCourse}
+                    disabled={isLoading}>
+                    {isLoading ? 'Loading...' : 'Join Class'}
+                </button>
+                <button onClick={onClose} className="py-2 px-4 rounded-md font-bold no-underline bg-red-500 hover:bg-red-600 text-white">
+                    Cancel
+                </button>
+            </div>
         </div>
     );
 }
+
+export default JoinCourse;
