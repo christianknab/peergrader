@@ -8,12 +8,12 @@ function useAsgnDataQuery(asgn_id: string) {
     const queryKey = [asgn_id, "AsgnData"];
 
     const queryFn = async () => {
-        
+
         const { data } = await supabase
-        .from('assignments')
-        .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading, max_score')
-        .eq('asgn_id', asgn_id)
-        .single();
+            .from('assignments')
+            .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading, max_score, num_peergrades')
+            .eq('asgn_id', asgn_id)
+            .single();
 
         return data
     };

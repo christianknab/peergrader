@@ -46,7 +46,7 @@ export default function PhaseProgressBar({ asgn_id, }: PhaseProgressBarProps) {
 
   return (
     <div className="w-full flex">
-      <div className="w-1/2 mr-4 mb-2">
+      <div className="w-1/2 mr-4">
         <div className="flex justify-between mb-2 text-sm">
           {submissionLables.map((label) => (
             <span key={label} className="font-medium">
@@ -82,7 +82,7 @@ export default function PhaseProgressBar({ asgn_id, }: PhaseProgressBarProps) {
 
         <div className="relative w-full h-3 bg-gray-200 rounded overflow-hidden">
           <div
-            className="absolute top-0 left-0 h-3 bg-blue-500 rounded"
+            className="absolute top-0 left-0 h-3 bg-green-500 rounded"
             style={{ width: `${gradingProgress}%` }}
           ></div>
         </div>
