@@ -3,11 +3,13 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ProfileLink from "@/app/dashboard/ProfileLink";
 import { createClient } from '@/utils/supabase/client';
+import { useQueryClient } from "@tanstack/react-query";
 
-export default function NavBar({ courseName, courseId, assignmentName, assignmentId }: { courseName?: string, courseId?: string, assignmentName?: string, assignmentId?: string }) {
+export default function NavBar({ courseName, courseId, assignmentName, assignmentId, showProfile = true }: { courseName?: string, courseId?: string, assignmentName?: string, assignmentId?: string, showProfile?: boolean }) {
     const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const supabase = createClient();
+    const queryClient = useQueryClient();
 
     const handleNavigation = (path: string) => {
         router.push(path);
@@ -18,6 +20,7 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
     };
 
     const signOut = async () => {
+        queryClient.clear();
         await supabase.auth.signOut();
         router.push("/");
     };
@@ -52,7 +55,7 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
                         </>
                     )}
                 </span>
-                <div className="relative pr-2">
+                {showProfile && <div className="relative pr-2">
                     <button onClick={toggleDropdown} className="focus:outline-none">
                         <ProfileLink />
                     </button>
@@ -70,7 +73,8 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
                             </button>
                         </div>
                     )}
-                </div>
+                </div>}
+
             </div>
         </div>
     );

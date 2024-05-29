@@ -82,7 +82,6 @@ export default function StudentListAllAsgn({ setCourseAssignmentsCount }: Studen
       }
 
       const { data, error } = await supabase.rpc('get_asgns_for_course_student', { course_id_param: courseId, user_id_param: userId });
-
       if (error) {
         console.error('Error fetching assignments:', error);
         continue;

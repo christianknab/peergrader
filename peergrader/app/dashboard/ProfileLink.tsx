@@ -15,7 +15,7 @@ export default function ProfileLink() {
     }
 
     if (isError) {
-        return <div>Error</div>;
+        return <div>Profile</div>;
     }
 
     return (

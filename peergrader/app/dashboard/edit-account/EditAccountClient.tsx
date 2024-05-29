@@ -125,6 +125,7 @@ export default function EditAccountClient() {
                                 name="firstName"
                                 defaultValue={currentUser ? currentUser.first_name : user?.user_metadata.full_name?.split(' ')[0]}
                                 onChange={() => setFormEdited(true)}
+                                required
                             />
                         </div>
                         <div className="pr-3">
@@ -138,6 +139,7 @@ export default function EditAccountClient() {
                                 name="lastName"
                                 defaultValue={currentUser ? currentUser.last_name : user?.user_metadata.full_name?.split(' ')[1]}
                                 onChange={() => setFormEdited(true)}
+                                required
                             />
                         </div>
                         <div className="pr-3">
@@ -151,13 +153,15 @@ export default function EditAccountClient() {
                                 placeholder="Email"
                                 value={currentUser ? currentUser.email : user?.email}
                                 onChange={() => setFormEdited(true)}
+                                required
                             />
                         </div>
                         {currentUser?.is_teacher == null && <div className="mb-4">
                             <label className="block text-gray-700 font-bold mb-2">
                                 Account Type
                             </label>
-                            <select name="account_type" defaultValue={currentUser?.is_teacher ? "teacher" : "student"} className="rounded-lg block w-full p-2.5" onChange={() => setFormEdited(true)}>
+                            <select name="account_type" defaultValue={currentUser == null ? "" : (currentUser?.is_teacher ? "teacher" : "student")} className="rounded-lg block w-full p-2.5" onChange={() => setFormEdited(true)} required>
+                                <option value="">Select user type</option>
                                 <option value="student">Student</option>
                                 <option value="teacher">Teacher</option>
                             </select>
@@ -178,9 +182,9 @@ export default function EditAccountClient() {
                     </div>
 
                 </form>
-                <label className="block text-gray-700 font-bold mb-2">
+                {currentUser != null && <label className="block text-gray-700 font-bold mb-2">
                     {currentUser?.is_teacher ? `Your Courses` : `Enrolled Courses`}
-                </label>
+                </label>}
                 {userCourses?.course.length == 0 && <button
                     className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
                     onClick={() => router.push('/courses')}>
