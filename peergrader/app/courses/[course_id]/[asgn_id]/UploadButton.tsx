@@ -112,6 +112,7 @@ export default function UploadButton({ asgn_id, submission, setSubmission }: Upl
                                 type="file"
                                 onChange={onFileChange}
                                 className="hidden"
+                                accept='.pdf'
                             />
                         </>
                     ) : (
@@ -132,6 +133,7 @@ export default function UploadButton({ asgn_id, submission, setSubmission }: Upl
                                     type="file"
                                     onChange={onFileChange}
                                     className="hidden"
+                                    accept='.pdf'
                                 />
 
                                 <button

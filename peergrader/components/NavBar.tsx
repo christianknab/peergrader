@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import ProfileLink from "@/app/dashboard/ProfileLink";
 import { createClient } from '@/utils/supabase/client';
 
-export default function NavBar({ courseName, courseId, assignmentName, assignmentId }: { courseName?: string, courseId?: string, assignmentName?: string, assignmentId?: string }) {
+export default function NavBar({ courseName, courseId, assignmentName, assignmentId, showUserInfo=true }: { courseName?: string, courseId?: string, assignmentName?: string, assignmentId?: string , showUserInfo?:boolean}) {
     const router = useRouter();
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const supabase = createClient();
@@ -52,7 +52,7 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
                         </>
                     )}
                 </span>
-                <div className="relative pr-2">
+                {showUserInfo &&(<div className="relative pr-2">
                     <button onClick={toggleDropdown} className="focus:outline-none">
                         <ProfileLink />
                     </button>
@@ -70,7 +70,7 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
                             </button>
                         </div>
                     )}
-                </div>
+                </div>)}
             </div>
         </div>
     );

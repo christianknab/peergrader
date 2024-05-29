@@ -23,6 +23,9 @@ import GetPhaseFromId from '@/utils/queries/GetPhaseFromId';
 import { Phase } from '@/utils/types/phaseEnum';
 import usePhaseFromIdQuery from '@/utils/hooks/QueryAsgnPhase';
 import { LoadingSpinner } from '@/components/loadingSpinner';
+import NavBar from '@/components/NavBar';
+import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
+import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 
 export default function StudentGradePage() {
   const [columnWidth, setColumnWidth] = useState<number>(70);
@@ -43,6 +46,7 @@ export default function StudentGradePage() {
   const fileId = searchParams.get('file_id');
   const graderId = searchParams.get('grader');
   const asgnId = params.asgn_id.toString();
+  const courseId = params.course_id.toString();
   const commentSectionRef = useRef<HTMLDivElement>(null);
   const tabs: (readonly string[]) = ["Grade", "Comment"];
   const studentGrading: boolean = !graderId;
@@ -56,7 +60,8 @@ export default function StudentGradePage() {
 
   const { data: rubricData,
     isLoading: isRubricLoading,
-    isError: isRubricError } = useRubricFromAsgnQuery(asgnId);
+    isError: isRubricError 
+  } = useRubricFromAsgnQuery(asgnId);
   const {
     data: currentUser,
     isLoading: isUserLoading,
@@ -72,6 +77,17 @@ export default function StudentGradePage() {
     isLoading: isOwnerLoading,
     isError: isOwnerError
   } = useOwnerFromFileQuery(fileId, studentGrading);
+  const {
+    data: courseData,
+    isLoading: isCourseDataLoading,
+    isError: isCourseDataError
+} = useCourseDataQuery(courseId);
+
+const {
+    data: asgnData,
+    isLoading: isAsgnDataLoading,
+    isError: isAsgnDataError
+} = useAsgnDataQuery(asgnId);
   const isEditable: boolean = studentGrading && (phase == Phase.grading);
 
   const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${studentGrading ? owner : currentUser?.uid}/${fileId}` || '');
@@ -290,8 +306,8 @@ export default function StudentGradePage() {
 
   }
 
-  if (isOwnerLoading || isUserLoading) return (<LoadingSpinner/>);
-  if ((!owner && isEditable) || isOwnerError || !currentUser || isCurrentUserError) return (<div>Error</div>);
+  if (isOwnerLoading || isUserLoading || isAsgnDataLoading) return (<LoadingSpinner/>);
+  if ((!owner && isEditable) || isOwnerError || !currentUser || isCurrentUserError || isPhaseError) return (<div>Error</div>);
   return (
     <main>
 
@@ -370,6 +386,7 @@ export default function StudentGradePage() {
 
         <div style={{ width: `${columnWidth}%` }}>
           <div className='overflow-y-auto h-screen' ref={pdfContainerRef}>
+          <NavBar courseName={courseData?.name ?? "Loading..."} courseId={courseId} assignmentName={asgnData?.name} assignmentId={asgnId} showUserInfo={false}/>
             <PDFView fileUrl={publicUrl}
               width={PDFWidth} onPageClick={documentClickHandler}
               annotationMarkers={selectedTab == 1 ? annotationMarkers : []}
