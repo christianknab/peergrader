@@ -31,7 +31,7 @@ export default function GetNextToGrade({ course_id, asgn_id }: GetNextToGradePro
             console.error('Error fetching submission:', error);
             return;
         }
-        queryClient.invalidateQueries({queryKey: ['gradedSubs']})
+        queryClient.invalidateQueries({queryKey: ['gradedSubs']});
         const queryString = `?file_id=${data}`;
         router.push(`/courses/${course_id}/${asgn_id}/grade${queryString}`);
     };
