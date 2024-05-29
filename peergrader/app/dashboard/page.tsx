@@ -1,9 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import DashboardClientPage from "./dasboardClient";
-import LogoutButton from "./LogoutButton";
-import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
-import ProfileLink from "./ProfileLink";
 import NavBar from "@/components/NavBar";
 
 

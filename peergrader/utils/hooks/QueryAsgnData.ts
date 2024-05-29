@@ -11,7 +11,7 @@ function useAsgnDataQuery(asgn_id: string) {
 
         const { data } = await supabase
         .from('assignments')
-        .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading, max_score, description, num_peergrades')
+        .select('name, start_date_submission, end_date_submission, start_date_grading, end_date_grading, max_score, description, num_peergrades, num_annotations')
         .eq('asgn_id', asgn_id)
         .single();
 

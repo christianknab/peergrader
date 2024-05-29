@@ -40,6 +40,7 @@ export default function StudentGradePage() {
   const [selectedTab, setSelectedTab] = useState<number>(0);
   const [addPointSelected, setAddPointSelected] = useState<boolean>(false);
   const [isAnnotationIncomplete, setIsAnnotationIncomplete] = useState<boolean>(false);
+  const [isTooFewAnnotations, setIsTooFewAnnotations] = useState<boolean>(false);
   const [isGradesIncomplete, setIsGradesIncomplete] = useState<boolean>(false);
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -60,7 +61,7 @@ export default function StudentGradePage() {
 
   const { data: rubricData,
     isLoading: isRubricLoading,
-    isError: isRubricError 
+    isError: isRubricError
   } = useRubricFromAsgnQuery(asgnId);
   const {
     data: currentUser,
@@ -81,13 +82,13 @@ export default function StudentGradePage() {
     data: courseData,
     isLoading: isCourseDataLoading,
     isError: isCourseDataError
-} = useCourseDataQuery(courseId);
+  } = useCourseDataQuery(courseId);
 
-const {
+  const {
     data: asgnData,
     isLoading: isAsgnDataLoading,
     isError: isAsgnDataError
-} = useAsgnDataQuery(asgnId);
+  } = useAsgnDataQuery(asgnId);
   const isEditable: boolean = studentGrading && (phase == Phase.grading);
 
   const { data: { publicUrl } } = supabase.storage.from('files').getPublicUrl(`${studentGrading ? owner : currentUser?.uid}/${fileId}` || '');
@@ -255,13 +256,17 @@ const {
         return;
       }
     }
+    if (annotationMarkers.length < (asgnData?.num_annotations ?? 0)) {
+      setSelectedTab(1);
+      setIsTooFewAnnotations(true);
+      return;
+    }
 
     const { error } = await SetSubmissionGrade(supabase, { userId: currentUser?.uid, fileId: fileId, data: eval(JSON.stringify(annotationMarkers)) }, { points_selected: !rubricData.numberInput ? selectedPoints : null, points_given: rubricData.numberInput ? pointsGiven : null, total: total });
     if (error) {
       console.error("upload Error")
       return;
     }
-    queryClient.invalidateQueries({ queryKey: ['gradedSubs'] })
     router.back();
   }
 
@@ -306,8 +311,8 @@ const {
 
   }
 
-  if (isOwnerLoading || isUserLoading || isAsgnDataLoading) return (<LoadingSpinner/>);
-  if ((!owner && isEditable) || isOwnerError || !currentUser || isCurrentUserError || isPhaseError) return (<div>Error</div>);
+  if (isOwnerLoading || isUserLoading || isAsgnDataLoading) return (<LoadingSpinner />);
+  if ((!owner && isEditable) || isOwnerError || !currentUser || isCurrentUserError || isPhaseError || isAsgnDataError) return (<div>Error</div>);
   return (
     <main>
 
@@ -354,7 +359,7 @@ const {
               </div>
             </div>
           </div>}
-        {(isAnnotationIncomplete || isGradesIncomplete) &&
+        {(isAnnotationIncomplete || isGradesIncomplete || isTooFewAnnotations) &&
           <div>
             <div className='fixed w-screen h-screen opacity-50 bg-black z-40'>
             </div>
@@ -369,6 +374,10 @@ const {
                   {isGradesIncomplete && <p className="text-gray-700 text-base">
                     All rows must have a selection.
                   </p>}
+                  {isTooFewAnnotations && <h2 className="text-xl font-bold mb-2">Too Few Annotations</h2>}
+                  {isTooFewAnnotations && <p className="text-gray-700 text-base">
+                    {`${annotationMarkers.length} of ${asgnData?.num_annotations ?? 0} completed.`}
+                  </p>}
 
                 </div>
                 <div className="px-6 py-4 bg-gray-100 flex justify-end">
@@ -376,6 +385,7 @@ const {
                     onClick={(_) => {
                       setIsAnnotationIncomplete(false);
                       setIsGradesIncomplete(false);
+                      setIsTooFewAnnotations(false);
                     }}>
                     Ok
                   </button>
@@ -386,7 +396,7 @@ const {
 
         <div style={{ width: `${columnWidth}%` }}>
           <div className='overflow-y-auto h-screen' ref={pdfContainerRef}>
-          <NavBar courseName={courseData?.name ?? "Loading..."} courseId={courseId} assignmentName={asgnData?.name} assignmentId={asgnId} showUserInfo={false}/>
+            <NavBar courseName={courseData?.name ?? "Loading..."} courseId={courseId} assignmentName={asgnData?.name} assignmentId={asgnId} showUserInfo={false} />
             <PDFView fileUrl={publicUrl}
               width={PDFWidth} onPageClick={documentClickHandler}
               annotationMarkers={selectedTab == 1 ? annotationMarkers : []}
@@ -426,7 +436,8 @@ const {
                 </div>)
                 :
                 (<div>
-                  {isEditable && (<div className={`flex w-full p-2 border-b-2 justify-end ${(selectedIndex == 0) ? 'border-blue-300' : 'border-gray-100'}`}>
+                  {isEditable && (<div className={`flex w-full p-2 border-b-2 justify-between items-center ${(selectedIndex == 0) ? 'border-blue-300' : 'border-gray-100'}`}>
+                    <span>{`${annotationMarkers.length}/${asgnData?.num_annotations ?? 0} Required Comments`}</span>
                     <button className={`flex items-center rounded-md ${addPointSelected ? "bg-gray-400" : "bg-gray-100"}`} onClick={(_) => handleAddCommentPressed()}>
                       <span className='text-sm pl-4 pr-2'>Add Comment</span>
                       <svg xmlns="http://www.w3.org/2000/svg" className='w-11 h-11 p-2 fill-gray-500' viewBox="0 0 45.4 45.4"><path d="M41.267,18.557H26.832V4.134C26.832,1.851,24.99,0,22.707,0c-2.283,0-4.124,1.851-4.124,4.135v14.432H4.141 c-2.283,0-4.139,1.851-4.138,4.135c-0.001,1.141,0.46,2.187,1.207,2.934c0.748,0.749,1.78,1.222,2.92,1.222h14.453V41.27 c0,1.142,0.453,2.176,1.201,2.922c0.748,0.748,1.777,1.211,2.919,1.211c2.282,0,4.129-1.851,4.129-4.133V26.857h14.435 c2.283,0,4.134-1.867,4.133-4.15C45.399,20.425,43.548,18.557,41.267,18.557z" /></svg>
@@ -451,7 +462,7 @@ const {
                             <Textarea
                               disabled={!isEditable}
                               className="w-full pt-2 pr-2 text-gray-900 bg-gray-50 outline-none focus:ring-0 focus:shadow-none resize-none"
-                              id="my-textarea"
+                              id={`annotation-${index}`}
                               maxLength={2000}
                               placeholder="Add a comment..."
                               value={annotationMarkers[index].text}
