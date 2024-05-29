@@ -35,11 +35,12 @@ function useCurrentUserQuery(redirect: boolean = true) {
     };
 
     return useQuery({ queryKey, queryFn, staleTime: 3 * (60 * 1000), retry: (failureCount, error) => {
-        if (error.message === "redirectAccount" && !redirect) {
-          // redirect is false, don't retry
+        if (error.message === "redirectAccount" && redirect) {
+          // redirect is true, don't retry
+          console.log("redirct account")
           return false;
         } else {
-          //nuse the default retry behavior
+          // use the default retry behavior
           return failureCount < 3;
         }
       }

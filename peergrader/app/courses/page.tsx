@@ -1,21 +1,11 @@
 'use client';
 
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 // redirects for now
 export default function CoursesPage() {
-    const router = useRouter();
-
-    useEffect(() => {
-        router.push('/dashboard');
-    }, [router]);
-
-    return (
-        <div>
-            Redirecting...
-        </div>
-    );
+    redirect('/dashboard');
 }
 
 

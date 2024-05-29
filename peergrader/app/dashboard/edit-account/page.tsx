@@ -10,7 +10,7 @@ export default function DashboardPage() {
 
     return (
         <div className="w-full">
-            <NavBar />
+            <NavBar showProfile={false}/>
             <EditAccountClient />
         </div>
     );
