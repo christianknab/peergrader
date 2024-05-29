@@ -37,7 +37,7 @@ export default function ListStudents({ course_id }: { course_id: string }) {
         <div className="light-grey flex-grow p-6">
           <div>
             <ul>
-              {accounts.map((account, index) => (
+              {accounts.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((account, index) => (
                 <div key={index} className='flex items-center'>
                   <ProfileImage src={account.profile_image} width={30} height={30} />
                   <li className="pl-2" key={index}>{account.first_name} {account.last_name} - {account.email}</li></div>

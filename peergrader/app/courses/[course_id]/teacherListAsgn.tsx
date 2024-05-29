@@ -44,10 +44,8 @@ export default function TeacherListAsgn({ course_id }: { course_id: string }) {
             <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
                 <div className="light-blue p-5 flex justify-between items-center">
                     <p className="text-xl text-left font-semibold">Assignments</p>
-                    <Link href={`/courses/${course_id}/create-assignment`}>
-                        <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
+                    <Link href={`/courses/${course_id}/create-assignment`} className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
                         Add assignment
-                        </button>
                     </Link>
                 </div>
                 <div className="light-grey flex-grow p-6">

@@ -17,6 +17,7 @@ interface SubmissionData {
   first_name: string;
   last_name: string;
   file_id: string | null;
+  num_peergrades: number;
 }
 
 interface TeacherListAllAsgnProps {
