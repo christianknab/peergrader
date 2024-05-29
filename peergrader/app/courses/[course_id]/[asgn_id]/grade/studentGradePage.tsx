@@ -396,7 +396,7 @@ export default function StudentGradePage() {
 
         <div style={{ width: `${columnWidth}%` }}>
           <div className='overflow-y-auto h-screen' ref={pdfContainerRef}>
-            <NavBar courseName={courseData?.name ?? "Loading..."} courseId={courseId} assignmentName={asgnData?.name} assignmentId={asgnId} showUserInfo={false} />
+            <NavBar courseName={courseData?.name ?? "Loading..."} courseId={courseId} assignmentName={asgnData?.name} assignmentId={asgnId} showProfile={false} />
             <PDFView fileUrl={publicUrl}
               width={PDFWidth} onPageClick={documentClickHandler}
               annotationMarkers={selectedTab == 1 ? annotationMarkers : []}
