@@ -47,7 +47,7 @@ export default function CoursePage() {
         return (<div><NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
             <TeacherGradePage /></div>);
     } else {
-        return (<div><NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
-            <StudentGradePage /></div>);
+        return (
+            <StudentGradePage />);
     }
 }

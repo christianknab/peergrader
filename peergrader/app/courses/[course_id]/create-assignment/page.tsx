@@ -58,7 +58,7 @@ export default function CreateAssignmentPage() {
 
 
 
-    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numAnnotations: number, numberInput: boolean) => {
+    const handleSubmit = async (assignmentName: string, editedRubric: Rubric[], anonymousGrading: boolean, startSubmitDate: Date, endSubmitDate: Date, startGradeDate: Date, endGradeDate: Date, maxScore: number, numPeergrades: number, numAnnotations: number, numberInput: boolean, description: string) => {
         if (currentUser) {
             try {
                 setIsLoading(true);
@@ -83,7 +83,8 @@ export default function CreateAssignmentPage() {
                             max_score: maxScore,
                             num_peergrades: numPeergrades,
                             num_annotations: numAnnotations,
-                            number_input: numberInput
+                            number_input: numberInput,
+                            description: description
                         },
                     ]).select();
 
