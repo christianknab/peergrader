@@ -2,13 +2,13 @@ import Link from "next/link";
 import AuthButton from "../components/AuthButton";
 import ActionButton from "./ActionButton";
 
-const Navbar = () => (
-  <nav className="bg-white flex justify-between items-center h-16 px-4">
-    <div className="flex-none ml-auto">
-      <AuthButton />
-    </div>
-  </nav>
-);
+// const Navbar = () => (
+//   <nav className="bg-white flex justify-between items-center h-16 px-4">
+//     <div className="flex-none ml-auto">
+//       <AuthButton />
+//     </div>
+//   </nav>
+// );
 
 const Header = () => (
   <header className="flex flex-col items-center justify-center text-center w-full py-32 bg-gradient-to-r from-teal-400 to-blue-600">
@@ -67,7 +67,6 @@ const Footer = () => (
 export default function Index() {
   return (
     <div className="flex flex-col min-h-screen w-full">
-      <Navbar />
       <Header />
       <main className="flex-grow w-full bg-gray-50">
         <HowItWorks />
