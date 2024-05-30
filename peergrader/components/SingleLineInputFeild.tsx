@@ -1,9 +1,9 @@
 import React from 'react';
 
-const SingleLineInputField = (props: { type: string, id: string, name: string, placeholder?: string, label: string, required?: boolean }) => {
+const SingleLineInputField = (props: { type: string, name: string, placeholder?: string, label: string, required?: boolean }) => {
     return (
         <fieldset className="relative">
-            <input id={props.id} type={props.type} name={props.name} className="peer p-3 block w-full border mb-1 rounded-lg text-base placeholder:text-transparent disabled:opacity-50 disabled:pointer-events-none
+            <input type={props.type} name={props.name} className="peer p-3 block w-full border mb-1 rounded-lg text-base placeholder:text-transparent disabled:opacity-50 disabled:pointer-events-none
   focus:pt-5
   focus:pb-1
   [&:not(:placeholder-shown)]:pt-5
