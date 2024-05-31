@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import InputFieldForm from '@/components/InputFieldForm';
 import JoinShareButton from '@/components/JoinShareButton';
+import ExportGrades from './ExportGrades';
 
 export default function TeacherCourseSettings({ courseData }: {
     courseData: {
@@ -75,6 +76,7 @@ export default function TeacherCourseSettings({ courseData }: {
                     )}
                 </div>
             </form>
+            <ExportGrades/>
         </div>
 
     );
