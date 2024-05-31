@@ -63,7 +63,6 @@ export default function Login({
           </label>
           <SingleLineInputField
             label="Email"
-            id="account"
             name="email"
             type="email"
             placeholder="you@example.com"
@@ -71,7 +70,6 @@ export default function Login({
           />
           <SingleLineInputField
             label="Password"
-            id="account"
             name="password"
             type="password"
             placeholder="••••••••"
@@ -82,7 +80,6 @@ export default function Login({
           </label>
           <SingleLineInputField
             label="First Name"
-            id="name"
             name="firstName"
             type="name"
             placeholder="Jane"
@@ -90,7 +87,6 @@ export default function Login({
           />
           <SingleLineInputField
             label="Last Name"
-            id="name"
             name="lastName"
             type="name"
             placeholder="Doe"
