@@ -7,6 +7,7 @@ import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import TeacherListAsgn from './teacherListAsgn';
 import NavBar from '@/components/NavBar';
+import ExportGrades from './ExportGrades';
 
 
 export default function TeacherCoursePage() {
@@ -47,6 +48,7 @@ export default function TeacherCoursePage() {
 
                     </div>
                 </div>
+                <ExportGrades/>
             </div>
         );
     };
