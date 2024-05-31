@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import ProfileImage from '@/components/ProfileImage';
+import StudentGrades from './StudentGrades';
 
 interface AccountData {
   uid: string;
@@ -14,6 +15,8 @@ interface AccountData {
 export default function ListStudents({ course_id }: { course_id: string }) {
   const supabase = createClient();
   const [accounts, setAccounts] = useState<AccountData[]>([]);
+  const [showModal, setShowModal] = useState(false);
+  const [uid, setUid] = useState('');
 
   useEffect(() => {
     fetchStudents(course_id).then(setAccounts);
@@ -34,19 +37,30 @@ export default function ListStudents({ course_id }: { course_id: string }) {
         <div className="light-blue p-5">
           <p className="text-xl text-left font-semibold">Students</p>
         </div>
-        <div className="light-grey flex-grow p-6">
+        <div className="light-grey flex-grow p-3">
           <div>
             <ul>
               {accounts.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((account, index) => (
-                <div key={index} className='flex items-center'>
+                <li key={index} className="flex items-center rounded px-2 py-2">
                   <ProfileImage src={account.profile_image} width={30} height={30} />
-                  <li className="pl-2" key={index}>{account.first_name} {account.last_name} - {account.email}</li></div>
-
+                  <button
+                    className="pl-2 text-sm write-grey hover:text-blue-500"
+                    onClick={() => { setUid(account.uid); setShowModal(true); }}
+                  >
+                    {account.first_name} {account.last_name} - {account.email}
+                  </button>
+                </li>
               ))}
             </ul>
           </div>
         </div>
       </div>
+      <StudentGrades
+        showModal={showModal}
+        onClose={() => setShowModal(false)}
+        uid={uid}
+        course_id={course_id}
+      />
     </div>
   );
 }

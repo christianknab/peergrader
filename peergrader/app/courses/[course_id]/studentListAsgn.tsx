@@ -8,7 +8,7 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 type AsgnData = {
     asgn_id: string;
     name: string;
-    average_grade: number;
+    final_score: number;
     phase: string;
     start_date_submission: Date;
     end_date_submission: Date;
@@ -49,7 +49,7 @@ export default function StudentListAsgn({ course_id }: { course_id: string }) {
                             <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-lg font-semibold">{assignment.name}</h3>
-                                    {assignment.phase == 'Closed' ? (assignment.average_grade ? 'Final grade: ' + assignment.average_grade : 'Grade unavailable') : 'Phase: ' + assignment.phase}
+                                    {assignment.phase == 'Closed' ? (assignment.final_score ? 'Final grade: ' + assignment.final_score : 'Grade unavailable') : 'Phase: ' + assignment.phase}
                                 </div>
                             </div>
                         </Link>)
