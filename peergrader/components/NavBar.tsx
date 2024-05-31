@@ -20,9 +20,8 @@ export default function NavBar({ courseName, courseId, assignmentName, assignmen
     };
 
     const signOut = async () => {
-        queryClient.clear();
         await supabase.auth.signOut();
-        queryClient.clear()
+        await queryClient.clear();
         router.push("/");
     };
 
