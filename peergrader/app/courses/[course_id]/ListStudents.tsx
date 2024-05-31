@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/utils/supabase/client';
 import ProfileImage from '@/components/ProfileImage';
 import StudentGrades from './StudentGrades';
+import RemoveStudent from './RemoveStudent';
+import DeleteIcon from '@/components/icons/Delete';
 
 interface AccountData {
   uid: string;
@@ -15,8 +17,10 @@ interface AccountData {
 export default function ListStudents({ course_id }: { course_id: string }) {
   const supabase = createClient();
   const [accounts, setAccounts] = useState<AccountData[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  const [showGrades, setShowGrades] = useState(false);
+  const [showRemove, setShowRemove] = useState(false);
   const [uid, setUid] = useState('');
+  const [accountData, setAccountData] = useState<AccountData>();
 
   useEffect(() => {
     fetchStudents(course_id).then(setAccounts);
@@ -41,13 +45,19 @@ export default function ListStudents({ course_id }: { course_id: string }) {
           <div>
             <ul>
               {accounts.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((account, index) => (
-                <li key={index} className="flex items-center rounded px-2 py-2">
-                  <ProfileImage src={account.profile_image} width={30} height={30} />
-                  <button
-                    className="pl-2 text-sm write-grey hover:text-blue-500"
-                    onClick={() => { setUid(account.uid); setShowModal(true); }}
-                  >
-                    {account.first_name} {account.last_name} - {account.email}
+                <li key={index} className="flex items-center justify-between rounded px-2 py-2">
+                  <div className='flex items-center'>
+                    <ProfileImage src={account.profile_image} width={30} height={30} />
+                    <button
+                      className="pl-2 text-sm write-grey hover:text-blue-500"
+                      onClick={() => { setUid(account.uid); setShowGrades(true); }}
+                    >
+                      {account.first_name} {account.last_name} - {account.email}
+                    </button></div>
+                  <button className="text-red-500 hover:text-red-700" onClick={() => { setAccountData(account); setShowRemove(true); }}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
                   </button>
                 </li>
               ))}
@@ -56,10 +66,17 @@ export default function ListStudents({ course_id }: { course_id: string }) {
         </div>
       </div>
       <StudentGrades
-        showModal={showModal}
-        onClose={() => setShowModal(false)}
+        showGrades={showGrades}
+        onClose={() => setShowGrades(false)}
         uid={uid}
         course_id={course_id}
+      />
+      <RemoveStudent
+        showRemove={showRemove}
+        onClose={() => setShowRemove(false)}
+        course_id={course_id}
+        accountData={accountData}
+        onStudentRemoved={() => fetchStudents(course_id).then(setAccounts)}
       />
     </div>
   );

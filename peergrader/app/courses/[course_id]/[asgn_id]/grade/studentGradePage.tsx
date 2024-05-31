@@ -317,7 +317,8 @@ export default function StudentGradePage() {
     <main>
 
       <div className='flex w-full'>
-        {addPointSelected && <div style={{ position: 'fixed', left: `${columnWidth / 2}%`, transform: 'translate(-50%, 0)', top: 13, zIndex: 50 }}>
+        {addPointSelected && 
+        <div style={{ position: 'fixed', left: `${columnWidth / 2}%`, transform: 'translate(-50%, 0)', top: 13, zIndex: 50 }}>
           <div className='bg-gray-800 rounded-full py-1 px-4'>
             <span className='text-white'>Click the document to add a point.</span>
           </div>
