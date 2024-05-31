@@ -10,7 +10,8 @@ interface SubmissionData {
   first_name: string;
   last_name: string;
   file_id: string | null;
-  num_peergrades: number;
+  grades_given: number;
+  grades_received: number;
   avg_grade: number | null;
   grading_score: number | null;
   final_score: number | null;
@@ -38,6 +39,12 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
   const [graded, setGraded] = useState<number>(0);
   const [gradesNeeded, setGradesNeeded] = useState<number>(0);
 
+  const [avgGradesGiven, setAvgGradesGiven] = useState<number>(0);
+  const [avgGradingScore, setAvgGradingScore] = useState<number>(0);
+  const [avgGradesReceived, setAvgGradesReceived] = useState<number>(0);
+  const [avgAverageGrade, setAvgAverageGrade] = useState<number>(0);
+  const [avgFinalScore, setAvgFinalScore] = useState<number>(0);
+
   useEffect(() => {
     fetchSubmissions(course_id, asgn_id).then(setSubmissions);
   }, [asgn_id]);
@@ -50,11 +57,26 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
 
       const totalGradesToBeCompleted = submissions.length * asgnData?.num_peergrades;
       const totalGradesCompleted = submissions.reduce((sum, submission) => {
-        return sum + submission.num_peergrades;
+        return sum + submission.grades_given;
       }, 0);
       setGraded(totalGradesCompleted);
       setGradesNeeded(totalGradesToBeCompleted);
       setGradingProgress(totalGradesCompleted / totalGradesToBeCompleted);
+
+      const avgGradesGivenValue = submissions.reduce((sum, submission) => sum + submission.grades_given, 0) / submissions.length;
+      setAvgGradesGiven(avgGradesGivenValue);
+
+      const avgGradingScoreValue = submissions.reduce((sum, submission) => sum + (submission.grading_score || 0), 0) / submissions.length;
+      setAvgGradingScore(avgGradingScoreValue);
+
+      const avgGradesReceivedValue = submissions.reduce((sum, submission) => sum + submission.grades_received, 0) / submissions.length;
+      setAvgGradesReceived(avgGradesReceivedValue);
+
+      const avgAverageGradeValue = submissions.reduce((sum, submission) => sum + (submission.avg_grade || 0), 0) / submissions.length;
+      setAvgAverageGrade(avgAverageGradeValue);
+
+      const avgFinalScoreValue = submissions.reduce((sum, submission) => sum + (submission.final_score || 0), 0) / submissions.length;
+      setAvgFinalScore(avgFinalScoreValue);
     }
   }, [submissions]);
 
@@ -141,20 +163,31 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
           <tr className="bg-gray-200">
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submission</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Peer Grades</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Grade</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grading Score</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Final Score</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grades given/{asgnData?.num_peergrades}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grading Score/100</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grades received</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Grade/{asgnData?.max_score}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Final Score/{asgnData?.max_score}</th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
+          <tr className="bg-gray-100">
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Average</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgGradesGiven.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgGradingScore.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgGradesReceived.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgAverageGrade.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgFinalScore.toFixed(2)}</td>
+          </tr>
           {submissions.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((submission) => (
             <tr key={submission.uid} className="hover:bg-gray-100">
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${submission.first_name} ${submission.last_name}`}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.file_id ? 'Submitted' : '-'}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.num_peergrades}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.avg_grade ?? '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.grades_given}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.grading_score ?? '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.grades_received}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.avg_grade ?? '-'}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.final_score ?? '-'}</td>
             </tr>
           ))}

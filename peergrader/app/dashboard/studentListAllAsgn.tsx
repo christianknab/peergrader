@@ -5,18 +5,12 @@ import Link from 'next/link';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 
-interface CourseData {
-  course_id: string;
-  name: string;
-  number: string;
-}
-
 interface AsgnData {
   asgn_id: string;
   name: string;
   course_id: string;
   course_name: string;
-  average_grade: number;
+  final_score: number;
   phase: string;
   start_date_submission: Date;
   end_date_submission: Date;
@@ -123,8 +117,8 @@ export default function StudentListAllAsgn({ setCourseAssignmentsCount }: Studen
                       <div className="text-right">
                         <div>
                           {assignment.phase === 'Closed' ? (
-                            assignment.average_grade ? (
-                              `Final grade: ${assignment.average_grade}`
+                            assignment.final_score ? (
+                              `Final grade: ${assignment.final_score}`
                             ) : (
                               'Grade unavailable'
                             )
