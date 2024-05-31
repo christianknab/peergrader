@@ -3,7 +3,7 @@ import { supabase } from '@/utils/supabase/client';
 import React, { useEffect, useState } from 'react';
 
 interface StudentGradesProps {
-    showModal: boolean;
+    showGrades: boolean;
     onClose: () => void;
     uid: string;
     course_id: string;
@@ -20,8 +20,8 @@ type AsgnData = {
     end_date_grading: Date;
 } | null;
 
-export default function StudentGrades({ showModal, onClose, uid, course_id }: StudentGradesProps) {
-    if (!showModal) return null;
+export default function StudentGrades({ showGrades, onClose, uid, course_id }: StudentGradesProps) {
+    if (!showGrades) return null;
     const [asgns, setAsgns] = useState<AsgnData[]>([]);
 
     useEffect(() => {
