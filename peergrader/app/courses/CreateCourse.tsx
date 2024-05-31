@@ -62,7 +62,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                 course_id = course_id.replace(/[^a-zA-Z0-9]/g, 'd');
 
                 const { error } = await supabase.from('courses').insert([
-                    { course_id: course_id, name: courseName, owner: currentUser?.uid, number: courseNumber },
+                    { course_id: course_id, name: courseName, owner: currentUser?.uid, number: courseNumber, start_date: startDate, end_date: endDate },
                 ]);
 
                 if (error) {
@@ -71,7 +71,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                 } else {
                     queryClient.invalidateQueries({ queryKey: ['getCourses'] });
                     // refreshCourses();
-                    router.push(`/courses/${course_id}`)
+                    router.push(`/courses/${course_id}?tab=settings`)
                     // onClose();
                 }
                 return true;
@@ -164,7 +164,6 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                         <button
                             type='submit'
                             className="py-2 px-4 rounded-md font-semibold no-underline bg-btn-background hover:bg-btn-background-hover"
-                            // onClick={createCourse}
                             disabled={isLoading}
                         >
                             {isLoading ? 'Loading...' : 'Create Course'}
