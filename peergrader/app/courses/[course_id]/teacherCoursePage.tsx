@@ -1,18 +1,23 @@
 'use client';
 import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import ListStudents from './ListStudents';
 import { useRouter } from 'next/navigation';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import TeacherListAsgn from './teacherListAsgn';
 import NavBar from '@/components/NavBar';
+import ExportGrades from './ExportGrades';
+import TeacherCourseSettings from './teacherCourseSettings';
 
 
 export default function TeacherCoursePage() {
     const router = useRouter();
     const params = useParams();
+    const searchParams = useSearchParams();
     const course_id = params.course_id as string;
+    const tab = searchParams.get('tab');
+
     const {
         data: courseData,
         isLoading: courseDataLoading,
@@ -21,11 +26,11 @@ export default function TeacherCoursePage() {
     if (courseDataLoading) { return <LoadingSpinner />; }
     if (courseDataError) { return <div>Error</div>; }
 
-    const [activeTab, setActiveTab] = useState('home');
+    const [activeTab, setActiveTab] = useState(tab ? tab: 'home');
 
     const TabHome = () => {
         return (
-            < TeacherListAsgn course_id={course_id} />
+            <TeacherListAsgn course_id={course_id} />
         )
     };
 
@@ -37,17 +42,7 @@ export default function TeacherCoursePage() {
 
     const TabSettings = () => {
         return (
-            <div>
-                <div className="flex flex-col rounded-lg overflow-hidden">
-                    <div className="light-blue p-5">
-                        <p className="text-xl text-left font-semibold">Join Link</p>
-                    </div>
-                    <div className="light-grey flex-grow p-6">
-                        http://localhost:3000/courses?code={courseData?.join_code} {/* TODO: change this domain and make copyable */}
-
-                    </div>
-                </div>
-            </div>
+            <TeacherCourseSettings courseId={course_id} courseData={courseData} />
         );
     };
 
