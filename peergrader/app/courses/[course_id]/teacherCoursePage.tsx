@@ -42,7 +42,7 @@ export default function TeacherCoursePage() {
 
     const TabSettings = () => {
         return (
-            <TeacherCourseSettings courseData={courseData} />
+            <TeacherCourseSettings courseId={course_id} courseData={courseData} />
         );
     };
 

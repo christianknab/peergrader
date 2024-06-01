@@ -12,7 +12,7 @@ interface InputFieldFormProps {
 export default function InputFieldForm({format, label, value, name, type, onChange, isRequired}: InputFieldFormProps) {
     return (
         <div className={format}>
-            <label className="block text-gray-700 font-bold mb-2">
+            <label className="block text-gray-700 mb-2">
                 {label}
             </label>
             <input

@@ -3,7 +3,7 @@ interface JoinShareButtonProps {
     joinCode: string;
 }
 
-export default function InputFieldForm({ joinCode }: JoinShareButtonProps) {
+export default function JoinShareButton({ joinCode }: JoinShareButtonProps) {
     return (
         <div>
             {joinCode}
