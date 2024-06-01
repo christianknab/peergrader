@@ -356,7 +356,8 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
             <button type="submit"
                 className={`btn btn-primary py-2 px-4 font-bold rounded-md ${isFormValid() ? `font-bold hover:bg-btn-background-hover` : ``} no-underline bg-btn-background`}
-                disabled={!isFormValid()}>
+                // disabled={!isFormValid()}
+                >
                 Create Assignment
             </button>
         </form>
