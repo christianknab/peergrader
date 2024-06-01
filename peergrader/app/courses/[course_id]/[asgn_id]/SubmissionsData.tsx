@@ -17,12 +17,12 @@ interface SubmissionData {
   final_score: number | null;
 }
 
-interface ListSubmissionsProps {
+interface SubmissionsDataProps {
   course_id: string;
   asgn_id: string;
 }
 
-export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsProps) {
+export default function SubmissionsData({ course_id, asgn_id }: SubmissionsDataProps) {
   const supabase = createClient();
   const {
     data: asgnData,
@@ -161,34 +161,34 @@ export default function ListSubmissions({ course_id, asgn_id }: ListSubmissionsP
       <table className="w-full">
         <thead>
           <tr className="bg-gray-200">
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submission</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grades given/{asgnData?.num_peergrades}</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grading Score/100</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grades received</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Average Grade/{asgnData?.max_score}</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Final Score/{asgnData?.max_score}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Name</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Submission</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Grades given/{asgnData?.num_peergrades}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Grading Score/100</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Grades received</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Average Grade/{asgnData?.max_score}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Final Score/{asgnData?.max_score}</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white divide-y divide-gray-300">
           <tr className="bg-gray-100">
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Average</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgGradesGiven.toFixed(2)}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgGradingScore.toFixed(2)}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgGradesReceived.toFixed(2)}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgAverageGrade.toFixed(2)}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{avgFinalScore.toFixed(2)}</td>
+            <td className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Average</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">-</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{avgGradesGiven.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{avgGradingScore.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{avgGradesReceived.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{avgAverageGrade.toFixed(2)}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{avgFinalScore.toFixed(2)}</td>
           </tr>
           {submissions.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((submission) => (
             <tr key={submission.uid} className="hover:bg-gray-100">
               <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{`${submission.first_name} ${submission.last_name}`}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.file_id ? 'Submitted' : '-'}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.grades_given}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.grading_score ?? '-'}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.grades_received}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.avg_grade ?? '-'}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{submission.final_score ?? '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{submission.file_id ? 'Submitted' : '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{submission.grades_given}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{submission.grading_score ?? '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{submission.grades_received}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{submission.avg_grade ?? '-'}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{submission.final_score ?? '-'}</td>
             </tr>
           ))}
         </tbody>

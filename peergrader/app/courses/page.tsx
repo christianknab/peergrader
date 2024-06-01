@@ -1,10 +1,13 @@
 'use client';
 
 import { useEffect } from 'react';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect, useRouter, useSearchParams } from 'next/navigation';
 
 // redirects for now
 export default function CoursesPage() {
+    const searchParams = useSearchParams();
+    const joinCode = searchParams.get('code');
+    
     redirect('/dashboard');
 }
 

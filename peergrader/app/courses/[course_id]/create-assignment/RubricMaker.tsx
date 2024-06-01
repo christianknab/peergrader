@@ -87,7 +87,7 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
     };
 
     return (<div className="mb-3">
-        <button type="button" className="text-gray-500" onClick={toggleSettings}>{SettingsIcon()}</button>
+        <button type="button" className="write-grey" onClick={toggleSettings}>{SettingsIcon()}</button>
         <table className="border-l table-auto max-w-screen-lg">
             <thead>
                 <tr>
@@ -141,7 +141,7 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                                         </li>
                                     ))}
                                     {showSettings &&
-                                        (<div className="flex justify-center p-2"><button type="button" className="text-gray-500" onClick={() => addColumn(index)}>{PlusIcon()}</button></div>)}
+                                        (<div className="flex justify-center p-2"><button type="button" className="write-grey" onClick={() => addColumn(index)}>{PlusIcon()}</button></div>)}
                                 </ul>
                             </td>
                             <td className="border-l border-r border-b p-4">
@@ -175,6 +175,6 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
         </table>
         {showSettings &&
             (
-                <div className="flex justify-center p-2"><button type="button" className="text-gray-500" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
+                <div className="flex justify-center p-2"><button type="button" className="write-grey" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
     </div>)
 });

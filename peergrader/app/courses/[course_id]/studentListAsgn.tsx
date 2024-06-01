@@ -8,13 +8,14 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 type AsgnData = {
     asgn_id: string;
     name: string;
+    max_score: number;
     final_score: number;
     phase: string;
     start_date_submission: Date;
     end_date_submission: Date;
     start_date_grading: Date;
     end_date_grading: Date;
-} | null;
+}
 
 
 export default function StudentListAsgn({ course_id }: { course_id: string }) {
