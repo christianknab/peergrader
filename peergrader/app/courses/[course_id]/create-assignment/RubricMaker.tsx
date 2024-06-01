@@ -110,10 +110,11 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                         <tr key={index}>
                             <td className="border-b border-r p-2">
                                 <textarea
-                                    className={`resize-none h-10 rounded-md p-1 w-full h-24 ${rubricItem.names[0] == '' ? 'bg-red-200' : ''}`}
+                                    className={`resize-none rounded-md p-1 w-full h-24 ${rubricItem.names[0] == '' ? 'bg-red-200' : ''}`}
                                     value={rubricItem.names[0]}
                                     onChange={(e) => handleNameChange(index, e.target.value)}
                                     title={rubricItem.names[index] == '' ? 'Please enter a description' : ''}
+                                    required
                                 />
                             </td>
                             <td className="border-b p-0">
@@ -136,6 +137,7 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                                                     value={description}
                                                     onChange={(e) => handleColChange(index, descIndex, e.target.value)}
                                                     title={rubricItem.descriptions[descIndex] == '' ? 'Please enter a description' : ''}
+                                                    required
                                                 />
                                                 {showSettings &&
                                                     (<button type="button" className="text-red-500" role="alert" onClick={() => delColumn(index, descIndex)}>
