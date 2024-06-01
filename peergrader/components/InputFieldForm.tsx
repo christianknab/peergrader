@@ -1,15 +1,14 @@
-
 interface InputFieldFormProps {
     format?: string;
     label: string;
     value: string;
     name: string;
     type: string;
-    onChange: (changed: boolean) => void;
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
     isRequired: boolean;
 }
 
-export default function InputFieldForm({format, label, value, name, type, onChange, isRequired}: InputFieldFormProps) {
+export default function InputFieldForm({ format, label, value, name, type, onChange, isRequired }: InputFieldFormProps) {
     return (
         <div className={format}>
             <label className="block text-gray-700 mb-2">
@@ -20,9 +19,9 @@ export default function InputFieldForm({format, label, value, name, type, onChan
                 type={type}
                 name={name}
                 defaultValue={value}
-                onChange={() => onChange(true)}
+                onChange={onChange}
                 required={isRequired}
-            /></div>
-
+            />
+        </div>
     );
 }
