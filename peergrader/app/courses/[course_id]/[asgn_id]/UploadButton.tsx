@@ -124,7 +124,7 @@ export default function UploadButton({ asgn_id, submission, setSubmission }: Upl
 
                                 <label
                                     htmlFor="file-input"
-                                    className="py-1 px-3 rounded-md text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover cursor-pointer"
+                                    className="py-1 px-3 rounded-md write-grey no-underline bg-btn-background hover:bg-btn-background-hover cursor-pointer"
                                 >
                                     Select File
                                 </label>
@@ -178,7 +178,7 @@ export default function UploadButton({ asgn_id, submission, setSubmission }: Upl
 
                                     <label
                                         htmlFor="file-input"
-                                        className="ml-4 py-1 px-3 rounded-md text-gray-500 no-underline bg-btn-background hover:bg-btn-background-hover cursor-pointer"
+                                        className="ml-4 py-1 px-3 rounded-md write-grey no-underline bg-btn-background hover:bg-btn-background-hover cursor-pointer"
                                     >
                                         Select File
                                     </label>

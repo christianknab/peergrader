@@ -13,10 +13,10 @@ const SingleLineInputField = (props: { type: string, name: string, placeholder?:
             <label htmlFor={props.name} className="absolute top-0 start-0 p-3 h-full text-base truncate pointer-events-none transition ease-in-out duration-100 border border-transparent peer-disabled:opacity-50 peer-disabled:pointer-events-none
     peer-focus:text-sm
     peer-focus:-translate-y-1.5
-    peer-focus:text-gray-500
+    peer-focus:write-grey
     peer-[:not(:placeholder-shown)]:text-sm
     peer-[:not(:placeholder-shown)]:-translate-y-1.5
-    peer-[:not(:placeholder-shown)]:text-gray-500">{props.label}</label>
+    peer-[:not(:placeholder-shown)]:write-grey">{props.label}</label>
         </fieldset>
     );
 };
