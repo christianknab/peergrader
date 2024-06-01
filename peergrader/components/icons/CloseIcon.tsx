@@ -1,10 +1,13 @@
-const CloseIcon = () => (
+interface MyComponentProps {
+  className?: string;
+}
+const CloseIcon = ({className}: MyComponentProps) => (
     <svg
-      className="h-4 w-4"
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      // fill="none"
       viewBox="0 0 24 24"
-      stroke="currentColor"
+      // stroke="currentColor"
       aria-hidden="true"
     >
       <path

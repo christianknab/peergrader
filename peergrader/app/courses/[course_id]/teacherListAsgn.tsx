@@ -13,6 +13,7 @@ type AsgnData = {
     end_date_submission: Date;
     start_date_grading: Date;
     end_date_grading: Date;
+    max_score: number;
 } | null;
 
 
