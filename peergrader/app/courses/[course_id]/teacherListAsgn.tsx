@@ -10,7 +10,6 @@ type AsgnData = {
     asgn_id: string;
     name: string;
     phase: string;
-    max_score: number;
     start_date_submission: Date;
     end_date_submission: Date;
     start_date_grading: Date;
