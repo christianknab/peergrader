@@ -103,7 +103,7 @@ export default function StudentDashboardPage() {
               <button
                 className="light-grey text-black font-semibold py-1 px-4 rounded hover:bg-btn-background-hover"
                 onClick={() => setShowModal(true)}>
-                + Add Course
+                + Join Course
               </button>
             </div>
 

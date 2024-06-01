@@ -34,42 +34,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     }, [autoJoin]);
 
     async function joinCourse() {
-        try {
-            setIsLoading(true);
-
-            const { data, error } = await supabase
-                .from('courses')
-                .select('course_id, name')
-                .eq('join_code', joinCode)
-                .single();
-
-            if (error) {
-                console.error('Error checking course:', error);
-                return;
-            }
-
-            if (!data) {
-                console.error('No course found with the given course code:', joinCode);
-                return;
-            }
-
-            const { error: insertError } = await supabase.from('account_courses').insert({
-                course_id: data.course_id,
-                uid: currentUser?.uid,
-            });
-            if (insertError) {
-                console.error('Error adding user to course:', insertError);
-                return;
-            }
-            setJoinCode('');
-            const coursePageUrl = `/courses/${data.course_id}`
-            router.push(coursePageUrl);
-
-        } catch (error) {
-            console.error('Error joining course:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        router.push(`/courses?code=${joinCode}`)
     }
 
     return (
