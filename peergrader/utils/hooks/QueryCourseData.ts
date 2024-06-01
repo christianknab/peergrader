@@ -8,7 +8,7 @@ function useCourseDataQuery(course_id: string) {
     const queryKey = [course_id, "CourseData"];
 
     const queryFn = async () => {
-        const { data } = await supabase.from("courses").select("name, owner, join_code").eq("course_id", course_id).single();
+        const { data } = await supabase.from("courses").select("name, number, owner, join_code, start_date, end_date").eq("course_id", course_id).single();
         return data
     };
 
