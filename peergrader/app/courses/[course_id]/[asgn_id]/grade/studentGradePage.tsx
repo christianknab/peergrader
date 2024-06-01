@@ -410,7 +410,7 @@ export default function StudentGradePage() {
         <div style={{ flex: 1, minWidth: "15%" }}>
           <div className='flex flex-col h-screen'>
             {/* Tab Bar */}
-            <div className="text-m font-medium text-center text-gray-500 border-b border-gray-300">
+            <div className="text-m font-medium text-center write-grey border-b border-gray-300">
               <ul className="flex flex-wrap justify-center -mb-px">
                 {tabs.map((value, index) => {
                   const unselected = "w-full inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-400 transition-all ease-in-out";

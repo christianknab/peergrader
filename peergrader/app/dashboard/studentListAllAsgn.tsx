@@ -10,6 +10,7 @@ interface AsgnData {
   name: string;
   course_id: string;
   course_name: string;
+  max_score: number;
   final_score: number;
   phase: string;
   start_date_submission: Date;

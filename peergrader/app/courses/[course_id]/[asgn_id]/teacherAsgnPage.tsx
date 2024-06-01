@@ -1,6 +1,5 @@
 'use client';
 import { useParams } from 'next/navigation';
-import ListSubmissions from './ListSubmissions';
 import { useRouter } from 'next/navigation';
 import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
@@ -9,10 +8,10 @@ import { LoadingSpinner } from '@/components/loadingSpinner';
 import NavBar from '@/components/NavBar';
 import PhaseProgressBar from './PhaseProgressBar';
 import Description from './Description';
+import SubmissionsData from './SubmissionsData';
 
 
 export default function TeacherAsgnPage() {
-  const router = useRouter();
   const params = useParams();
   const course_id = params.course_id as string;
   const asgn_id = params.asgn_id as string;
@@ -58,7 +57,7 @@ export default function TeacherAsgnPage() {
           )}
           <div className="flex flex-col space-y-4">
             <PhaseProgressBar asgn_id={asgn_id} />
-            <ListSubmissions course_id={course_id} asgn_id={asgn_id} />
+            <SubmissionsData course_id={course_id} asgn_id={asgn_id} />
           </div>
         </div>
       </main>

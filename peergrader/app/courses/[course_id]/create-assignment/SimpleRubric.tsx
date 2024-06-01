@@ -70,7 +70,7 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
     };
 
     return (<div className="mb-3">
-        <button type="button" className="text-gray-500" onClick={toggleSettings}>{SettingsIcon()}</button>
+        <button type="button" className="write-grey" onClick={toggleSettings}>{SettingsIcon()}</button>
         <table className="border-l table-auto max-w-screen-lg">
             <thead>
                 <tr>
@@ -126,6 +126,6 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
         </table>
         {showSettings &&
             (
-                <div className="flex justify-center p-2"><button type="button" className="text-gray-500" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
+                <div className="flex justify-center p-2"><button type="button" className="write-grey" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
     </div>)
 });

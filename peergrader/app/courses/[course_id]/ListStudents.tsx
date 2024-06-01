@@ -42,27 +42,45 @@ export default function ListStudents({ course_id }: { course_id: string }) {
           <p className="text-xl text-left font-semibold">Students</p>
         </div>
         <div className="light-grey flex-grow p-3">
-          <div>
-            <ul>
-              {accounts.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((account, index) => (
-                <li key={index} className="flex items-center justify-between rounded px-2 py-2">
-                  <div className='flex items-center'>
-                    <ProfileImage src={account.profile_image} width={30} height={30} />
+
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-gray-400">
+                <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium write-grey uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-right text-xs font-medium write-grey uppercase tracking-wider">Remove</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-300">
+              {accounts.sort((a, b) => a.last_name.localeCompare(b.last_name)).map((account) => (
+                <tr key={account.uid} className="hover:bg-gray-100">
+                  <td>
+                    <div className="flex items-center pl-6">
+                      <ProfileImage src={account.profile_image} width={30} height={30} />
+                      <button
+                        className="pl-2 text-sm write-grey font-medium underline hover:text-blue-500 hover:no-underline"
+                        onClick={() => { setUid(account.uid); setShowGrades(true); }}
+                      >
+                        {account.first_name} {account.last_name}
+                      </button>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm write-grey">{`${account.email}`}</td>
+                  <td className="px-6 py-4 text-right">
                     <button
-                      className="pl-2 text-sm write-grey hover:text-blue-500"
-                      onClick={() => { setUid(account.uid); setShowGrades(true); }}
+                      className="text-red-500 hover:text-red-700"
+                      onClick={() => { setAccountData(account); setShowRemove(true); }}
                     >
-                      {account.first_name} {account.last_name} - {account.email}
-                    </button></div>
-                  <button className="text-red-500 hover:text-red-700" onClick={() => { setAccountData(account); setShowRemove(true); }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </li>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
               ))}
-            </ul>
-          </div>
+            </tbody>
+          </table>
+
         </div>
       </div>
       <StudentGrades
