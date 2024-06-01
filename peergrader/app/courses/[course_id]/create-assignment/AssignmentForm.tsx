@@ -178,7 +178,9 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric, assignmentDesc);
+        if (isFormValid()) {
+            onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric, assignmentDesc);
+        }
     };
     const handleKeyDown = (event: any) => {
         if (event.key === 'Tab') {
@@ -229,10 +231,10 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                 Assignment Description:
                 <div className='outline outline-gray-300 outline-1 rounded-md w-full max-w-3xl'>
                     <div className='flex flex-row'>
-                        <div className='py-2 pl-2'><button className={`rounded-md py-1 px-3 ${!isPreview && "bg-blue-300"}`} onClick={(e)=>{e.preventDefault(); setIsPreview(false);}}>
+                        <div className='py-2 pl-2'><button className={`rounded-md py-1 px-3 ${!isPreview && "bg-blue-300"}`} onClick={(e) => { e.preventDefault(); setIsPreview(false); }}>
                             Edit
                         </button></div>
-                        <div className='py-2 pl-1'><button className={`px-3 py-1 rounded-md ${isPreview && "bg-blue-300"}`} onClick={(e)=>{e.preventDefault(); setIsPreview(true)}}>
+                        <div className='py-2 pl-1'><button className={`px-3 py-1 rounded-md ${isPreview && "bg-blue-300"}`} onClick={(e) => { e.preventDefault(); setIsPreview(true) }}>
                             Preview
                         </button></div>
                     </div>
@@ -356,7 +358,8 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
             <button type="submit"
                 className={`btn btn-primary py-2 px-4 font-bold rounded-md ${isFormValid() ? `font-bold hover:bg-btn-background-hover` : ``} no-underline bg-btn-background`}
-                disabled={!isFormValid()}>
+            // disabled={!isFormValid()}
+            >
                 Create Assignment
             </button>
         </form>

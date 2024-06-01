@@ -69,7 +69,9 @@ export default function ExportGrades() {
         if (assignmentError) {
             //FIXME
         }
-        const header: string[] = ["First Name", "Last Name", "Email", ...(assignmentData as AsgnData[]).map((val) => { return `${val.name}/${val.max_score}` })];
+        const header: string[] = ["First Name", "Last Name", "Email", ...(assignmentData as AsgnData[]).map((val) => { return `${val.name}/${val.max_score}` }), `Total/${(assignmentData as AsgnData[]).reduce((accumulator, value) => {
+            return accumulator + value.max_score;
+        }, 0)}`];
         const steps = (assignmentData as AsgnData[]).length * (studentData as AccountData[]).length;
         let count: number = 0;
         for (let i = 0; i < (assignmentData as AsgnData[]).length; i++) {
@@ -81,12 +83,21 @@ export default function ExportGrades() {
                     user_id_param: student.uid,
                     asgn_id_param: asgn.asgn_id,
                 });
-                dataMap.get(student.uid)?.push(`${finalScore ?? "N/A"}`);
+                dataMap.get(student.uid)?.push(`${finalScore ?? "0"}`);
                 count++;
                 setProgress(count / steps * 100);
             }
         }
         const array: string[][] = Array.from(dataMap.values());
+        array.forEach((value) => {
+            const sum = value.reduce((accumulator, value, index) => {
+                if (index < 3) return 0;
+                console.log(Number.parseFloat(value));
+                return accumulator + Number.parseFloat(value);
+            }, 0);
+            value.push(`${sum}`);
+        });
+
         array.unshift(header)
         setData(array);
         setProgress(0);
@@ -142,7 +153,7 @@ export default function ExportGrades() {
                                         <table className="border-collapse bg-white">
                                             <thead>
                                                 <tr className="bg-gray-200">
-                                                    {data[0].map((val) => { return <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{val}</th>; })}
+                                                    {data[0].map((val, index) => { return <th key={`header-${index}`} className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{val}</th>; })}
 
                                                 </tr>
                                             </thead>

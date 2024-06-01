@@ -14,6 +14,12 @@ interface RubricMaker {
 export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: RubricMaker) => {
     const [showSettings, setShowSettings] = useState(false);
     const regex = new RegExp("^[0-9]*");
+
+    useEffect(() => {
+        setTotal();
+    }, [rubric])
+
+
     const toggleSettings = () => {
         setShowSettings(!showSettings);
     };
@@ -34,7 +40,7 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
         const newRubric = [...rubric];
         newRubric[index].row_points[0] = value;
         setRubric(newRubric);
-        setTotal();
+        
     };
 
     const handleNameChange = (index: number, value: string) => {
@@ -60,14 +66,13 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
     const addRow = () => {
         const newRow = { names: [''], descriptions: [''], row_points: [NaN], col_points: [NaN] };
         setRubric([...rubric, newRow]);
-        setTotal();
+        
     };
 
     const delRow = (rowIndex: number) => {
         const newRubric = [...rubric];
         newRubric.splice(rowIndex, 1);
         setRubric(newRubric);
-        setTotal();
     };
 
     const getHighestColPoints = (colPoints: number[]) => {
@@ -105,10 +110,11 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                         <tr key={index}>
                             <td className="border-b border-r p-2">
                                 <textarea
-                                    className={`resize-none h-10 rounded-md p-1 w-full h-24 ${rubricItem.names[0] == '' ? 'bg-red-200' : ''}`}
+                                    className={`resize-none rounded-md p-1 w-full h-24 ${rubricItem.names[0] == '' ? 'bg-red-200' : ''}`}
                                     value={rubricItem.names[0]}
                                     onChange={(e) => handleNameChange(index, e.target.value)}
                                     title={rubricItem.names[index] == '' ? 'Please enter a description' : ''}
+                                    required
                                 />
                             </td>
                             <td className="border-b p-0">
@@ -120,8 +126,8 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                                                     inputMode='numeric'
                                                     value={Number.isNaN(rubricItem.col_points[descIndex]) ? "" : rubricItem.col_points[descIndex]}
                                                     className={`border text-sm rounded-lg p-2.5 w-1/6 ${Number.isNaN(rubricItem.col_points[descIndex]) ? 'bg-red-200' : ''}`}
-                                                    placeholder="10" 
-                                                    required 
+                                                    placeholder="10"
+                                                    required
                                                     onChange={(e) => {
                                                         handleColPointChange(index, descIndex, parseInt(regex.exec(e.target.value)?.at(0) ?? ""));
                                                     }}
@@ -131,6 +137,7 @@ export const RubricMaker = (({ rubric, setRubric, maxScore, setMaxScore }: Rubri
                                                     value={description}
                                                     onChange={(e) => handleColChange(index, descIndex, e.target.value)}
                                                     title={rubricItem.descriptions[descIndex] == '' ? 'Please enter a description' : ''}
+                                                    required
                                                 />
                                                 {showSettings &&
                                                     (<button type="button" className="text-red-500" role="alert" onClick={() => delColumn(index, descIndex)}>
