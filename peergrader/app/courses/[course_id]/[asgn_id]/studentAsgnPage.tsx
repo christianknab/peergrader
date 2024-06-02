@@ -104,10 +104,10 @@ export default function StudentAsgnPage() {
             </div>}
           <NavBar courseName={courseData?.name} courseId={course_id} assignmentName={asgnData?.name} assignmentId={asgn_id} />
           <header>
-            <div className="w-4/5 mx-auto pt-5">
+            <div className="w-4/5 mx-auto">
               <nav className="rounded-md w-1/5 bg-light-grey">
               </nav>
-              <h2 className="bold-blue rounded-lg text-5xl font-bold text-left p-14 text-white">
+              <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left p-14 text-white">
                 {asgnData?.name ?? 'Unnamed assignment'}
               </h2>
             </div>
