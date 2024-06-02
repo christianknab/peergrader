@@ -21,15 +21,19 @@ interface RemindersComponentProps {
 
 const RemindersComponent: React.FC<RemindersComponentProps> = ({ reminders }) => {
     return (
-        <div className="reminders-section mt-4 p-4 bg-white rounded-lg shadow">
-            <h3 className="font-semibold mb-2">Reminders</h3>
-            <ul>
-                {reminders.map(reminder => (
-                    <li key={`${reminder.assignment.asgn_id}-${reminder.type}`} className="mb-2">
-                        <span className="font-bold">{reminder.assignment.name}</span> - {reminder.type === 'submission' ? 'Submission' : 'Grading'} due {format(new Date(reminder.type === 'submission' ? reminder.assignment.end_date_submission : reminder.assignment.end_date_grading), 'MMM d')}
-                    </li>
-                ))}
-            </ul>
+        <div className="reminders-section mt-4 rounded-lg overflow-hidden shadow">
+            <div className="white-blue-gradient p-3">
+                <h3 className="text-xl text-left text-white font-semibold">Reminders</h3>
+            </div>
+            <div className="p-2 bg-white">
+                <ul>
+                    {reminders.map(reminder => (
+                        <li key={`${reminder.assignment.asgn_id}-${reminder.type}`} className="mb-2">
+                            <span className="font-bold">{reminder.assignment.name}</span> - {reminder.type === 'submission' ? 'Submission' : 'Grading'} due {format(new Date(reminder.type === 'submission' ? reminder.assignment.end_date_submission : reminder.assignment.end_date_grading), 'MMM d')}
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };

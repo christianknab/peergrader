@@ -172,16 +172,17 @@
 /* REMINDERS COMPONENT CSS PROPERTIES */
 .reminders-section {
   border-radius: 10px;
-  background: #f3f3f3;
-  color: #333;
-  padding: 10px;
-  margin-top: 10px;
+  overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.white-blue-gradient {
+  background: linear-gradient(to right, #76acde, #aedff3);
+  color: #fff;
+}
+
 .reminders-section h3 {
-  margin-bottom: 10px;
-  font-size: 1.2em;
+  font-size: 1em;
 }
 
 .reminders-section ul {
@@ -190,9 +191,8 @@
 }
 
 .reminders-section li {
-  margin-bottom: 10px;
-  padding: 5px;
-  border-bottom: 1px solid #ddd;
+  padding: 2px;
+  font-size: 0.8em;
 }
 
 .reminders-section li:last-child {

@@ -132,22 +132,22 @@ export default function StudentCoursePage() {
             <main className="flex-1 w-full">
                 <NavBar courseName={courseData?.name} courseId={course_id} />
                 <header>
-                    <div className="w-4/5 mx-auto">
+                    <div className="w-5/6 mx-auto">
                         <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
                     </div>
                 </header>
-                <div className="w-4/5 mx-auto">
-                    <div className="flex gap-8">
-                        <div className="w-1/4">
+                <div className="w-5/6 mx-auto">
+                    <div className="flex gap-5">
+                        <div className="w-1/5">
                             <CalendarComponent
                                 highlightDates={highlightDates}
                                 handleDateChange={handleDateChange}
                             />
                             <RemindersComponent reminders={reminders} />
                         </div>
-                        <div className="flex flex-col w-3/4 gap-6 h-full">
+                        <div className="flex flex-col w-4/5 gap-6 h-full">
                             <div className="flex flex-col rounded-lg  shadow hover:shadow-lg transition-shadow overflow-hidden flex-grow">
                                 <div className="white-blue-gradient p-5">
                                     <p className="text-xl text-left text-white font-semibold">Assignments</p>
