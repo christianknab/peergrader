@@ -90,7 +90,7 @@ export default function TeacherCoursePage() {
                 <header>
                     <div className="w-4/5 mx-auto">
                         <TabBar />
-                        <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
+                        <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
                     </div>
@@ -100,10 +100,10 @@ export default function TeacherCoursePage() {
                         <TabContent />
                     </div>
                 </div>
-                <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
-                    <p>&copy;2024 PeerGrader</p>
-                </footer>
             </main>
+            <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+                <p>&copy;2024 PeerGrader</p>
+            </footer>
         </div>
     );
 }

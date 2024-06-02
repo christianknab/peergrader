@@ -38,8 +38,8 @@ export default function ListStudents({ course_id }: { course_id: string }) {
   return (
     <div className="flex flex-col w-full gap-6 h-full">
       <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
-        <div className="light-blue p-5">
-          <p className="text-xl text-left font-semibold">Students</p>
+        <div className="white-blue-gradient p-5">
+          <p className="text-xl text-left text-white font-semibold">Students</p>
         </div>
         <div className="light-grey flex-grow p-3">
 
