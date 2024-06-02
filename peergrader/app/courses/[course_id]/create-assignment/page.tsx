@@ -155,14 +155,9 @@ export default function CreateAssignmentPage() {
 
     return (
         <main>
-            <NavBar />
+            <NavBar courseName={courseData?.name} courseId={course_id} />
             <div className="w-4/5 mx-auto">
                 <nav className="rounded-md w-1/5 bg-light-grey">
-                    <ul className="flex justify-between px-4 py-2">
-                        <li><Link href={`/courses/${course_id}`} className="text-black hover:text-blue-800">Home</Link></li>
-                        <li className="text-black hover:text-blue-800">Students</li>
-                        <li className="text-black hover:text-blue-800">Grades</li>
-                    </ul>
                 </nav>
                 <header>
                     <h2 className="bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
