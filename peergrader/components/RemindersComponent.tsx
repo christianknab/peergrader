@@ -27,8 +27,8 @@ const RemindersComponent: React.FC<RemindersComponentProps> = ({ reminders }) =>
             </div>
             <div className="p-2 bg-white">
                 <ul>
-                    {reminders.map(reminder => (
-                        <li key={`${reminder.assignment.asgn_id}-${reminder.type}`} className="mb-2">
+                    {reminders.map((reminder, index) => (
+                        <li key={`${reminder.assignment.asgn_id}-${reminder.type}`} className={`mb-2 pb-2 ${index !== reminders.length - 1 ? 'border-b border-gray-300' : ''}`}>
                             <span className="font-bold">{reminder.assignment.name}</span> - {reminder.type === 'submission' ? 'Submission' : 'Grading'} due {format(new Date(reminder.type === 'submission' ? reminder.assignment.end_date_submission : reminder.assignment.end_date_grading), 'MMM d')}
                         </li>
                     ))}
