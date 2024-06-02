@@ -54,7 +54,7 @@
 }
 
 .light-grey {
-  background-color: rgb(239, 239, 244);
+  background-color: #f3f3f3;
 }
 
 .light-white {
@@ -88,4 +88,113 @@
 
 .progress-gradient {
   background: linear-gradient(to right, #c8e0f5, #427fdc)
+}
+
+/* CALENDAR COMPONENT CSS PROPERTIES */
+.custom-calendar {
+  border: none;
+  border-radius: 10px;
+  overflow: hidden;
+  background: linear-gradient(to right, #76acde, #aedff3);
+  color: rgb(255, 255, 255);
+  padding: 10px;
+  text-align: center;
+}
+
+.custom-calendar__tile--highlight-submission {
+  background-color: rgb(248, 110, 160, 0.6); /* Light Blue */
+  color: rgb(255, 255, 255);
+  border-radius: 50%;
+}
+
+.custom-calendar__tile--highlight-grading {
+  background-color: rgba(27, 27, 154, 0.6); /* Dark Blue */
+  color: white;
+  border-radius: 50%;
+}
+
+.custom-calendar__tile--highlight-both {
+  background-color: rgba(201, 107, 142, 0.6); /* Light Sky Blue */
+  color: white;
+  border-radius: 50%;
+}
+
+.react-calendar__tile {
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.react-calendar__tile:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.react-calendar__navigation button {
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  padding: 10px;
+}
+
+.react-calendar__month-view__weekdays {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.react-calendar__tile--now {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.react-calendar__month-view__weekdays__weekday {
+  text-decoration: none;
+  border-bottom: none;
+}
+
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none;
+  border-bottom: none;
+}
+
+/* REMINDERS COMPONENT CSS PROPERTIES */
+.reminders-section {
+  border-radius: 10px;
+  background: #f3f3f3;
+  color: #333;
+  padding: 10px;
+  margin-top: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.reminders-section h3 {
+  margin-bottom: 10px;
+  font-size: 1.2em;
+}
+
+.reminders-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.reminders-section li {
+  margin-bottom: 10px;
+  padding: 5px;
+  border-bottom: 1px solid #ddd;
+}
+
+.reminders-section li:last-child {
+  border-bottom: none;
 }
