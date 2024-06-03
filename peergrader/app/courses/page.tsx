@@ -50,14 +50,14 @@ export default function CoursesPage() {
 
     useEffect(() => {
         async function fetchCourseInfo() {
-            if (!currentUser) {
+            if (!currentUser || !joinCode) {
                 return;
             }
 
             try {
                 // TODO: PUT INTO A QUERY (also see joincourse component!)
                 // Fetch course info
-                const data = await GetCourseInfo(supabase, joinCode!);
+                const data = await GetCourseInfo(supabase, joinCode);
                 setCourseInfo(data);
 
                 // Check if user is enrolled in the course
@@ -83,7 +83,7 @@ export default function CoursesPage() {
         if (!isUserLoading && !isError) {
             fetchCourseInfo();
         }
-    }, [currentUser, isUserLoading, isError]);
+    }, [joinCode, currentUser, isUserLoading, isError]);
 
     if (isUserLoading || loading) {
         return <LoadingSpinner />;
