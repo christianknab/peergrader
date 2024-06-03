@@ -30,10 +30,10 @@ interface CourseInfo {
 }
 
 export default function CoursesPage() {
-    const searchParams = useSearchParams();
-    const joinCode = searchParams.get('code');
     const supabase = createClient();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const joinCode = searchParams.get('code');
     const [courseInfo, setCourseInfo] = useState<CourseInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
