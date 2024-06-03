@@ -33,14 +33,17 @@ export default function CoursesPage() {
     const supabase = createClient();
     const router = useRouter();
     const searchParams = useSearchParams();
-    const joinCode = searchParams.get('code');
+    const [joinCode, setJoinCode] = useState('');
     const [courseInfo, setCourseInfo] = useState<CourseInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // if (joinCode == null) {
-    //     redirect('/dashboard');
-    // }
+    useEffect(() => {
+        const code = searchParams.get('code');
+        if (code) {
+            setJoinCode(code);
+        }
+    }, [searchParams]);
 
     const {
         data: currentUser,
