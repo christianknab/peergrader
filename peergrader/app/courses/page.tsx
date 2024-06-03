@@ -83,7 +83,7 @@ export default function CoursesPage() {
         if (!isUserLoading && !isError) {
             fetchCourseInfo();
         }
-    }, [joinCode, currentUser, isUserLoading, isError]);
+    }, [currentUser, isUserLoading, isError]);
 
     if (isUserLoading || loading) {
         return <LoadingSpinner />;
