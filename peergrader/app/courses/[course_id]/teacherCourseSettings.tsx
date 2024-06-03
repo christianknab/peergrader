@@ -70,69 +70,78 @@ export default function TeacherCourseSettings({ courseId, courseData }: {
     };
 
     return (
-        <div className="flex flex-col rounded-lg overflow-hidden w-full">
-            <form onSubmit={handleSubmit} className="">
-                <label className="block text-gray-700 font-bold mb-2">Basic Settings</label>
-                <div className="px-4">
-                    <div className="flex space-x-4">
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="Course Name"
-                            value={courseData?.name}
-                            name="name"
-                            type="text"
-                            onChange={() => setFormEdited(true)}
-                            isRequired={true}
-                        />
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="Course Number"
-                            value={courseData?.number}
-                            name="number"
-                            type="text"
-                            onChange={() => setFormEdited(true)}
-                            isRequired={false}
-                        />
-                    </div>
-                    <div className="flex space-x-4">
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="Start Date"
-                            value={startDate}
-                            name="start_date"
-                            type="date"
-                            onChange={handleStartDateChange}
-                            isRequired={true}
-                        />
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="End Date"
-                            value={endDate}
-                            name="end_date"
-                            type="date"
-                            onChange={handleEndDateChange}
-                            isRequired={true}
-                        />
-                    </div>
+        <div className="flex flex-col w-full gap-6 h-full">
+            <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
+                <div className="white-blue-gradient p-5">
+                    <p className="text-xl text-left text-white font-semibold">Settings</p>
                 </div>
-                <label className="block text-gray-700 font-bold mb-2">Student Settings</label>
+                <div className="light-grey flex-grow p-3">
 
-                <JoinShareButton joinCode={courseData?.join_code} />
-                <div className="text-red-500">{dateError}</div>
-                <div>
-                    {formEdited ? (
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Save
-                        </button>
-                    ) : (
-                        <div className="py-5"></div>
-                    )}
+                    <form onSubmit={handleSubmit} className="">
+                        <label className="block text-gray-700 font-bold mb-2">Basic Settings</label>
+                        <div className="px-4">
+                            <div className="flex space-x-4">
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Course Name"
+                                    value={courseData?.name}
+                                    name="name"
+                                    type="text"
+                                    onChange={() => setFormEdited(true)}
+                                    isRequired={true}
+                                />
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Course Number"
+                                    value={courseData?.number}
+                                    name="number"
+                                    type="text"
+                                    onChange={() => setFormEdited(true)}
+                                    isRequired={false}
+                                />
+                            </div>
+                            <div className="flex space-x-4">
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Start Date"
+                                    value={startDate}
+                                    name="start_date"
+                                    type="date"
+                                    onChange={handleStartDateChange}
+                                    isRequired={true}
+                                />
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="End Date"
+                                    value={endDate}
+                                    name="end_date"
+                                    type="date"
+                                    onChange={handleEndDateChange}
+                                    isRequired={true}
+                                />
+                            </div>
+                        </div>
+                        <label className="block text-gray-700 font-bold mb-2">Student Settings</label>
+
+                        <JoinShareButton joinCode={courseData?.join_code} />
+                        <div className="text-red-500">{dateError}</div>
+                        <div>
+                            {formEdited ? (
+                                <button
+                                    type="submit"
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                                >
+                                    Save
+                                </button>
+                            ) : (
+                                <div className="py-5"></div>
+                            )}
+                        </div>
+                    </form>
+                    <ExportGrades />
+
                 </div>
-            </form>
-            <ExportGrades />
+            </div>
         </div>
     );
 }
