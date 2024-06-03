@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useState, useEffect, Suspense } from 'react';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
@@ -39,14 +39,9 @@ export default function CoursesPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const code = (
-            <Suspense fallback={<div>Loading...</div>}>
-                {searchParams.get('code')}
-            </Suspense>
-        );
-        const codeValue = code.props.children; // Extract the string value from the Suspense component
-        if (codeValue) {
-            setJoinCode(codeValue);
+        const code = searchParams.get('code');
+        if (code) {
+            setJoinCode(code);
         }
     }, [searchParams]);
 
