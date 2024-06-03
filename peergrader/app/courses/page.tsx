@@ -39,9 +39,14 @@ export default function CoursesPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        const code = searchParams.get('code');
-        if (code) {
-            setJoinCode(code);
+        const code = (
+            <Suspense fallback={<div>Loading...</div>}>
+                {searchParams.get('code')}
+            </Suspense>
+        );
+        const codeValue = code.props.children; // Extract the string value from the Suspense component
+        if (codeValue) {
+            setJoinCode(codeValue);
         }
     }, [searchParams]);
 
@@ -86,7 +91,7 @@ export default function CoursesPage() {
         if (!isUserLoading && !isError) {
             fetchCourseInfo();
         }
-    }, [joinCode, currentUser, isUserLoading, isError]);
+    }, [searchParams, currentUser, isUserLoading, isError]);
 
     if (isUserLoading || loading) {
         return <LoadingSpinner />;
