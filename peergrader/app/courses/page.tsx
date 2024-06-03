@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
 import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import { LoadingSpinner } from '@/components/loadingSpinner';
@@ -122,45 +122,47 @@ export default function CoursesPage() {
 
     return (
         <main className="flex-1 w-full">
-            <NavBar />
-            <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-                <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-                    <h1 className="text-2xl font-bold text-gray-800 mb-4">Confirm Your Course Enrollment</h1>
-                    <p className="text-gray-600 mb-6">Please confirm that you want to join the following course:</p>
+            <Suspense fallback={<LoadingSpinner />}>
+                <NavBar />
+                <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+                    <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
+                        <h1 className="text-2xl font-bold text-gray-800 mb-4">Confirm Your Course Enrollment</h1>
+                        <p className="text-gray-600 mb-6">Please confirm that you want to join the following course:</p>
 
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Course Name:</label>
-                        <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.name}</p>
-                    </div>
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">Course Name:</label>
+                            <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.name}</p>
+                        </div>
 
-                    {courseInfo.course.number && <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Course Number:</label>
-                        <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.number}</p>
-                    </div>}
+                        {courseInfo.course.number && <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">Course Number:</label>
+                            <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.number}</p>
+                        </div>}
 
-                    <div className="mb-4">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Course Instructor:</label>
-                        <div className="flex justify-between items-center bg-gray-200 text-gray-800 rounded py-2 px-4">
-                            <span>{courseInfo.owner.first_name} {courseInfo.owner.last_name}</span>
-                            <ProfileImage src={courseInfo.owner.profile_image} width={25} height={25} />
+                        <div className="mb-4">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">Course Instructor:</label>
+                            <div className="flex justify-between items-center bg-gray-200 text-gray-800 rounded py-2 px-4">
+                                <span>{courseInfo.owner.first_name} {courseInfo.owner.last_name}</span>
+                                <ProfileImage src={courseInfo.owner.profile_image} width={25} height={25} />
+                            </div>
+                        </div>
+
+                        <div className="mb-6">
+                            <label className="block text-gray-700 text-sm font-bold mb-2">Term:</label>
+                            <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.start_date} {`->`} {courseInfo.course.end_date}</p>
+                        </div>
+
+                        <div className="flex justify-end">
+                            <button onClick={handleConfirm} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
+                                Confirm
+                            </button>
+                            <button onClick={handleCancel} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                                Cancel
+                            </button>
                         </div>
                     </div>
-
-                    <div className="mb-6">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Term:</label>
-                        <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.start_date} {`->`} {courseInfo.course.end_date}</p>
-                    </div>
-
-                    <div className="flex justify-end">
-                        <button onClick={handleConfirm} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
-                            Confirm
-                        </button>
-                        <button onClick={handleCancel} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
-                            Cancel
-                        </button>
-                    </div>
                 </div>
-            </div>
+            </Suspense>
         </main>
     );
 }
