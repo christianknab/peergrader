@@ -121,8 +121,8 @@ export default function CoursesPage() {
     };
 
     return (
-        <main className="flex-1 w-full">
-            <Suspense fallback={<LoadingSpinner />}>
+        <Suspense fallback={<LoadingSpinner />}>
+            <main className="flex-1 w-full">
                 <NavBar />
                 <div className="bg-gray-100 min-h-screen flex items-center justify-center">
                     <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
@@ -162,7 +162,7 @@ export default function CoursesPage() {
                         </div>
                     </div>
                 </div>
-            </Suspense>
-        </main>
+            </main>
+        </Suspense >
     );
 }

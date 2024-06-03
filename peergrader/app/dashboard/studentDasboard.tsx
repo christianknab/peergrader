@@ -7,8 +7,8 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import StudentListAllAsgn from "@/app/dashboard/studentListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
-import JoinCourse from '@/app/courses/JoinCourse';
 import CourseCard from "@/components/CourseCard";
+import JoinCourse from "./JoinCourse";
 
 interface ModalProps {
   show: boolean;

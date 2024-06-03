@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from "react";
-import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,7 +12,6 @@ interface JoinCourseProps {
 const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     const router = useRouter();
     const supabase = createClient();
-    const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
     const searchParams = useSearchParams();
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
