@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from "react";
 import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import { createClient } from "@/utils/supabase/client";
