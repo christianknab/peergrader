@@ -32,7 +32,7 @@ interface CourseInfo {
 export default function CoursesPage() {
     const supabase = createClient();
     const router = useRouter();
-    const searchParams = useSearchParams();
+    const searchParams = useSearchParams(); // THIS ISNT WORKING
     const [joinCode, setJoinCode] = useState('');
     const [courseInfo, setCourseInfo] = useState<CourseInfo | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
