@@ -1,6 +1,8 @@
 # Peergrader
 > Peer grading for students and instructors
 
+### Hosted at https://peergrader.vercel.app/
+
 ## The problem 
 
 **Professors** don’t have the bandwidth to grade hundreds of students. **Students** don’t like the current tool at UCSC: Crowdgrader.
@@ -33,7 +35,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=anon_public_key
 * [**Aastha Verma**](https://github.com/aasthav12)
 * [**Eric Chuang**](https://github.com/ericbreh)
 
-## Deplayment
+## Deployment
 Deploys on Vercel every commit.
 
 ## Technologies
