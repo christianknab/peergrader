@@ -38,9 +38,9 @@ export default function CoursesPage() {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    if (joinCode == null) {
-        redirect('/dashboard');
-    }
+    // if (joinCode == null) {
+    //     redirect('/dashboard');
+    // }
 
     const {
         data: currentUser,
