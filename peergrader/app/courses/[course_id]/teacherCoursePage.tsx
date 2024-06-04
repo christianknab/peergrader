@@ -26,7 +26,7 @@ export default function TeacherCoursePage() {
     if (courseDataLoading) { return <LoadingSpinner />; }
     if (courseDataError) { return <div>Error</div>; }
 
-    const [activeTab, setActiveTab] = useState(tab ? tab: 'home');
+    const [activeTab, setActiveTab] = useState(tab ? tab : 'home');
 
     const TabHome = () => {
         return (
@@ -48,21 +48,21 @@ export default function TeacherCoursePage() {
 
     const TabBar = () => {
         return (
-            <div className="flex">
+            <div className="flex p-1 space-x-1">
                 <button
-                    className={`px-4 py-2 ${activeTab === 'home' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    className={`rounded px-4 py-2 font-medium write-grey ${activeTab === 'home' ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
                     onClick={() => setActiveTab('home')}
                 >
                     Home
                 </button>
                 <button
-                    className={`px-4 py-2 ${activeTab === 'students' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    className={`rounded px-4 py-2 font-medium write-grey ${activeTab === 'students' ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
                     onClick={() => setActiveTab('students')}
                 >
                     Students
                 </button>
                 <button
-                    className={`px-4 py-2 ${activeTab === 'settings' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    className={`rounded px-4 py-2 font-medium write-grey ${activeTab === 'settings' ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
                     onClick={() => setActiveTab('settings')}
                 >
                     Settings
@@ -89,13 +89,14 @@ export default function TeacherCoursePage() {
                 <NavBar courseName={courseData?.name} courseId={course_id} />
                 <header>
                     <div className="w-4/5 mx-auto">
-                        <TabBar />
-                        <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
+
+                        <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
                     </div>
                 </header>
                 <div className="w-4/5 mx-auto">
+                    <TabBar />
                     <div className="flex gap-8">
                         <TabContent />
                     </div>
