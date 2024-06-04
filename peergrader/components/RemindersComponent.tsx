@@ -10,7 +10,7 @@ interface AsgnData {
 
 interface Reminder {
   assignment: AsgnData;
-  type: 'submission' | 'grading';
+  type: string;
 }
 
 interface RemindersComponentProps {
