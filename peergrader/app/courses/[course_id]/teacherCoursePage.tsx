@@ -7,7 +7,6 @@ import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import TeacherListAsgn from './teacherListAsgn';
 import NavBar from '@/components/NavBar';
-import ExportGrades from './ExportGrades';
 import TeacherCourseSettings from './teacherCourseSettings';
 
 
@@ -89,7 +88,6 @@ export default function TeacherCoursePage() {
                 <NavBar courseName={courseData?.name} courseId={course_id} />
                 <header>
                     <div className="w-4/5 mx-auto">
-
                         <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
