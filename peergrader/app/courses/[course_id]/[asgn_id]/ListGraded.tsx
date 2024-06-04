@@ -6,6 +6,7 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import useSubmissionsGradedByUserQuery from '@/utils/hooks/QuerySubmissionsGradedByUser';
 import { Phase } from '@/utils/types/phaseEnum';
 import { LoadingSpinner } from '@/components/loadingSpinner';
+import useAsgnDataQuery from '@/utils/hooks/QueryAsgnData';
 
 interface ListGradedProps {
     course_id: string;
@@ -20,22 +21,27 @@ export default function ListGraded({ course_id, asgn_id, phase }: ListGradedProp
         isError: isUserError
     } = useCurrentUserQuery();
     const {
+        data: asgnData,
+        isLoading: isAsgnDataLoading,
+        isError: isAsgnDataError
+      } = useAsgnDataQuery(asgn_id);
+    const {
         data: gradedSubmissions,
         isLoading: isGradedSubmissionsLoading,
         isError: isGradedSubmissionsError
     } = useSubmissionsGradedByUserQuery(currentUser?.uid, asgn_id, !!currentUser);
 
-    if (isUserLoading || isGradedSubmissionsLoading) {
+    if (isUserLoading || isGradedSubmissionsLoading || isAsgnDataLoading) {
         return <LoadingSpinner/>;
     }
 
-    if (isUserError || !currentUser || isGradedSubmissionsError || !gradedSubmissions) {
+    if (isUserError || !currentUser || isGradedSubmissionsError || !gradedSubmissions || isAsgnDataError || !asgnData) {
         return <div>Error</div>;
     }
 
     return (
         <div>
-            <h3>Peer Grades: {gradedSubmissions.length}\5</h3>
+            <h3>Peer Grades: {gradedSubmissions.length}\{asgnData.num_peergrades}</h3>
             <ul>
                 {gradedSubmissions.map((submission, index) => (
                     <li key={index}>
