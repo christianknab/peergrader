@@ -110,7 +110,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                                         placeholder="eg. Software Engineering"
                                         value={courseName}
                                         onChange={(e) => setCourseName(e.target.value)}
-                                        className="py-2 px-4 rounded-md light-grey shadow-lg"
+                                        className="py-2 px-4 rounded-md text-black light-grey shadow-lg"
                                         required
                                     />
                                 </td>
@@ -124,7 +124,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                                             placeholder="eg. CSE 115 (optional)"
                                             value={courseNumber}
                                             onChange={(e) => setCourseNumber(e.target.value)}
-                                            className="py-2 px-4 rounded-md light-grey shadow-lg"
+                                            className="py-2 px-4 rounded-md text-black light-grey shadow-lg"
                                         />
                                     </td>
                                 </tr>
@@ -136,7 +136,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                                     <td>
                                         <input
                                             type="date"
-                                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 light-grey shadow-lg"
+                                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none text-black focus:ring-2 focus:ring-blue-500 light-grey shadow-lg"
                                             value={startDate ? startDate.toISOString().split('T')[0] : ''}
                                             onChange={handleSubmitStartDateChange}
                                             required
@@ -150,7 +150,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                                     <td>
                                         <input
                                             type="date"
-                                            className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 light-grey shadow-lg"
+                                            className="px-4 py-2 border border-gray-300 text-black rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 light-grey shadow-lg"
                                             value={endDate ? endDate.toISOString().split('T')[0] : ''}
                                             onChange={handleSubmitEndDateChange}
                                             required
@@ -163,7 +163,7 @@ const CreateCourse: React.FC<CreateCourseProps> = ({ showModal, onClose, refresh
                         <div className="text-red-500">{dateError}</div>
                         <button
                             type='submit'
-                            className="py-2 px-4 rounded-md font-semibold no-underline bg-btn-background hover:bg-btn-background-hover"
+                            className="py-2 px-4 rounded-md text-black font-semibold no-underline bg-btn-background hover:bg-btn-background-hover"
                             disabled={isLoading}
                         >
                             {isLoading ? 'Loading...' : 'Create Course'}

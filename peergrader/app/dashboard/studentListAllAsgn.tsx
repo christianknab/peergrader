@@ -94,7 +94,7 @@ export default function StudentListAllAsgn({ setCourseAssignmentsCount }: Studen
     return allAsgns;
   }
 
-  const filteredAssignments = asgns.filter(assignment => assignment.phase === 'Submit');
+  const filteredAssignments = asgns.filter(assignment => assignment.phase === 'Submit' || assignment.phase === 'Grading');
 
   return (
     <div className="flex-grow p-6">
@@ -128,7 +128,7 @@ export default function StudentListAllAsgn({ setCourseAssignmentsCount }: Studen
                           )}
                         </div>
                         <div className="text-center rounded-lg" style={{ backgroundColor: '#FAD2D2' }}>
-                          Due: {new Date(assignment.end_date_submission).getMonth() + 1}/{new Date(assignment.end_date_submission).getDate()}
+                        Due: {assignment.phase === 'Submit' ? new Date(assignment.end_date_submission).toLocaleDateString() : new Date(assignment.end_date_grading).toLocaleDateString()}
                         </div>
                       </div>
                     </div>

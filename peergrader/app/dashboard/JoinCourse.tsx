@@ -47,7 +47,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
                 className="py-2 px-4 rounded-md"
             />
             <div className="flex items-center space-x-1">
-                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                <button className="py-2 px-4 rounded-md light-grey text-black font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
                     onClick={joinCourse}
                     disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Join Class'}

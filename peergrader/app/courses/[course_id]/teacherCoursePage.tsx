@@ -87,13 +87,13 @@ export default function TeacherCoursePage() {
             <main className="flex-1 w-full">
                 <NavBar courseName={courseData?.name} courseId={course_id} />
                 <header>
-                    <div className="w-4/5 mx-auto">
+                    <div className="w-5/6 mx-auto">
                         <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
                     </div>
                 </header>
-                <div className="w-4/5 mx-auto">
+                <div className="w-5/6 mx-auto">
                     <TabBar />
                     <div className="flex gap-8">
                         <TabContent />

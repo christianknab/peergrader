@@ -156,17 +156,17 @@ export default function CreateAssignmentPage() {
     return (
         <main>
             <NavBar courseName={courseData?.name} courseId={course_id} />
-            <div className="w-4/5 mx-auto">
+            <div className="w-5/6 mx-auto">
                 <nav className="rounded-md w-1/5 bg-light-grey">
                 </nav>
                 <header>
-                    <h2 className="bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
+                    <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
                         {courseData?.name || 'Course Page'}
                     </h2>
                 </header>
                 <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
-                    <div className="light-blue p-5">
-                        <p className="text-3xl text-center font-semibold text-white rounded-lg">Create Assignment</p>
+                    <div className="white-blue-gradient p-5">
+                        <p className="text-2xl text-left font-semibold text-white rounded-lg">Create Assignment</p>
                     </div>
                     <div className="light-white flex-grow p-6">
                         <AssignmentForm
