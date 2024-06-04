@@ -44,7 +44,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
                 placeholder="Enter class code"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
-                className="py-2 px-4 rounded-md"
+                className="py-2 px-4 rounded-md text-black"
             />
             <div className="flex items-center space-x-1">
                 <button className="py-2 px-4 rounded-md light-grey text-black font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
