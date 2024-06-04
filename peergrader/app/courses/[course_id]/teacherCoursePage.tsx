@@ -7,7 +7,6 @@ import useCourseDataQuery from '@/utils/hooks/QueryCourseData';
 import { LoadingSpinner } from '@/components/loadingSpinner';
 import TeacherListAsgn from './teacherListAsgn';
 import NavBar from '@/components/NavBar';
-import ExportGrades from './ExportGrades';
 import TeacherCourseSettings from './teacherCourseSettings';
 
 
@@ -26,7 +25,7 @@ export default function TeacherCoursePage() {
     if (courseDataLoading) { return <LoadingSpinner />; }
     if (courseDataError) { return <div>Error</div>; }
 
-    const [activeTab, setActiveTab] = useState(tab ? tab: 'home');
+    const [activeTab, setActiveTab] = useState(tab ? tab : 'home');
 
     const TabHome = () => {
         return (
@@ -48,21 +47,21 @@ export default function TeacherCoursePage() {
 
     const TabBar = () => {
         return (
-            <div className="flex">
+            <div className="flex p-1 space-x-1">
                 <button
-                    className={`px-4 py-2 ${activeTab === 'home' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    className={`rounded px-4 py-2 font-medium write-grey ${activeTab === 'home' ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
                     onClick={() => setActiveTab('home')}
                 >
                     Home
                 </button>
                 <button
-                    className={`px-4 py-2 ${activeTab === 'students' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    className={`rounded px-4 py-2 font-medium write-grey ${activeTab === 'students' ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
                     onClick={() => setActiveTab('students')}
                 >
                     Students
                 </button>
                 <button
-                    className={`px-4 py-2 ${activeTab === 'settings' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                    className={`rounded px-4 py-2 font-medium write-grey ${activeTab === 'settings' ? 'bg-gray-200' : 'hover:bg-gray-200'}`}
                     onClick={() => setActiveTab('settings')}
                 >
                     Settings
@@ -88,22 +87,22 @@ export default function TeacherCoursePage() {
             <main className="flex-1 w-full">
                 <NavBar courseName={courseData?.name} courseId={course_id} />
                 <header>
-                    <div className="w-4/5 mx-auto">
-                        <TabBar />
-                        <h2 className=" bold-blue rounded-lg text-5xl font-bold text-left mb-6 p-14 text-white">
+                    <div className="w-5/6 mx-auto">
+                        <h2 className="white-blue-gradient rounded-lg text-5xl font-bold text-left p-14 text-white">
                             {courseData?.name || 'Course Page'}
                         </h2>
                     </div>
                 </header>
-                <div className="w-4/5 mx-auto">
+                <div className="w-5/6 mx-auto">
+                    <TabBar />
                     <div className="flex gap-8">
                         <TabContent />
                     </div>
                 </div>
-                <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
-                    <p>&copy;2024 PeerGrader</p>
-                </footer>
             </main>
+            <footer className="w-full font-bold mt-8 light-grey p-4 bg-white text-center">
+                <p>&copy;2024 PeerGrader</p>
+            </footer>
         </div>
     );
 }

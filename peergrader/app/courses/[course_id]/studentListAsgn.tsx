@@ -47,7 +47,7 @@ export default function StudentListAsgn({ course_id }: { course_id: string }) {
                             href={`/courses/${course_id}/${assignment.asgn_id}`}
                             className="block"
                         >
-                            <div className="rounded-lg border p-4 bg-white shadow hover:shadow-lg transition-shadow">
+                            <div className="rounded-lg p-4 bg-white shadow hover:shadow-lg transition-shadow">
                                 <div className="flex justify-between items-center">
                                     <h3 className="text-lg font-semibold">{assignment.name}</h3>
                                     {assignment.phase == 'Closed' ? (assignment.final_score ? 'Final grade: ' + assignment.final_score : 'Grade unavailable') : 'Phase: ' + assignment.phase}

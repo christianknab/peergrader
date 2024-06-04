@@ -1,11 +1,8 @@
 import { useEffect, useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import InputFieldForm from '@/components/InputFieldForm';
-import JoinShareButton from '@/components/JoinShareButton';
 import ExportGrades from './ExportGrades';
 import useCourseMutation from '@/utils/hooks/MutateCourseData';
+import CopyIcon from '@/components/icons/Copy';
 
 export default function TeacherCourseSettings({ courseId, courseData }: {
     courseData: {
@@ -23,6 +20,17 @@ export default function TeacherCourseSettings({ courseId, courseData }: {
     const [dateError, setDateError] = useState('');
     const [startDate, setStartDate] = useState(courseData?.start_date || '');
     const [endDate, setEndDate] = useState(courseData?.end_date || '');
+    const [copySuccess, setCopySuccess] = useState('');
+    const joinCode = courseData?.join_code;
+    const joinLink = `peergrader.vercel.app/courses?code=${joinCode}`;
+
+    const copyToClipboard = (text: string) => {
+        navigator.clipboard.writeText(text).then(
+            () => setCopySuccess('Copied!'),
+            () => setCopySuccess('Failed to copy!')
+        );
+        setTimeout(() => setCopySuccess(''), 2000);
+    };
 
     function validDates(): boolean {
         if (startDate > endDate) {
@@ -70,69 +78,110 @@ export default function TeacherCourseSettings({ courseId, courseData }: {
     };
 
     return (
-        <div className="flex flex-col rounded-lg overflow-hidden w-full">
-            <form onSubmit={handleSubmit} className="">
-                <label className="block text-gray-700 font-bold mb-2">Basic Settings</label>
-                <div className="px-4">
-                    <div className="flex space-x-4">
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="Course Name"
-                            value={courseData?.name}
-                            name="name"
-                            type="text"
-                            onChange={() => setFormEdited(true)}
-                            isRequired={true}
-                        />
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="Course Number"
-                            value={courseData?.number}
-                            name="number"
-                            type="text"
-                            onChange={() => setFormEdited(true)}
-                            isRequired={false}
-                        />
-                    </div>
-                    <div className="flex space-x-4">
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="Start Date"
-                            value={startDate}
-                            name="start_date"
-                            type="date"
-                            onChange={handleStartDateChange}
-                            isRequired={true}
-                        />
-                        <InputFieldForm
-                            format="mb-4 flex-1"
-                            label="End Date"
-                            value={endDate}
-                            name="end_date"
-                            type="date"
-                            onChange={handleEndDateChange}
-                            isRequired={true}
-                        />
-                    </div>
+        <div className="flex flex-col w-full gap-6 h-full">
+            <div className="flex flex-col rounded-lg overflow-hidden flex-grow">
+                <div className="white-blue-gradient p-5">
+                    <p className="text-xl text-left text-white font-semibold">Settings</p>
                 </div>
-                <label className="block text-gray-700 font-bold mb-2">Student Settings</label>
+                <div className="light-grey flex-grow p-3">
 
-                <JoinShareButton joinCode={courseData?.join_code} />
-                <div className="text-red-500">{dateError}</div>
-                <div>
-                    {formEdited ? (
-                        <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Save
-                        </button>
-                    ) : (
-                        <div className="py-5"></div>
-                    )}
+                    <form onSubmit={handleSubmit} className="">
+                        <label className="block text-gray-700 font-bold mb-2">Basic Settings</label>
+                        <div className="px-4">
+                            <div className="flex space-x-4">
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Course Name"
+                                    value={courseData?.name}
+                                    name="name"
+                                    type="text"
+                                    onChange={() => setFormEdited(true)}
+                                    isRequired={true}
+                                />
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Course Number"
+                                    value={courseData?.number}
+                                    name="number"
+                                    type="text"
+                                    onChange={() => setFormEdited(true)}
+                                    isRequired={false}
+                                />
+                            </div>
+                            <div className="flex space-x-4">
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Start Date"
+                                    value={startDate}
+                                    name="start_date"
+                                    type="date"
+                                    onChange={handleStartDateChange}
+                                    isRequired={true}
+                                />
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="End Date"
+                                    value={endDate}
+                                    name="end_date"
+                                    type="date"
+                                    onChange={handleEndDateChange}
+                                    isRequired={true}
+                                />
+                            </div>
+                        </div>
+                        <div className='px-4 pb-2'>
+                            <button
+                                type="submit"
+                                className={`${formEdited ? 'bg-blue-500' : 'bg-gray-400'} ${formEdited ? 'hover:bg-blue-700' : ''} text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline`}
+                                disabled={!formEdited}
+                            >
+                                Save
+                            </button>
+                        </div>
+                    </form>
+                    <label className="block text-gray-700 font-bold mb-2">Student Settings</label>
+                    <div className="px-4">
+                        <div className="flex">
+                            {/* TODO: need better way to align things */}
+                            <div className="flex space-x-2 flex-shrink-0">
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Join Link"
+                                    value={`peergrader.vercel.app/courses?code=${joinCode}`}
+                                    name="name"
+                                    type="text"
+                                    isRequired={true}
+                                    disabled={true}
+                                />
+                                <button className='pt-3' onClick={() => copyToClipboard(joinLink)}>
+                                    <CopyIcon />
+                                </button>
+                            </div>
+                            <div className="flex px-4 space-x-2">
+                                <InputFieldForm
+                                    format="mb-4 flex-1"
+                                    label="Join Code"
+                                    value={joinCode}
+                                    name="name"
+                                    type="text"
+                                    isRequired={true}
+                                    disabled={true}
+                                />
+                                <button className='pt-3' onClick={() => copyToClipboard(joinCode)}>
+                                    <CopyIcon />
+                                </button>
+                                <div className='pt-9'>{copySuccess && (
+                                    <span className="text-blue-500">{copySuccess}</span>
+                                )}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <label className="block text-gray-700 font-bold mb-2">Grading</label>
+                    <div className='px-2 w-1/4'><ExportGrades /></div>
+                    <div className="text-red-500">{dateError}</div>
+
                 </div>
-            </form>
-            <ExportGrades />
+            </div>
         </div>
     );
 }

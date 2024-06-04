@@ -7,7 +7,10 @@ const nextConfig = {
     },
     images: {
         domains: ['vrmbrpvpedkdpziqlbzp.supabase.co'],
-    }
+    },
+    experimental: {
+        missingSuspenseWithCSRBailout: false,
+      },
 };
 
 

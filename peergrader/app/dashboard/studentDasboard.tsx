@@ -7,8 +7,8 @@ import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
 import '@fortawesome/fontawesome-free/css/all.css';
 import StudentListAllAsgn from "@/app/dashboard/studentListAllAsgn";
 import { LoadingSpinner } from "@/components/loadingSpinner";
-import JoinCourse from '@/app/courses/JoinCourse';
 import CourseCard from "@/components/CourseCard";
+import JoinCourse from "./JoinCourse";
 
 interface ModalProps {
   show: boolean;
@@ -103,7 +103,7 @@ export default function StudentDashboardPage() {
               <button
                 className="light-grey text-black font-semibold py-1 px-4 rounded hover:bg-btn-background-hover"
                 onClick={() => setShowModal(true)}>
-                + Add Course
+                + Join Course
               </button>
             </div>
 

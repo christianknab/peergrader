@@ -83,7 +83,7 @@ const TeacherDashboard: React.FC = () => {
         <div className="px-4 py-0 flex gap-8 mb-10">
           <div className="flex flex-col flex-grow rounded-lg overflow-hidden shadow-lg">
             <div className="white-blue-gradient p-5">
-              <p className="text-xl text-left font-semibold text-white">Assignments</p>
+              <p className="text-xl text-left font-semibold text-white">Active Assignments</p>
             </div>
             <div className="light-white flex-grow p-6">
               <div className="max-w-7xl mx-auto">

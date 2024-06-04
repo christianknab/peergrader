@@ -185,11 +185,11 @@ export default function EditAccountClient() {
                 {currentUser != null && <label className="block text-gray-700 font-bold mb-2">
                     {currentUser?.is_teacher ? `Your Courses` : `Enrolled Courses`}
                 </label>}
-                {userCourses?.course.length == 0 && <button
+                {/* {userCourses?.course.length == 0 && <button
                     className="bg-blue-500 text-white font-bold py-1 px-4 rounded hover:bg-btn-background-hover"
                     onClick={() => router.push('/courses')}>
                     + Add Course
-                </button>}
+                </button>} */}
                 <div className="flex-grow p-6">
                     <div className="grid grid-cols-3 gap-8 flex-grow">
                         {userCourses?.course.map((courseData) => (

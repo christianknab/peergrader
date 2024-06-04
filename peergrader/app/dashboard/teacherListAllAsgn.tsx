@@ -9,6 +9,7 @@ interface AsgnData {
   name: string;
   course_id: string;
   course_name: string;
+  end_date_grading: Date;
 }
 
 interface SubmissionData {
@@ -24,7 +25,6 @@ interface SubmissionData {
 interface TeacherListAllAsgnProps {
   setCourseAssignmentsCount: (counts: { [course_id: string]: number }) => void;
 }
-
 
 export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: TeacherListAllAsgnProps) {
   const supabase = createClient();
@@ -57,7 +57,7 @@ export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: Teache
 
     const { data, error } = await supabase
       .from('assignments')
-      .select('asgn_id, name, course_id')
+      .select('asgn_id, name, course_id, end_date_grading')
       .in('course_id', courseIds);
 
     if (error) {
@@ -65,7 +65,10 @@ export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: Teache
       return [];
     }
 
-    return data.map((assignment) => ({
+    const currentDate = new Date();
+    const filteredData = data.filter((assignment) => new Date(assignment.end_date_grading) > currentDate);
+
+    return filteredData.map((assignment) => ({
       ...assignment,
       course_name: courseMap[assignment.course_id],
     }));
@@ -79,6 +82,7 @@ export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: Teache
     }
     return data;
   }
+
   function calculateAssignmentsCount(assignments: AsgnData[]) {
     const courseAssignmentsCount: { [key: string]: number } = {};
 

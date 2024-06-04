@@ -1,5 +1,6 @@
+'use client';
+
 import { useState, useEffect } from "react";
-import useCurrentUserQuery from "@/utils/hooks/QueryCurrentUser";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
@@ -11,7 +12,6 @@ interface JoinCourseProps {
 const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     const router = useRouter();
     const supabase = createClient();
-    const { data: currentUser, isLoading: isUserLoading, isError } = useCurrentUserQuery();
     const searchParams = useSearchParams();
     const [joinCode, setJoinCode] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -34,42 +34,7 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
     }, [autoJoin]);
 
     async function joinCourse() {
-        try {
-            setIsLoading(true);
-
-            const { data, error } = await supabase
-                .from('courses')
-                .select('course_id, name')
-                .eq('join_code', joinCode)
-                .single();
-
-            if (error) {
-                console.error('Error checking course:', error);
-                return;
-            }
-
-            if (!data) {
-                console.error('No course found with the given course code:', joinCode);
-                return;
-            }
-
-            const { error: insertError } = await supabase.from('account_courses').insert({
-                course_id: data.course_id,
-                uid: currentUser?.uid,
-            });
-            if (insertError) {
-                console.error('Error adding user to course:', insertError);
-                return;
-            }
-            setJoinCode('');
-            const coursePageUrl = `/courses/${data.course_id}`
-            router.push(coursePageUrl);
-
-        } catch (error) {
-            console.error('Error joining course:', error);
-        } finally {
-            setIsLoading(false);
-        }
+        router.push(`/courses?code=${joinCode}`)
     }
 
     return (
@@ -79,10 +44,10 @@ const JoinCourse: React.FC<JoinCourseProps> = ({ onClose }) => {
                 placeholder="Enter class code"
                 value={joinCode}
                 onChange={(e) => setJoinCode(e.target.value)}
-                className="py-2 px-4 rounded-md"
+                className="py-2 px-4 rounded-md text-black"
             />
             <div className="flex items-center space-x-1">
-                <button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
+                <button className="py-2 px-4 rounded-md light-grey text-black font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
                     onClick={joinCourse}
                     disabled={isLoading}>
                     {isLoading ? 'Loading...' : 'Join Class'}

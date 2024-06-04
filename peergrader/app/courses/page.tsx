@@ -1,134 +1,171 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { redirect, useRouter, useSearchParams } from 'next/navigation';
+import useCurrentUserQuery from '@/utils/hooks/QueryCurrentUser';
+import { LoadingSpinner } from '@/components/loadingSpinner';
+import NavBar from '@/components/NavBar';
+import GetCourseInfo from '@/utils/queries/GetCourseInfo';
+import { createClient } from '@/utils/supabase/client';
+import ProfileImage from '@/components/ProfileImage';
 
-// redirects for now
-export default function CoursesPage() {
-    const searchParams = useSearchParams();
-    const joinCode = searchParams.get('code');
-    
-    redirect('/dashboard');
+interface Course {
+    course_id: string;
+    name: string;
+    number: string;
+    owner: string;
+    start_date: string;
+    end_date: string;
 }
 
+interface Owner {
+    first_name: string;
+    last_name: string;
+    profile_image: string;
+}
 
-// export default function CoursesPage() {
-//     const router = useRouter();
+interface CourseInfo {
+    course: Course;
+    owner: Owner;
+}
 
-//     const { 
-//         data: currentUser, 
-//         isLoading: isUserLoading, 
-//         isError 
-//       } = useCurrentUserQuery();
+export default function CoursesPage() {
+    const supabase = createClient();
+    const router = useRouter();
+    const searchParams = useSearchParams(); // THIS ISNT WORKING
+    const [joinCode, setJoinCode] = useState('');
+    const [courseInfo, setCourseInfo] = useState<CourseInfo | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
 
-//       if (isUserLoading) {
-//         return <LoadingSpinner/>;
-//       }
+    const {
+        data: currentUser,
+        isLoading: isUserLoading,
+        isError
+    } = useCurrentUserQuery();
 
-//       if (isError || !currentUser) {
-//         return <div>Error</div>;
-//       }
+    useEffect(() => {
+        const code = searchParams.get('code');
+        if (code) {
+            setJoinCode(code);
+        }
+    }, [searchParams]);
 
-//     if (currentUser)
-//         if (currentUser.is_teacher) {
-//             return (
-//                 <div className="flex flex-col min-h-screen w-full bg-white">
-//                 <div className="w-full flex justify-between items-center p-4 light-grey">
-//                     <button 
-//                         className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-//                         onClick={() => router.push('/dashboard')}>
-//                         Return to Dashboard
-//                     </button>
-//                     <span className="font-bold text-lg">PeerGrader</span>
-//                 </div>
+    useEffect(() => {
+        async function fetchCourseInfo() {
+            if (!currentUser || !joinCode) {
+                return;
+            }
 
-//                 <header className="w-full py-8">
-//                     <h1 className="text-5xl font-bold text-left pl-4 write-blue">Teacher Dashboard</h1>
-//                     <hr className="my-1 border-t-2"></hr>
-//                 </header>
+            try {
+                // TODO: PUT INTO A QUERY (also see joincourse component!)
+                // Fetch course info
+                const data = await GetCourseInfo(supabase, joinCode);
+                setCourseInfo(data);
 
-//                 <main className="flex-1 w-1/2 mx-auto mb-10">
-//                     <div className="px-4 py-0 flex gap-8">
-//                     <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
-//                         <div className="flex justify-between items-center light-blue p-5">
-//                             <Link
-//                                 href="/courses"
-//                                 className="text-2xl text-left font-semibold write-grey"
-//                             >
-//                                 Create a Course
-//                             </Link>
-//                             <Link
-//                                 href={{
-//                                     pathname: '/courses/create',
-//                                 }}
-//                                 >{<button className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover">
-//                                     Create new course</button>}
-//                                     </Link>
+                // Check if user is enrolled in the course
+                const { data: user, error } = await supabase
+                    .from('account_courses')
+                    .select('uid')
+                    .eq('uid', currentUser.uid)
+                    .eq('course_id', data.course.course_id)
+                    .limit(1);
 
-//                         </div>
+                if (error) {
+                    console.error("Error checking account_courses:", error);
+                } else if (user.length > 0) {
+                    redirect('/dashboard');
+                }
 
-//                         <div className="min-h-[500px] light-white flex-grow p-6 items-center">
-//                             <div className="my-18">
-//                                 <ListCourses /> 
-//                             </div>
-//                         </div>
-//                     </div>
-//                     </div>
-//                 </main>
+            } catch (err) {
+                setError("Failed to fetch course information.");
+            } finally {
+                setLoading(false);
+            }
+        }
 
-//                 <footer className="w-full font-bold light-grey p-4 bg-white text-center">
-//                     <p>&copy;2024 PeerGrader</p>
-//                 </footer>
-//             </div>
-//             );
-//         }
-//         else return (
-//             <div className="flex flex-col min-h-screen w-full bg-white">
-//                 <div className="w-full flex justify-between items-center p-4 light-grey">
-//                     <button 
-//                         className="py-2 px-4 rounded-md font-bold no-underline bg-btn-background hover:bg-btn-background-hover"
-//                         onClick={() => router.push('/dashboard')}>
-//                         Return to Dashboard
-//                     </button>
-//                     <span className="font-bold text-lg">PeerGrader</span>
-//                 </div>
+        fetchCourseInfo();
+    }, [currentUser, joinCode]);
 
-//                 <header className="w-full py-8">
-//                     <h1 className="text-5xl font-bold text-left pl-4 write-blue">Student Dashboard</h1>
-//                     <hr className="my-1 border-t-2"></hr>
-//                 </header>
+    if (isUserLoading || loading) {
+        console.log("HERE");
+        return <LoadingSpinner />;
+    }
 
-//                 <main className="flex-1 w-1/2 mx-auto mb-10">
-//                     <div className="px-4 py-0 flex gap-8">
-//                     <div className="flex flex-col flex-grow rounded-lg overflow-hidden">
-//                         <div className="flex justify-between items-center light-blue p-5">
-//                             <Link
-//                                 href="/courses"
-//                                 className="text-2xl text-left font-semibold write-grey"
-//                             >
-//                                 Join a Course
-//                             </Link>
-//                         {/* REMOVING? */}
-//                             {/* <JoiƒnCourse onClose={function (): void {
-//                                     throw new Error('Function not implemented.');
-//                                 } } /> */}
+    if (isError || !currentUser || error) {
+        return <div>Error: {error || "User information could not be loaded."}</div>;
+    }
 
-//                         </div>
+    if (currentUser?.is_teacher) {
+        redirect('/dashboard');
+    }
 
-//                         <div className="min-h-[500px] light-white flex-grow p-6 items-center">
-//                             <div className="my-18">
-//                                 <ListCourses /> 
-//                             </div>
-//                         </div>
-//                     </div>
-//                     </div>
-//                 </main>
+    if (!courseInfo) {
+        return <div>No course information available.</div>;
+    }
 
-//                 <footer className="w-full font-bold light-grey p-4 bg-white text-center">
-//                     <p>&copy;2024 PeerGrader</p>
-//                 </footer>
-//             </div>
-//   );
-// }
+    const handleConfirm = async () => {
+        try {
+            // Add user to the course
+            await supabase
+                .from('account_courses')
+                .insert({
+                    uid: currentUser.uid,
+                    course_id: courseInfo.course.course_id
+                });
+            router.push('/dashboard');
+        } catch (error) {
+            setError("Failed to confirm course enrollment.");
+        }
+    };
 
+    const handleCancel = () => {
+        router.push('/dashboard');
+    };
 
+    return (
+        // <Suspense fallback={<LoadingSpinner />}>
+        <main className="flex-1 w-full">
+            <NavBar />
+            <div className="bg-gray-100 min-h-screen flex items-center justify-center">
+                <div className="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
+                    <h1 className="text-2xl font-bold text-gray-800 mb-4">Confirm Your Course Enrollment</h1>
+                    <p className="text-gray-600 mb-6">Please confirm that you want to join the following course:</p>
+
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Course Name:</label>
+                        <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.name}</p>
+                    </div>
+
+                    {courseInfo.course.number && <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Course Number:</label>
+                        <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.number}</p>
+                    </div>}
+
+                    <div className="mb-4">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Course Instructor:</label>
+                        <div className="flex justify-between items-center bg-gray-200 text-gray-800 rounded py-2 px-4">
+                            <span>{courseInfo.owner.first_name} {courseInfo.owner.last_name}</span>
+                            <ProfileImage src={courseInfo.owner.profile_image} width={25} height={25} />
+                        </div>
+                    </div>
+
+                    <div className="mb-6">
+                        <label className="block text-gray-700 text-sm font-bold mb-2">Term:</label>
+                        <p className="bg-gray-200 text-gray-800 rounded py-2 px-4">{courseInfo.course.start_date} {`->`} {courseInfo.course.end_date}</p>
+                    </div>
+
+                    <div className="flex justify-end">
+                        <button onClick={handleConfirm} className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mr-2">
+                            Confirm
+                        </button>
+                        <button onClick={handleCancel} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        // </Suspense >
+    );
+}
