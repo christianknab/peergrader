@@ -57,7 +57,7 @@ export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: Teache
 
     const { data, error } = await supabase
       .from('assignments')
-      .select('asgn_id, name, course_id, end_date_grading')
+      .select('asgn_id, name, course_id, end_date_grading') 
       .in('course_id', courseIds);
 
     if (error) {
@@ -65,10 +65,7 @@ export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: Teache
       return [];
     }
 
-    const currentDate = new Date();
-    const filteredData = data.filter((assignment) => new Date(assignment.end_date_grading) > currentDate);
-
-    return filteredData.map((assignment) => ({
+    return data.map((assignment) => ({
       ...assignment,
       course_name: courseMap[assignment.course_id],
     }));
@@ -107,11 +104,17 @@ export default function TeacherListAllAsgn({ setCourseAssignmentsCount }: Teache
     });
   }, [userAssignments]);
 
+  // Filter assignments that have not passed the grading period
+  const currentDate = new Date();
+  const assignmentsToDisplay = userAssignments.filter(
+    (assignment) => new Date(assignment.end_date_grading) >= currentDate
+  );
+
   return (
     <div className="flex-grow p-6">
-      {userAssignments && userAssignments.length > 0 ? (
+      {assignmentsToDisplay && assignmentsToDisplay.length > 0 ? (
         <div className="grid grid-cols-1 gap-6">
-          {userAssignments.map((asgnData) => {
+          {assignmentsToDisplay.map((asgnData) => {
             const assignmentSubmissions = submissions[asgnData.asgn_id] || [];
             const totalPeople = assignmentSubmissions.length;
             const submitted = assignmentSubmissions.filter(submission => submission.file_id).length;
