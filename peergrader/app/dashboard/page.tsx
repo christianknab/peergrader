@@ -5,13 +5,13 @@ import NavBar from "@/components/NavBar";
 
 
 
-export default async function DashboardPage() {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+export default function DashboardPage() {
+  // const supabase = createClient();
+  // const { data: { user } } = await supabase.auth.getUser();
 
-  if (!user) {
-    return redirect("/login");
-  }
+  // if (!user) {
+  //   return redirect("/login");
+  // }
 
   return (
     <div className="w-full h-screen flex flex-col">

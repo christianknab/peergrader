@@ -2,6 +2,7 @@ import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 export const updateSession = async (request: NextRequest) => {
+  // "use server";
   // This `try/catch` block is only here for the interactive tutorial.
   // Feel free to remove once you have Supabase connected.
   try {
@@ -62,8 +63,17 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    await supabase.auth.getUser();
-
+    const { data: { user } } = await supabase.auth.getUser()
+    const path = request.nextUrl.pathname;
+    if(user){
+      if (path.startsWith('/login') || path.startsWith('/signup') || path.startsWith('/forgot-password')) {
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+      }
+    }else{
+      if (path.startsWith('/courses') || path.startsWith('/dashboard')) {
+        return NextResponse.redirect(new URL('/login', request.url));
+      }
+    }
     return response;
   } catch (e) {
     // If you are here, a Supabase client could not be created!
