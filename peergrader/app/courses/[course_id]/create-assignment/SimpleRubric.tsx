@@ -19,22 +19,22 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
         setShowSettings(!showSettings);
     };
 
-    const handleColChange = (index: number, categoryIndex: number, value: string) => {
+    const handleColChange = (row: number, col: number, value: string) => {
         const newRubric = [...rubric];
-        newRubric[index].descriptions[categoryIndex] = value;
+        newRubric[row].descriptions[col] = value;
         setRubric(newRubric);
     };
 
-    const handleRowPointChange = (index: number, value: number) => {
+    const handleRowPointChange = (row: number, value: number) => {
         const newRubric = [...rubric];
-        newRubric[index].row_points[0] = value;
-        newRubric[index].col_points[0] = value;
+        newRubric[row].row_points[0] = value;
+        newRubric[row].col_points[0] = value;
         setRubric(newRubric);
     };
 
-    const handleNameChange = (index: number, value: string) => {
+    const handleNameChange = (row: number, value: string) => {
         const newRubric = [...rubric];
-        newRubric[index].names[0] = value;
+        newRubric[row].names[0] = value;
         setRubric(newRubric);
     };
 
@@ -58,74 +58,79 @@ export const SimpleRubric = (({ rubric, setRubric, maxScore, setMaxScore }: Simp
         setRubric(newRubric);
     };
 
-    // Make this less operations!!
+    // TODO: Make less operations
     function getTotal(): number {
         let total = 0;
         for (let i = 0; i < rubric.length; i++) {
             total += rubric[i].row_points[0]
         }
-        // rubric[0].row_points.forEach((el) => total += el)
         setMaxScore(total);
         return total;
     };
 
-    return (<div className="mb-3">
-        <button type="button" className="write-grey" onClick={toggleSettings}>{SettingsIcon()}</button>
-        <table className="border-l table-auto max-w-screen-lg">
-            <thead>
-                <tr>
-                    <th className="border-b border-t w-1/4">Criteria</th>
-                    <th className="border-b border-t border-l w-3/5">Rating</th>
-                    <th className="border w-1/8">Points</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rubric.map((rubricItem, index) => {
-                    const highestColPoint = getHighestColPoints(rubricItem.col_points);
-                    const rowPointMismatch = rubricItem.row_points[0] !== highestColPoint;
-                    return (
-                        <tr key={index}>
-                            <td className="border-b border-r p-2">
-                                <textarea
-                                    className={`resize-none h-10 rounded-md p-1 w-full h-24 ${rubricItem.names[0] == '' ? 'bg-red-200' : ''}`}
-                                    value={rubricItem.names[0]}
-                                    onChange={(e) => handleNameChange(index, e.target.value)}
-                                    title={rubricItem.names[index] == '' ? 'Please enter a description' : ''}
-                                />
-                            </td>
-                            <td className="border-b p-0">
-                                <ul className="list-none p-0 w-full">
-                                    {rubricItem.descriptions.map((description, descIndex) => (
-                                        <li key={descIndex} className="inline-block p-2 w-full">
-                                            <div className="flex justify-between items-center space-x-2">
-                                                <textarea
-                                                    className={`resize-none hover:resize-y h-60 rounded-md p-1 flex-grow ${rubricItem.descriptions[descIndex] == '' ? 'bg-red-200' : ''}`}
-                                                    value={description}
-                                                    onChange={(e) => handleColChange(index, descIndex, e.target.value)}
-                                                    title={rubricItem.descriptions[descIndex] == '' ? 'Please enter a description' : ''}
-                                                />
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </td>
-                            <td className="border-l border-r border-b p-4">
-                                <input type="number" className={`border text-sm rounded-lg block w-full p-2.5 ${rowPointMismatch ? 'bg-red-200' : ''}`} placeholder="10" value={rubricItem.row_points[0]} required onChange={(e) => handleRowPointChange(index, e.target.valueAsNumber)} title={rowPointMismatch ? 'Row points do not match the highest column points!' : ''} />
-                            </td>
-                            <td>{showSettings &&
-                                (<div className="flex justify-center p-2"><button type="button" className="text-red-500" role="alert" onClick={() => delRow(index)}>
-                                    {MinusIcon()}
-                                </button></div>)}</td>
-                        </tr>
-                    )
-                })}
-                <td className="border-l border-b"></td>
-                <td className="border-b"></td>
-                <td className="border-r border-b">Total: {getTotal()}</td>
-            </tbody>
-        </table>
-        {showSettings &&
-            (
-                <div className="flex justify-center p-2"><button type="button" className="write-grey" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
-    </div>)
+    return (
+        <div className="mb-3">
+            <button type="button" className="write-grey" onClick={toggleSettings}>{SettingsIcon()}</button>
+            <table className="border-l table-auto max-w-screen-lg">
+                <thead>
+                    <tr>
+                        <th className="border-b border-t w-1/4">Criteria</th>
+                        <th className="border-b border-t border-l w-3/5">Rating</th>
+                        <th className="border w-1/8">Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {/* Loop throw every row */}
+                    {rubric.map((row, row_num) => {
+                        const highestColPoint = getHighestColPoints(row.col_points);
+                        const rowPointMismatch = row.row_points[0] !== highestColPoint;
+                        return (
+                            <tr key={row_num}>
+                                {/* Row name */}
+                                <td className="border-b border-r p-2">
+                                    <textarea
+                                        className={`resize-none h-10 rounded-md p-1 w-full h-24 ${row.names[0] == '' ? 'bg-red-200' : ''}`}
+                                        value={row.names[0]}
+                                        onChange={(e) => handleNameChange(row_num, e.target.value)}
+                                        title={row.names[row_num] == '' ? 'Please enter a description' : ''}
+                                    />
+                                </td>
+                                {/* Column Descriptions for each row */}
+                                <td className="border-b p-0">
+                                    <ul className="list-none p-0 w-full">
+                                        {row.descriptions.map((col, col_num) => (
+                                            <li key={col_num} className="inline-block p-2 w-full">
+                                                <div className="flex justify-between items-center space-x-2">
+                                                    {/* Column Points */}
+                                                    <textarea
+                                                        className={`resize-none hover:resize-y h-60 rounded-md p-1 flex-grow ${row.descriptions[col_num] == '' ? 'bg-red-200' : ''}`}
+                                                        value={col}
+                                                        onChange={(e) => handleColChange(row_num, col_num, e.target.value)}
+                                                        title={row.descriptions[col_num] == '' ? 'Please enter a description' : ''}
+                                                    />
+                                                </div>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </td>
+                                {/* Row Points */}
+                                <td className="border-l border-r border-b p-4">
+                                    <input type="number" className={`border text-sm rounded-lg block w-full p-2.5 ${rowPointMismatch ? 'bg-red-200' : ''}`} placeholder="10" value={row.row_points[0]} required onChange={(e) => handleRowPointChange(row_num, e.target.valueAsNumber)} title={rowPointMismatch ? 'Row points do not match the highest column points!' : ''} />
+                                </td>
+                                <td>{showSettings &&
+                                    (<div className="flex justify-center p-2"><button type="button" className="text-red-500" role="alert" onClick={() => delRow(row_num)}>
+                                        {MinusIcon()}
+                                    </button></div>)}</td>
+                            </tr>
+                        )
+                    })}
+                    <td className="border-l border-b"></td>
+                    <td className="border-b"></td>
+                    <td className="border-r border-b">Total: {getTotal()}</td>
+                </tbody>
+            </table>
+            {showSettings &&
+                (
+                    <div className="flex justify-center p-2"><button type="button" className="write-grey" onClick={() => addRow()}>{PlusIcon()}</button></div>)}
+        </div>)
 });

@@ -69,6 +69,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
     const [numAnnotations, setNumAnnotations] = useState(1);
     const [customizeRubric, setCustomizeRubric] = useState(true);
     const [isPreview, setIsPreview] = useState(false);
+
     function validateDates(): boolean {
         const submitStartDateAdjusted = combineDateTime(startSubmitDate, startSubmitTime);
         const sumbitEndDateAdjusted = combineDateTime(endSubmitDate, endSubmitTime);
@@ -127,7 +128,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
         setSubmitEndDate(new Date(event.target.value));
     };
 
-    const handleGradeStartDateChange = (event: { target: { value: string; }; }) => {
+    const handleGradeStartDateChange = (event: { target: { value: string | number | Date; }; }) => {
         setGradeStartDate(new Date(event.target.value));
     };
 
@@ -155,8 +156,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
         setCustomizeRubric(!customizeRubric);
     }
 
-
-
+    // Validate dates when any input changes
     useEffect(() => {
         validateDates();
     }, [
@@ -170,7 +170,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
         endGradeTime,
     ]);
 
-
+    // Initialize rubric
     useEffect(() => {
         setRubric(initialRubric);
         setAnonymous(anonymousGrading);
@@ -182,6 +182,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
             onSubmit(assignmentName, customizeRubric ? rubric : simple_rubric, anonymous, combineDateTime(startSubmitDate, startSubmitTime), combineDateTime(endSubmitDate, endSubmitTime), combineDateTime(startGradeDate, startGradeTime), combineDateTime(endGradeDate, endGradeTime), max_score, num_peergrades, numAnnotations, !customizeRubric, assignmentDesc);
         }
     };
+
     const handleKeyDown = (event: any) => {
         if (event.key === 'Tab') {
             event.preventDefault();
@@ -207,17 +208,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
 
     return (
         <form onSubmit={handleSubmit} className="container">
-            {/* <div className="mb-3">
-                Assignment Name:
-                <input
-                    type="text"
-                    id="assignmentName"
-                    className={`form-control block rounded-md p-2 ${assignmentName == '' ? 'bg-red-200' : ''}`}
-                    value={assignmentName}
-                    onChange={(e) => setAssignmentName(e.target.value)}
-                    title={assignmentName == '' ? 'Please enter a name' : ''}
-                />
-            </div> */}
+            {/* Assignment Name */}
             <div>
                 Assignment Name:
                 <input
@@ -227,6 +218,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     required
                     onChange={(e) => setAssignmentName(e.target.value)} />
             </div>
+            {/* Assignment Description */}
             <div>
                 Assignment Description:
                 <div className='outline outline-gray-300 outline-1 rounded-md w-full max-w-3xl'>
@@ -247,25 +239,17 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                         onChange={(e) => setAssignmentDesc(e.target.value)} /> :
                         <Markdown className="block w-full max-w-3xl h-52 p-2.5 overflow-y-auto resize-y bg-white rounded-b-md border-t border-gray-300">
                             {assignmentDesc}
-                        </Markdown>}</div>
-
-
+                        </Markdown>}
+                </div>
             </div>
-
-
-
-
-
-
             {/* For now not enabling anonymous TODO LATER*/}
             {/* <label className="inline-flex items-center cursor-pointer">
                 <input type="checkbox" checked={anonymousGrading} className="sr-only peer" onChange={() => setAnonymous(!anonymousGrading)} />
                 <span>Anonymous Grading: </span>
                 <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
             </label> */}
-
+            {/* Submission dates */}
             <div>Accepting Submissions:
-
                 <div className="flex items-center">
                     <input
                         type="date"
@@ -294,7 +278,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     />
                 </div>
             </div>
-
+            {/* Grading Dates */}
             <div>Grading:
                 <div className="flex items-center">
                     <input
@@ -325,7 +309,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                 </div>
             </div>
             <div className="text-red-500">{dateError}</div>
-
+            {/* Peergrades */}
             <div>
                 Number of Peergrades:
                 <input
@@ -336,6 +320,7 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     required
                     onChange={(e) => setNumPeergrades(parseInt(regex.exec(e.target.value)?.at(0) ?? ""))} />
             </div>
+            {/* Comments */}
             <div>
                 Number of required comments:
                 <input
@@ -346,20 +331,20 @@ export const AssignmentForm = ({ onSubmit, initialRubric, anonymousGrading }: As
                     required
                     onChange={(e) => setNumAnnotations(parseInt(regex.exec(e.target.value)?.at(0) ?? ""))} />
             </div>
-
+            {/* Rubric */}
             <div className="flex">Rubric:</div>
             <div className='py-2'><div className='flex'><div><button onClick={toggleCustomizeRubric} className={`btn py-2 px-4 ${customizeRubric ? `font-bold bg-blue-200` : `bg-btn-background hover:bg-btn-background-hover`} rounded-md no-underline`} disabled={customizeRubric}>Custom</button></div>
                 <div className='px-2'><button onClick={toggleCustomizeRubric} className={`btn py-2 px-4 ${!customizeRubric ? `font-bold bg-blue-200` : `bg-btn-background hover:bg-btn-background-hover`} rounded-md no-underline`} disabled={!customizeRubric}>Simple</button></div></div>
+                {/* In depth rubric */}
                 {(customizeRubric) && <RubricMaker rubric={rubric} setRubric={setRubric} maxScore={max_score} setMaxScore={setMaxScore} />}
             </div>
             <div className='py-2'>
+                {/* Simple Rubric */}
                 {(!customizeRubric) && <SimpleRubric rubric={simple_rubric} setRubric={setSimpleRubric} maxScore={max_score} setMaxScore={setMaxScore} />}
             </div>
-
+            {/* Create Button */}
             <button type="submit"
-                className={`btn btn-primary py-2 px-4 font-bold rounded-md ${isFormValid() ? `font-bold hover:bg-btn-background-hover` : ``} no-underline bg-btn-background`}
-            // disabled={!isFormValid()}
-            >
+                className={`btn btn-primary py-2 px-4 font-bold rounded-md ${isFormValid() ? `font-bold hover:bg-btn-background-hover` : ``} no-underline bg-btn-background`}>
                 Create Assignment
             </button>
         </form>
