@@ -20,7 +20,7 @@ function useUserCoursesQuery( userId: string, isTeacher: boolean, enabled: boole
 
     const queryFn = async (): Promise<CoursesData> => {
         if (isTeacher) {
-            const { data } = await supabase.rpc('get_teacher_courses', { user_id_param: userId });
+            const { data } = await supabase.rpc('get_courses_teacher', { user_id_param: userId });
             return { course: data ?? [] }; // Return empty array if data is null or undefined
         } else {
             const { data } = await supabase.rpc('get_courses_student', { user_id_param: userId });
